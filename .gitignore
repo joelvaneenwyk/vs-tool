@@ -1,0 +1,10 @@
+
+# VS2015 files
+
+*.suo
+.vs
+*.VC.db
+*.opendb
+*.vcxproj.user
+bin
+obj

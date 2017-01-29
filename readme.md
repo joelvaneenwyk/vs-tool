@@ -10,7 +10,7 @@
 
 _vs-android_ is intended to provide a collection of scripts and utilities to support integrated development of Android NDK C/C++ software under Microsoft Visual Studio.
 
-vs-android supports only Visual Studio 2010, 2012 and 2013. Earlier versions lack the MSBuild integration with the C/C++ compilation systems.
+vs-android supports only Visual Studio 2010, 2012, 2013, and VS2015. Earlier versions lack the MSBuild integration with the C/C++ compilation systems.
 
 Also, the free "Express" editions of Visual Studio are not supported. If you wish to use a free version of Visual Studio, use the new "Community Edition" of Visual Studio 2013. That works fine with external plugins, like vs-android.
 
