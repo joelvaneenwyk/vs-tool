@@ -1,12 +1,14 @@
 @echo off
-Rem This will bail if we don't have admin privs.
+
+REM This will bail if we don't have admin privs.
 net session >nul 2>&1
     if errorLevel 1 (
 		Echo.This batch file needs to be run with administrative privileges. Since it copies files to the \Program Files directory.
 		Pause
 		Goto cleanup
 ) 
-rem On 64-bit machines, Visual Studio 2013 and MsBuild is in the (x86) directory. So try that last.
+
+REM On 64-bit machines, Visual Studio 2013/2015 and MsBuild are in the (x86) directory. So try that last.
 if exist "%ProgramFiles%" set "MsBuildRootDir=%ProgramFiles%\MSBuild\Microsoft.Cpp\v4.0"
 if exist "%ProgramFiles(x86)%" set "MsBuildRootDir=%ProgramFiles(x86)%\MSBuild\Microsoft.Cpp\v4.0"
 
@@ -26,7 +28,11 @@ if %n%==2 (
 	set VsVersion=2013
 	set "MsBuildCppDir=%MsBuildRootDir%\V120\Platforms"
 )
-if %n%==3 GOTO complete
+if %n%==3 (
+	set VsVersion=2015
+	set "MsBuildCppDir=%MsBuildRootDir%\V140\Platforms"
+)
+if %n%==4 GOTO complete
 
 if not exist "%MsBuildCppDir%" (
 	set /a n=%n%+1
@@ -51,7 +57,7 @@ if exist %MsBuildCppDir%\%CppVersion% (
 
 	rd "%MsBuildCppDir%\%CppVersion%" /s		
 	if exist "%MsBuildCppDir%\%CppVersion%" (
-		Echo.Failed to remove directory
+		Echo.Failed to REMove directory
 		Pause
 		goto cleanup
 	)
