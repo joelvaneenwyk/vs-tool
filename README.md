@@ -1,7 +1,7 @@
 vs-tool
 =======
 
-vs-tool is a Visual Studio 2010 plugin to integrate external compiler/linker toolchains to the VS IDE.
+vs-tool is a Visual Studio plugin to integrate external compiler/linker toolchains to the VS IDE. It supports Visual Studio 2010, 2012, 2013, and 2015.
 
 This plugin is a derivation of the excellent work done by Gavin Pugh for the <a href="http://code.google.com/p/vs-android/">vs-android</a> tool, and is therefore also licensed under the <a href="http://en.wikipedia.org/wiki/Zlib_License">Zlib license</a>.
 
