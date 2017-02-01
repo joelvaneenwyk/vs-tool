@@ -1,0 +1,13 @@
+# Visual Studio Files
+
+*.suo
+.vs
+*.VC.db
+*.opendb
+*.vcxproj.user
+bin
+obj
+Debug
+Release
+*.sdf
+*.opensdf
