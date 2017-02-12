@@ -3,7 +3,7 @@
 REM This will bail if we don't have admin privs.
 net session >nul 2>&1
     if errorLevel 1 (
-		Echo.This batch file needs to be run with administrative privileges. Since it copies files to the \Program Files directory.
+		Echo.This batch file needs to be run with administrative privileges. Since it removes files in the \Program Files directory.
 		Pause
 		Goto cleanup
 )
@@ -12,7 +12,7 @@ REM On 64-bit machines, Visual Studio 2013/2015 and MsBuild are in the (x86) dir
 if exist "%ProgramFiles%" set "MsBuildRootDir=%ProgramFiles%\MSBuild\Microsoft.Cpp\v4.0"
 if exist "%ProgramFiles(x86)%" set "MsBuildRootDir=%ProgramFiles(x86)%\MSBuild\Microsoft.Cpp\v4.0"
 
-echo.%MsBuildRootDir%
+echo.%MsBuildRootDir%`
 
 set /a n=0
 
@@ -45,7 +45,7 @@ if not exist "%MsBuildCppDir%" (
 	goto loopVisualStudioVersion
 )
 
-Echo.Installing into Visual Studio %VsVersion%
+Echo.Removing from Visual Studio %VsVersion%
 set /a i=0
 :loop
 if %i%==0 set CppVersion=Clang
@@ -58,12 +58,13 @@ if %i%==4 (
 	goto loopVisualStudioVersion
 )
 
-Echo. Removing "%CppVersion%" (%VsVersion%) ...
-rmdir "%MsBuildCppDir%\%CppVersion%" /s /q
 if exist "%MsBuildCppDir%\%CppVersion%\Microsoft.Cpp.%CppVersion%.props" (
-	Echo.Failed to remove "%MsBuildCppDir%\%CppVersion%"
+	echo. Removing "%MsBuildCppDir%\%CppVersion%"
+	rmdir "%MsBuildCppDir%\%CppVersion%" /s /q
+	if exist "%MsBuildCppDir%\%CppVersion%\Microsoft.Cpp.%CppVersion%.props" (
+		echo.Failed to remove "%MsBuildCppDir%\%CppVersion%"
+	)
 )
-echo.
 
 if errorlevel 1 (
 	echo.Problem with deleting.

@@ -45,7 +45,12 @@ if not exist "%MsBuildCppDir%" (
 	goto loopVisualStudioVersion
 )
 
-Echo.Installing into Visual Studio %VsVersion%
+echo.
+echo.============================================================
+echo. Installing into Visual Studio %VsVersion%
+echo.============================================================
+echo.
+
 set /a i=0
 :loop
 if %i%==0 set CppVersion=Clang
@@ -59,13 +64,10 @@ if %i%==4 (
 )
 
 if exist "%MsBuildCppDir%\%CppVersion%\Microsoft.Cpp.%CppVersion%.props" (
-	Echo."%CppVersion%" Cpp MsBuild toolset already exists
-	Echo.Continuing will delete the version already installed to this directory
-	Pause
-
+	echo. "%CppVersion%" Cpp MsBuild toolset already exists. Removing old version.
 	rmdir "%MsBuildCppDir%\%CppVersion%" /s /q
 	if exist "%MsBuildCppDir%\%CppVersion%\Microsoft.Cpp.%CppVersion%.props" (
-		Echo.Failed to remove directory
+		echo. Failed to remove directory!
 		goto cleanup
 	)
 	echo.
@@ -73,13 +75,13 @@ if exist "%MsBuildCppDir%\%CppVersion%\Microsoft.Cpp.%CppVersion%.props" (
 
 if not exist "%MsBuildCppDir%\%CppVersion%" mkdir "%MsBuildCppDir%\%CppVersion%"
 
-echo.Installing %CppVersion% MSBuild files:
+echo. Installing %CppVersion% MSBuild files...
 cd /d %~dp0
-xcopy "%CppVersion%\*.*" "%MsBuildCppDir%\%CppVersion%" /E
-if %CppVersion%==Emscripten xcopy "%VsVersion% DLL\*.dll" "%MsBuildCppDir%\%CppVersion%" /E
+xcopy "%CppVersion%\*.*" "%MsBuildCppDir%\%CppVersion%" /E /Q
+if %CppVersion%==Emscripten xcopy "%VsVersion% DLL\*.dll" "%MsBuildCppDir%\%CppVersion%" /E /Q
 
 if errorlevel 1 (
-	echo.Problem with copying
+	echo. Problem with copying!
 	Pause
 	goto cleanup
 )
