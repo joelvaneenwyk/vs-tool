@@ -1,11 +1,11 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(VCTargetsPath)\Platforms\Emscripten\ImportBefore\*.props" Condition="Exists('$(VCTargetsPath)\Platforms\Emscripten\ImportBefore')" />
-  <Import Project="$(VCTargetsPath)\Platforms\Emscripten\Emscripten.EnvVars.props" />
-  <Import Condition="(exists('$(VCTargetsPath)\Platforms\Emscripten\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Emscripten.$(PlatformToolset).props'))" Project="$(VCTargetsPath)\Platforms\Emscripten\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Emscripten.$(PlatformToolset).props"/>
+  <Import Project="$(MSBuildThisFileDirectory)\ImportBefore\*.props" Condition="Exists('$(MSBuildThisFileDirectory)\ImportBefore')" />
+  <Import Project="$(MSBuildThisFileDirectory)\Emscripten.EnvVars.props" />
+  <Import Condition="(exists('$(MSBuildThisFileDirectory)\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Emscripten.$(PlatformToolset).props'))" Project="$(MSBuildThisFileDirectory)\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Emscripten.$(PlatformToolset).props"/>
   <PropertyGroup>
     <DebuggerFlavor Condition="'$(DebuggerFlavor)'==''">WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Platforms\Emscripten\Emscripten.ToolPaths.props" />
+  <Import Project="$(MSBuildThisFileDirectory)\Emscripten.ToolPaths.props" />
   <PropertyGroup>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <GenerateManifest>false</GenerateManifest>  
@@ -32,7 +32,7 @@
     <LinkCompiled>true</LinkCompiled>
     <TargetExt>.js</TargetExt>
     <LocalDebuggerCommand Condition="'$(EMSCRIPTEN_JSENGINE)' != ''">$(EMSCRIPTEN_JSENGINE)</LocalDebuggerCommand>
-    <LocalDebuggerCommand Condition="'$(EMSCRIPTEN_JSENGINE)' == ''">$(VCTargetsPath)\Platforms\Emscripten\run_in_node.bat</LocalDebuggerCommand>
+    <LocalDebuggerCommand Condition="'$(EMSCRIPTEN_JSENGINE)' == ''">$(MSBuildThisFileDirectory)\run_in_node.bat</LocalDebuggerCommand>
     <TargetPath Condition="'$(TargetPath)' == ''">$([System.IO.Path]::Combine($(ProjectDir),$(OutDir)$(TargetName)$(TargetExt)))</TargetPath>
     <LocalDebuggerCommandArguments>$(TargetPath)</LocalDebuggerCommandArguments>
   </PropertyGroup>
@@ -41,11 +41,11 @@
     <LinkCompiled>true</LinkCompiled>
     <TargetExt>.html</TargetExt>
     <LocalDebuggerCommand Condition="'$(EMSCRIPTEN_BROWSER)' != ''">$(EMSCRIPTEN_BROWSER)</LocalDebuggerCommand>
-    <LocalDebuggerCommand Condition="'$(EMSCRIPTEN_BROWSER)' == ''">$(VCTargetsPath)\Platforms\Emscripten\run_in_browser.bat</LocalDebuggerCommand>
+    <LocalDebuggerCommand Condition="'$(EMSCRIPTEN_BROWSER)' == ''">$(MSBuildThisFileDirectory)\run_in_browser.bat</LocalDebuggerCommand>
     <TargetPath Condition="'$(TargetPath)' == ''">$([System.IO.Path]::Combine($(ProjectDir),$(OutDir)$(TargetName)$(TargetExt)))</TargetPath>
     <LocalDebuggerCommandArguments>$(TargetPath)</LocalDebuggerCommandArguments>
   </PropertyGroup>
 
-  <Import Project="$(VCTargetsPath)\Platforms\Emscripten\Emscripten.ToolDefaults.props" />
-  <Import Project="$(VCTargetsPath)\Platforms\Emscripten\ImportAfter\*.props" Condition="Exists('$(VCTargetsPath)\Platforms\Emscripten\ImportAfter')" />
+  <Import Project="$(MSBuildThisFileDirectory)\Emscripten.ToolDefaults.props" />
+  <Import Project="$(MSBuildThisFileDirectory)\ImportAfter\*.props" Condition="Exists('$(MSBuildThisFileDirectory)\ImportAfter')" />
 </Project>

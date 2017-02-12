@@ -24,19 +24,23 @@ if "%1" == "2015" set /a n=3
 
 if %n%==0 (
 	set VsVersion=2010
+	set VsVersionAlt=10
 	set "MsBuildCppDir=%MsBuildRootDir%\Platforms"
 )
 if %n%==1 (
 	set VsVersion=2012
-	set "MsBuildCppDir=%MsBuildRootDir%\V110\Platforms"
+	set VsVersionAlt=11
+	set "MsBuildCppDir=%MsBuildRootDir%\V%VsVersionAlt%0\Platforms"
 )
 if %n%==2 (
 	set VsVersion=2013
-	set "MsBuildCppDir=%MsBuildRootDir%\V120\Platforms"
+	set VsVersionAlt=12
+	set "MsBuildCppDir=%MsBuildRootDir%\V%VsVersionAlt%0\Platforms"
 )
 if %n%==3 (
 	set VsVersion=2015
-	set "MsBuildCppDir=%MsBuildRootDir%\V140\Platforms"
+	set VsVersionAlt=14
+	set "MsBuildCppDir=%MsBuildRootDir%\V%VsVersionAlt%0\Platforms"
 )
 if %n%==4 GOTO complete
 
@@ -77,8 +81,8 @@ if not exist "%MsBuildCppDir%\%CppVersion%" mkdir "%MsBuildCppDir%\%CppVersion%"
 
 echo. Installing %CppVersion% MSBuild files...
 cd /d %~dp0
-xcopy "%CppVersion%\*.*" "%MsBuildCppDir%\%CppVersion%" /E /Q
-if %CppVersion%==Emscripten xcopy "%VsVersion% DLL\*.dll" "%MsBuildCppDir%\%CppVersion%" /E /Q
+xcopy "MSBuild\%CppVersion%\*.*" "%MsBuildCppDir%\%CppVersion%" /E /Q
+if %CppVersion%==Emscripten xcopy "Bin\%VsVersionAlt%.0\*.dll" "%MsBuildCppDir%\%CppVersion%" /E /Q
 
 if errorlevel 1 (
 	echo. Problem with copying!

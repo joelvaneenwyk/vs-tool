@@ -5,7 +5,7 @@
 *.VC.db
 *.opendb
 *.vcxproj.user
-bin
+pythonemcc\bin\**
 obj
 Debug
 Release
