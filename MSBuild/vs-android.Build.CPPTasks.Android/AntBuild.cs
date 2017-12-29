@@ -274,8 +274,8 @@ namespace vs_android.Build.CPPTasks.Android
 			return AntBuildType.ToLower();
 		}
 
-#if !VS2010DLL && !VS2015DLL
-		protected override string GenerateResponseFileCommands(VCToolTask.CommandLineFormat format)
+#if !VS2010DLL && !VS2015DLL && !VS2017DLL
+        protected override string GenerateResponseFileCommands(VCToolTask.CommandLineFormat format)
 		{
 			return string.Empty;
 		}

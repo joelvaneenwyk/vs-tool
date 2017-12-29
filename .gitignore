@@ -6,5 +6,6 @@
 *.VC.db
 *.opendb
 *.vcxproj.user
+*.DotSettings.user
 bin
 obj
