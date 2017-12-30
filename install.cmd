@@ -19,6 +19,7 @@ set /a n=0
 if "%1" == "2012" set /a n=1
 if "%1" == "2013" set /a n=2
 if "%1" == "2015" set /a n=3
+if "%1" == "2017" set /a n=4
 
 :loopVisualStudioVersion
 
@@ -42,7 +43,12 @@ if %n%==3 (
 	set VsVersionAlt=14
 	set "MsBuildCppDir=%MsBuildRootDir%\V%VsVersionAlt%0\Platforms"
 )
-if %n%==4 GOTO complete
+if %n%==4 (
+	set VsVersion=2017
+	set VsVersionAlt=15
+	set "MsBuildCppDir=%MsBuildRootDir%\V%VsVersionAlt%0\Platforms"
+)
+if %n%==5 GOTO complete
 
 if not exist "%MsBuildCppDir%" (
 	set /a n=%n%+1
