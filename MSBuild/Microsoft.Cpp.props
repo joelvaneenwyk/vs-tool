@@ -222,6 +222,9 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 
   <!-- Import Platform specific settings -->
   <Import Condition="'$(Platform)' 	!= '' and exists('$(MSBuildThisFileDirectory)\$(Platform)\Microsoft.Cpp.$(Platform).props')" Project="$(MSBuildThisFileDirectory)\$(Platform)\Microsoft.Cpp.$(Platform).props"/>
-  <Import Condition="'$(Platform)' != '' and !exists('$(MSBuildThisFileDirectory)\$(Platform)\Microsoft.Cpp.$(Platform).props')" Project="$(VCTargetsPath)\$(Platform)\Microsoft.Cpp.props"/>
+
+  <!--
+  <Import Condition="'$(Platform)' != '' and !exists('$(MSBuildThisFileDirectory)\$(Platform)\Microsoft.Cpp.$(Platform).props')" Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
+  -->
 
 </Project>
