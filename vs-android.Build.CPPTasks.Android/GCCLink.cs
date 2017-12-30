@@ -59,13 +59,13 @@ namespace vs_android.Build.CPPTasks.Android
 		}
 
 #if !VS2010DLL && !VS2015DLL && !VS2017DLL
-        protected override string GenerateResponseFileCommands(VCToolTask.CommandLineFormat format)
+		protected override string GenerateResponseFileCommands(VCToolTask.CommandLineFormat format)
 		{
 			return GenerateResponseFileCommands();
 		}
 #endif
 
-        protected override string GenerateResponseFileCommands()
+		protected override string GenerateResponseFileCommands()
 		{
 			StringBuilder templateStr = new StringBuilder(Utils.EST_MAX_CMDLINE_LEN);
 
@@ -92,22 +92,40 @@ namespace vs_android.Build.CPPTasks.Android
 				File.Delete(ignoreReadLogPath);
 				File.Delete(ignoreWriteLogPath);
 			}
-			finally
+			catch (Exception ex)
 			{
-
+				Log.LogWarningFromException(ex);
 			}
 		}
 
 		protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)
 		{
-			CleanUnusedTLogFiles();
-
-			if (EchoCommandLines == "true")
+			try
 			{
-				Log.LogMessage(MessageImportance.High, pathToTool + " " + responseFileCommands);
+				CleanUnusedTLogFiles();
+
+				if (EchoCommandLines == "true")
+				{
+					Log.LogMessage(MessageImportance.High, pathToTool + " " + responseFileCommands);
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.LogWarningFromException(ex);
 			}
 
-			return base.ExecuteTool(pathToTool, responseFileCommands, commandLineCommands);
+			int returnValue = 0;
+
+			try
+			{
+				returnValue = base.ExecuteTool(pathToTool, responseFileCommands, commandLineCommands);
+			}
+			catch (Exception ex)
+			{
+				Log.LogWarningFromException(ex);
+			}
+
+			return returnValue;
 		}
 
 		// Called when linker outputs a line

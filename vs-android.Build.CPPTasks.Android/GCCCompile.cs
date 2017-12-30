@@ -122,15 +122,27 @@ namespace vs_android.Build.CPPTasks.Android
 			int retCode = 0;
 			try
 			{
-				retCode = CompileWithGCC( pathToTool );
+				retCode = CompileWithGCC(pathToTool);
+			}
+			catch (Exception ex)
+			{
+				Log.LogWarningFromException(ex);
 			}
 			finally
 			{
-				// Update tlog files
-				CanonicalTrackedOutputFiles outputs = ConstructWriteTLog( SourcesCompiled );
-				ConstructReadTLog( SourcesCompiled, outputs );
-				ConstructCommandTLog( SourcesCompiled, null );
+				try
+				{
+					// Update tlog files
+					CanonicalTrackedOutputFiles outputs = ConstructWriteTLog(SourcesCompiled);
+					ConstructReadTLog(SourcesCompiled, outputs);
+					ConstructCommandTLog(SourcesCompiled, null);
+				}
+				catch (Exception ex)
+				{
+					Log.LogWarningFromException(ex);
+				}
 			}
+
 			return retCode;
 		}
 
@@ -154,24 +166,32 @@ namespace vs_android.Build.CPPTasks.Android
 			StringBuilder cmdLine = new StringBuilder(Utils.EST_MAX_CMDLINE_LEN);
 			foreach (ITaskItem sourceFile in Sources)
 			{
-				cmdLine.Length = 0;
-				m_currentSourceItem = sourceFile;
-
-				cmdLine.Append(GenerateCommandLine());
-				cmdLine.Append(" ");
-				cmdLine.Append(sourceFile.GetMetadata("FullPath").ToUpperInvariant());
-				
-				string findCmdLine = null;
-				if (dictionary.TryGetValue(FileTracker.FormatRootingMarker(sourceFile), out findCmdLine))
+				try
 				{
-					if ((findCmdLine == null) || !cmdLine.ToString().Equals(findCmdLine, StringComparison.Ordinal))
+					cmdLine.Length = 0;
+					m_currentSourceItem = sourceFile;
+
+					cmdLine.Append(GenerateCommandLine());
+					cmdLine.Append(" ");
+
+					cmdLine.Append(sourceFile.GetMetadata("FullPath").ToUpperInvariant());
+
+					string findCmdLine = null;
+					if (dictionary.TryGetValue(FileTracker.FormatRootingMarker(sourceFile), out findCmdLine))
+					{
+						if ((findCmdLine == null) || !cmdLine.ToString().Equals(findCmdLine, StringComparison.Ordinal))
+						{
+							list.Add(sourceFile);
+						}
+					}
+					else
 					{
 						list.Add(sourceFile);
 					}
 				}
-				else
+				catch (Exception ex)
 				{
-					list.Add(sourceFile);
+					base.Log.LogWarningFromException(ex);
 				}
 			}
 			return list;
@@ -213,9 +233,9 @@ namespace vs_android.Build.CPPTasks.Android
 					// Create dummy .h file for precompiled headers. Units with the "use" setting can forcefully include it, which
 					// in turn makes GCC load up the .gch
 					string pchSetting = sourceFile.GetMetadata("PrecompiledHeader").ToLowerInvariant();
-					string pchOutputH = Path.GetFullPath(sourceFile.GetMetadata("PrecompiledHeaderOutputFile"));
 					if (pchSetting == "create")
 					{
+						string pchOutputH = Path.GetFullPath(sourceFile.GetMetadata("PrecompiledHeaderOutputFile"));
 						using (StreamWriter writer = new StreamWriter(pchOutputH, false, Encoding.ASCII))
 						{
 							writer.WriteLine("#error \"Problem with precompiled headers. It's likely that the .gch file is not present, or you're using a combination of C and CPP files.\"");
@@ -231,8 +251,10 @@ namespace vs_android.Build.CPPTasks.Android
 						hitError = true;
 					}
 				}
-				catch (Exception)
+				catch (Exception ex)
 				{
+					Log.LogWarningFromException(ex);
+
 					// Exception caught, bail out here
 					hitError = true;
 					retCode = base.ExitCode;
@@ -240,20 +262,20 @@ namespace vs_android.Build.CPPTasks.Android
 
 				if ( hitError )
 				{
-					return retCode;
+				    break;
 				}
 			}
 			return retCode;
 		}
 
 #if !VS2010DLL && !VS2015DLL && !VS2017DLL
-        protected override string GenerateResponseFileCommands(VCToolTask.CommandLineFormat format)
+		protected override string GenerateResponseFileCommands(VCToolTask.CommandLineFormat format)
 		{
 			return GenerateResponseFileCommands();
 		}
 #endif
 
-        protected override string GenerateResponseFileCommands()
+		protected override string GenerateResponseFileCommands()
 		{
 			StringBuilder templateStr = new StringBuilder( Utils.EST_MAX_CMDLINE_LEN );
 			if ( m_currentSourceItem != null )
@@ -268,9 +290,9 @@ namespace vs_android.Build.CPPTasks.Android
 				}
 
 				string pchSetting = m_currentSourceItem.GetMetadata("PrecompiledHeader").ToLowerInvariant();
-				string pchOutputH = Path.GetFullPath(m_currentSourceItem.GetMetadata("PrecompiledHeaderOutputFile"));
 				if ( pchSetting == "use" )
 				{
+					string pchOutputH = Path.GetFullPath(m_currentSourceItem.GetMetadata("PrecompiledHeaderOutputFile"));
 					templateStr.Append( " -include " );
 					templateStr.Append( Utils.PathSanitize( pchOutputH ) );
 					templateStr.Append( " " );
@@ -338,8 +360,7 @@ namespace vs_android.Build.CPPTasks.Android
 					string sourcePath = Path.GetFullPath( sourceItem.ItemSpec ).ToUpperInvariant();
 					string objectFile = Path.GetFullPath( sourceItem.GetMetadata( "ObjectFileName" ) );
 					string dotDFile = Path.GetFullPath( Path.GetDirectoryName( objectFile ) + "\\" + Path.GetFileNameWithoutExtension( objectFile ) + ".d" );
-					string pchOutputH = Path.GetFullPath( sourceItem.GetMetadata( "PrecompiledHeaderOutputFile" ) );
-					string pchOutputGCH = pchOutputH + ".gch";
+
 					string pchSetting = sourceItem.GetMetadata( "PrecompiledHeader" ).ToLowerInvariant();
 
 					try
@@ -374,6 +395,8 @@ namespace vs_android.Build.CPPTasks.Android
 
 						if ( pchSetting == "use" )
 						{
+							string pchOutputH = Path.GetFullPath(sourceItem.GetMetadata("PrecompiledHeaderOutputFile"));
+							string pchOutputGCH = pchOutputH + ".gch";
 							dependencies.Add( pchOutputH.ToUpperInvariant() );
 							dependencies.Add( pchOutputGCH.ToUpperInvariant() );
 						}
@@ -383,9 +406,9 @@ namespace vs_android.Build.CPPTasks.Android
 						{
 							File.Delete(dotDFile);
 						}
-						finally
+						catch (Exception ex)
 						{
-
+							Log.LogWarningFromException(ex);
 						}
 
 						// Finally write out the file and its dependencies, must ensure success before doing this
@@ -394,9 +417,10 @@ namespace vs_android.Build.CPPTasks.Android
 							writer.WriteLine( dep );
 						}
 					}
-					catch ( Exception )
+					catch ( Exception ex )
 					{
 						Log.LogError( "Failed processing dependencies in: " + dotDFile );
+						Log.LogError(ex.ToString());
 					}
 				}
 			}
