@@ -58,19 +58,19 @@
     <Compile Include="..\..\vs-android.Build.CPPTasks.Android\GCCLib.cs" />
     <Compile Include="..\..\vs-android.Build.CPPTasks.Android\GCCLink.cs" />
     <Compile Include="..\..\vs-android.Build.CPPTasks.Android\Properties\AssemblyInfo.cs" />
-    <Compile Include="..\..\vs-android.Build.CPPTasks.Android\Properties\Resources.Designer.cs">
+    <Compile Include="..\..\vs-android.Build.CPPTasks.Android\PropXmlParse.cs" />
+    <Compile Include="..\..\vs-android.Build.CPPTasks.Android\Utils.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="..\..\vs-android.Build.CPPTasks.Android\PropXmlParse.cs" />
-    <Compile Include="..\..\vs-android.Build.CPPTasks.Android\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\..\vs-android.Build.CPPTasks.Android\Properties\Resources.resx">
+    <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>

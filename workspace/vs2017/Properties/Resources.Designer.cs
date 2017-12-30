@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace vs_android.Build.CPPTasks.Android {
+namespace vs_android.Build.CPPTasks.Android.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace vs_android.Build.CPPTasks.Android {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("vs_android.Build.CPPTasks.Android.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("vs_android.Build.CPPTasks.Android.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

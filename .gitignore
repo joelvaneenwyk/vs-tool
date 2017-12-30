@@ -6,6 +6,9 @@
 *.opendb
 *.vcxproj.user
 *.tlog
+*.pdb
+*.vshost.exe
+*.exe.manifest
 pythonemcc\bin\**
 obj
 Debug
