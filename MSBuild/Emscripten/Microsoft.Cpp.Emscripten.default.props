@@ -15,4 +15,9 @@
     <TargetName         Condition="'$(TargetName)'      == ''">$(ProjectName)</TargetName>
     <WindowsAppContainer>false</WindowsAppContainer>
   </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(EmscriptenIncludeDir);$(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
 </Project>

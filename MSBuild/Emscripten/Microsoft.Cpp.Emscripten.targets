@@ -1,10 +1,10 @@
 ﻿<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(VCTargetsPath)\Platforms\Emscripten\ImportBefore\*.targets" Condition="Exists('$(VCTargetsPath)\Platforms\Emscripten\ImportBefore')" />
+  <Import Project="$(MSBuildThisFileDirectory)\ImportBefore\*.targets" Condition="Exists('$(MSBuildThisFileDirectory)\ImportBefore')" />
   <Import Project="$(VCTargetsPath)\Microsoft.CppCommon.targets" />
 
-  <UsingTask TaskName="GCCCompile" AssemblyFile="$(VCTargetsPath)\Platforms\Emscripten\vs-android.Build.CPPTasks.Android.dll" />
-  <UsingTask TaskName="GCCLink" AssemblyFile="$(VCTargetsPath)\Platforms\Emscripten\vs-android.Build.CPPTasks.Android.dll" />
-  <UsingTask TaskName="GCCLib" AssemblyFile="$(VCTargetsPath)\Platforms\Emscripten\vs-android.Build.CPPTasks.Android.dll" />
+  <UsingTask TaskName="GCCCompile" AssemblyFile="$(MSBuildThisFileDirectory)..\..\Bin\$(VisualStudioVersion)\vs-android.Build.CPPTasks.Android.dll" />
+  <UsingTask TaskName="GCCLink" AssemblyFile="$(MSBuildThisFileDirectory)..\..\Bin\$(VisualStudioVersion)\vs-android.Build.CPPTasks.Android.dll" />
+  <UsingTask TaskName="GCCLib" AssemblyFile="$(MSBuildThisFileDirectory)..\..\Bin\$(VisualStudioVersion)\vs-android.Build.CPPTasks.Android.dll" />
 
   <UsingTask TaskName="VCMessage" AssemblyName="Microsoft.Build.CppTasks.Common, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
 
@@ -28,7 +28,7 @@
       </ClCompile>
     </ItemGroup>
 
-    <!-- Enable MinimalRebuildFromTracking for VS2012. VS2010 didn't require this for some reason. -->
+    <!-- Enable MinimalRebuildFromTracking for versions after VS2010 since VS2010 didn't require this for some reason. -->
     <ItemGroup Condition="$(VisualStudioVersion) != '10.0'">
       <ClCompile>
         <MinimalRebuildFromTracking   Condition="'%(ClCompile.MinimalRebuildFromTracking)' == '' and '$(BuildType)' == 'Build' and '$(ForceRebuild)' != 'true'">true</MinimalRebuildFromTracking>
@@ -47,12 +47,12 @@
         ToolPath                           ="$(CLToolPath)"
         TrackFileAccess                    ="$(TrackFileAccess)"
         MinimalRebuildFromTracking         ="%(ClCompile.MinimalRebuildFromTracking)"
-        
+
         AcceptableNonZeroExitCodes         ="%(ClCompile.AcceptableNonZeroExitCodes)"
 
         EchoCommandLines                   ="%(ClCompile.EchoCommandLines)"
         GCCToolPath                        ="$(GccCompiler)"
-        PropertyXmlFile                    ="$(VCTargetsPath)\Platforms\Emscripten\Props\clang_compile.xml"
+        PropertyXmlFile                    ="$(MSBuildThisFileDirectory)\Props\clang_compile.xml"
     >
     </GCCCompile>
     <!-- -->
@@ -93,7 +93,7 @@
         EchoCommandLines               ="%(Lib.EchoCommandLines)"
         UseClangSyntax                 ="true"
         GCCToolPath                    ="$(GccLibrarian)"
-        PropertyXmlFile                ="$(VCTargetsPath)\Platforms\Emscripten\Props\mingw_lib.xml"
+        PropertyXmlFile                ="$(MSBuildThisFileDirectory)\Props\mingw_lib.xml"
       >
       <Output TaskParameter="SkippedExecution" PropertyName="LibSkippedExecution" />
     </GCCLib>
@@ -126,7 +126,7 @@
         Sources                        ="@(Link)"
 
         OutputFile                     ="%(Link.OutputFile)"
-        
+
         TrackerLogDirectory            ="%(Link.TrackerLogDirectory)"
 
         TLogReadFiles                  ="@(LinkTLogReadFiles)"
@@ -140,7 +140,7 @@
 
         EchoCommandLines               ="%(Link.EchoCommandLines)"
         GCCToolPath                    ="$(GccLinker)"
-        PropertyXmlFile                ="$(VCTargetsPath)\Platforms\Emscripten\Props\emcc_link.xml"
+        PropertyXmlFile                ="$(MSBuildThisFileDirectory)\Props\emcc_link.xml"
     >
       <Output TaskParameter="SkippedExecution" PropertyName="LinkSkippedExecution" />
     </GCCLink>
@@ -150,7 +150,7 @@
   </Target>
 
   <!-- Override the Microsoft.CppBuild.targets stuff -->
-  <Import Project="$(VCTargetsPath)\Platforms\Emscripten\Emscripten.CppBuild.targets" />
+  <Import Project="$(MSBuildThisFileDirectory)\Emscripten.CppBuild.targets" />
 
 
 
@@ -168,6 +168,6 @@
            Text="Unknown version of Visual Studio: $(VisualStudioVersion)" ></Error>
   </Target>
 
-  <Import Project="$(VCTargetsPath)\Platforms\Emscripten\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Emscripten.$(PlatformToolset).targets" Condition="(exists('$(VCTargetsPath)\Platforms\Emscripten\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Emscripten.$(PlatformToolset).targets'))" />
-  <Import Project="$(VCTargetsPath)\Platforms\Emscripten\ImportAfter\*.targets" Condition="Exists('$(VCTargetsPath)\Platforms\Emscripten\ImportAfter')" />
+  <Import Project="$(MSBuildThisFileDirectory)\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Emscripten.$(PlatformToolset).targets" Condition="(exists('$(MSBuildThisFileDirectory)\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Emscripten.$(PlatformToolset).targets'))" />
+  <Import Project="$(MSBuildThisFileDirectory)\ImportAfter\*.targets" Condition="Exists('$(MSBuildThisFileDirectory)\ImportAfter')" />
 </Project>

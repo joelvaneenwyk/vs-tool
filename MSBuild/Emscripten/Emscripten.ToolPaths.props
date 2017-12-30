@@ -1,11 +1,11 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <!-- Present in ALL Emscripten builds, and use the '-Xclang -isystem' prefix. -->
-    <EmscriptenIncludeDir>$(EMSCRIPTEN)\system\local\include;$(EMSCRIPTEN)\system\include\compat;$(EMSCRIPTEN)\system\include\libcxx;$(EMSCRIPTEN)\system\include;$(EMSCRIPTEN)\system\include\emscripten;$(EMSCRIPTEN)\system\include\bsd;$(EMSCRIPTEN)\system\include\libc;$(EMSCRIPTEN)\system\include\gfx;$(EMSCRIPTEN)\system\include\net;$(EMSCRIPTEN)\system\include\SDL</EmscriptenIncludeDir>
     <ClangPath Condition="'$(ClangPath)' == ''">$(CLANG_BIN)</ClangPath>
     <MinGWPath Condition="'$(MinGWPath)' == ''">$(MINGW_BIN)</MinGWPath>
     <EmccPath Condition="'$(EmccPath)' == ''">$(EMSCRIPTEN)</EmccPath>
     <NaclPath Condition="'$(NaclPath)' == ''">$(NACL_BIN)</NaclPath>
+    <EmscriptenIncludeDir>$(EmccPath)\system\local\include;$(EmccPath)\system\include\compat;$(EmccPath)\system\include\libcxx;$(EmccPath)\system\include;$(EmccPath)\system\include\emscripten;$(EmccPath)\system\include\bsd;$(EmccPath)\system\include\libc;$(EmccPath)\system\include\gfx;$(EmccPath)\system\include\net;$(EmccPath)\system\include\SDL</EmscriptenIncludeDir>
     <ExecutablePath Condition="'$(ExecutablePath)' == '' and '$(PlatformToolset)' == 'emcc' ">$(ClangPath);$(EmccPath);$(PATH)</ExecutablePath>
     <ExecutablePath Condition="'$(ExecutablePath)' == '' and '$(PlatformToolset)' == 'clang' ">$(ClangPath);$(PATH)</ExecutablePath>
     <ExecutablePath Condition="'$(ExecutablePath)' == '' and '$(PlatformToolset)' == 'mingw'">$(MinGWPath);$(PATH)</ExecutablePath>

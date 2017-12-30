@@ -8,7 +8,7 @@
   <Import Project="$(MSBuildThisFileDirectory)\Emscripten.ToolPaths.props" />
   <PropertyGroup>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
-    <GenerateManifest>false</GenerateManifest>  
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
 
   <!-- Default file suffix extensions for different configuration types. The property sheets are based on Windows defaults, so recognize MS default suffixes. -->

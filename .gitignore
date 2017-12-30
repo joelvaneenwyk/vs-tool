@@ -5,6 +5,7 @@
 *.VC.db
 *.opendb
 *.vcxproj.user
+*.tlog
 pythonemcc\bin\**
 obj
 Debug

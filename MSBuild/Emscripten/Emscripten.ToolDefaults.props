@@ -46,7 +46,7 @@
   <ItemDefinitionGroup Condition="$(VisualStudioVersion) != '10.0'">
     <ClCompile>
       <ProgramDataBaseFileName  Condition="'%(ClCompile.ProgramDataBaseFileName)'   == ''">$(IntDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <TrackerLogDirectory      Condition="'%(ClCompile.TrackerLogDirectory)'       == ''">$(TLogLocation)</TrackerLogDirectory>
+      <TrackerLogDirectory      Condition="'%(ClCompile.TrackerLogDirectory)'       == ''">$(IntDir)</TrackerLogDirectory>
     </ClCompile>
   </ItemDefinitionGroup>
 
