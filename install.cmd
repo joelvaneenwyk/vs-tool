@@ -67,7 +67,8 @@ if %i%==0 set CppVersion=Clang
 if %i%==1 set CppVersion=Emscripten
 if %i%==2 set CppVersion=MinGW
 if %i%==3 set CppVersion=NaCl
-if %i%==4 (
+if %i%==4 set CppVersion=Android
+if %i%==5 (
 	set /a n=%n%+1
 	if not "%1" == "" goto complete
 	goto loopVisualStudioVersion

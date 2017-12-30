@@ -29,13 +29,19 @@ if "%1" == "vs2017" (
 	set DEVENV="C:\Program Files (x86)\Microsoft Visual Studio %VS%\Common7\IDE\devenv.com"
 )
 
+if "%1" == "vs2010" (
+	set CONFIG="Release"
+) else (
+	set CONFIG="Release"
+)
+
 if exist %DEVENV% (
 	echo Compiling %1 [%VS%]
 
 	set SLN=%~dp0/workspace/%1/vs-android.Build.CPPTasks.Android.sln
 	set PRJ=%~dp0/workspace/%1/vs-android.Build.CPPTasks.Android.csproj
 
-	%DEVENV% %SLN% %VERBOSE% /Rebuild Release /Project %PRJ%
+	%DEVENV% %SLN% %VERBOSE% /Build %CONFIG% /Project %PRJ%
 ) else (
 	echo Can't find compiler for %1
 )
