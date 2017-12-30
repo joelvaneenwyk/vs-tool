@@ -10,11 +10,11 @@
   <Import Project="$(VCTargetsPath)\Platforms\Android\ImportBefore\*.targets" Condition="Exists('$(VCTargetsPath)\Platforms\Android\ImportBefore')" />
   <Import Project="$(VCTargetsPath)\Microsoft.CppCommon.targets" />
 
-  <UsingTask TaskName="GCCCompile" AssemblyFile="$(VCTargetsPath)\Platforms\Android\vs-tool.Build.CPPTasks.dll" />
-  <UsingTask TaskName="GCCLink" AssemblyFile="$(VCTargetsPath)\Platforms\Android\vs-tool.Build.CPPTasks.dll" />
-  <UsingTask TaskName="GCCLib" AssemblyFile="$(VCTargetsPath)\Platforms\Android\vs-tool.Build.CPPTasks.dll" />
-  <UsingTask TaskName="AntBuild" AssemblyFile="$(VCTargetsPath)\Platforms\Android\vs-tool.Build.CPPTasks.dll" />
-  <UsingTask TaskName="AdbDeploy" AssemblyFile="$(VCTargetsPath)\Platforms\Android\vs-tool.Build.CPPTasks.dll" />
+  <UsingTask TaskName="GCCCompile" AssemblyFile="$(MSBuildThisFileDirectory)..\..\Bin\$(VisualStudioVersion)\vs-tool.Build.CPPTasks.dll" />
+  <UsingTask TaskName="GCCLink" AssemblyFile="$(MSBuildThisFileDirectory)..\..\Bin\$(VisualStudioVersion)\vs-tool.Build.CPPTasks.dll" />
+  <UsingTask TaskName="GCCLib" AssemblyFile="$(MSBuildThisFileDirectory)..\..\Bin\$(VisualStudioVersion)\vs-tool.Build.CPPTasks.dll" />
+  <UsingTask TaskName="AntBuild" AssemblyFile="$(MSBuildThisFileDirectory)..\..\Bin\$(VisualStudioVersion)\vs-tool.Build.CPPTasks.dll" />
+  <UsingTask TaskName="AdbDeploy" AssemblyFile="$(MSBuildThisFileDirectory)..\..\Bin\$(VisualStudioVersion)\vs-tool.Build.CPPTasks.dll" />
 
 
   <PropertyGroup>
