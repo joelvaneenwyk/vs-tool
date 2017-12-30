@@ -15,7 +15,7 @@ using Microsoft.Build.Framework;
 using Microsoft.Build.CPPTasks;
 using Microsoft.Build.Utilities;
 
-namespace vs_android.Build.CPPTasks.Android
+namespace vs.tool.Build.CPPTasks
 {
 	public class AntBuildParser
 	{

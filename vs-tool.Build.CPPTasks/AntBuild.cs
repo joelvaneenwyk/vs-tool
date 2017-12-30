@@ -20,7 +20,7 @@ using Microsoft.Build.Framework;
 using Microsoft.Build.CPPTasks;
 using Microsoft.Build.Utilities;
 
-namespace vs_android.Build.CPPTasks.Android
+namespace vs.tool.Build.CPPTasks
 {
 	public class AntBuild : TrackedVCToolTask
 	{
@@ -78,7 +78,7 @@ namespace vs_android.Build.CPPTasks.Android
 		public string PackageName { get; set; }
 
 		public AntBuild()
-			: base(new ResourceManager("vs_android.Build.CppTasks.Android.Properties.Resources", Assembly.GetExecutingAssembly()))
+			: base(new ResourceManager("vs.tool.Build.CPPTasks.Properties.Resources", Assembly.GetExecutingAssembly()))
 		{
 
 		}
@@ -175,7 +175,7 @@ namespace vs_android.Build.CPPTasks.Android
 			// Need double backslashes for this path
 			string sdkPath = Path.GetFullPath(AntAndroidSdkPath).Replace( "\\", "\\\\" );
 
-			string fileContents = vs_android.Build.CPPTasks.Android.Properties.Resources.localproperties_ant_file;
+			string fileContents = vs.tool.Build.CPPTasks.Properties.Resources.localproperties_ant_file;
 			fileContents = fileContents.Replace("{SDKDIR}", sdkPath);
 			
 			using (StreamWriter outfile = new StreamWriter(localPropsFile))

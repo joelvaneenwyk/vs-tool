@@ -12,7 +12,7 @@ using System.Diagnostics;
 using System.Management;
 using System.Text.RegularExpressions;
 
-namespace vs_android.Build.CPPTasks.Android
+namespace vs.tool.Build.CPPTasks
 {
 	internal class Utils
 	{

@@ -8,8 +8,8 @@
     <ProjectGuid>{1C222A87-6E30-42F3-8875-D030CEA12178}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>vs_android.Build.CPPTasks.Android</RootNamespace>
-    <AssemblyName>vs-android.Build.CPPTasks.Android</AssemblyName>
+    <RootNamespace>vs.tool.Build.CPPTasks</RootNamespace>
+    <AssemblyName>vs-tool.Build.CPPTasks</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

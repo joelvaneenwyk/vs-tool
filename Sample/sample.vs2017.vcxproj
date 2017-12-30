@@ -21,12 +21,11 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}</ProjectGuid>
     <RootNamespace>sample</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <VSToolRoot>$(ProjectDir)..\MSBuild</VSToolRoot>
+    <ClangPath>E:\ThirdParty\emsdk\clang\e1.37.26_64bit</ClangPath>
+    <EmccPath>E:\ThirdParty\emsdk\emscripten\1.37.26</EmccPath>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <Import Project="$(ProjectDir)..\MSBuild\Emscripten\Microsoft.Cpp.Emscripten.targets" />
-  <Import Project="$(ProjectDir)..\MSBuild\Emscripten\Microsoft.Cpp.Emscripten.Default.props" />
-  <Import Project="$(ProjectDir)..\MSBuild\Emscripten\Microsoft.Cpp.Emscripten.props" />
+  <Import Project="$(VSToolRoot)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -68,10 +67,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Emscripten'">
-    <ClangPath>C:\Havok\Tools\emscripten\clang\e1.35.0_64bit</ClangPath>
+    <ClangPath>$(ClangPath)</ClangPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Emscripten'">
-    <EmccPath>C:\Havok\Tools\emscripten\emscripten\1.35.0</EmccPath>
+    <EmccPath>$(EmccPath)</EmccPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Emscripten'">
+    <IntDir>$(OutDir)$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -120,7 +122,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Import Project="$(VSToolRoot)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>

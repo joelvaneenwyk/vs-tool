@@ -29,7 +29,7 @@ using Microsoft.Build.Utilities;
 using Microsoft.Build.Shared;
 
 
-namespace vs_android.Build.CPPTasks.Android
+namespace vs.tool.Build.CPPTasks
 {
 	public abstract class CustomTrackedVCToolTask : VCToolTask
 	{

@@ -20,7 +20,7 @@ using Microsoft.Build.Framework;
 using Microsoft.Build.CPPTasks;
 using Microsoft.Build.Utilities;
 
-namespace vs_android.Build.CPPTasks.Android
+namespace vs.tool.Build.CPPTasks
 {
 	public class AdbDeploy : TrackedVCToolTask
 	{
@@ -48,7 +48,7 @@ namespace vs_android.Build.CPPTasks.Android
 		private string m_toolFileName;
 
 		public AdbDeploy()
-			: base(new ResourceManager("vs_android.Build.CppTasks.Android.Properties.Resources", Assembly.GetExecutingAssembly()))
+			: base(new ResourceManager("vs.tool.Build.CPPTasks.Properties.Resources", Assembly.GetExecutingAssembly()))
 		{
 
 		}

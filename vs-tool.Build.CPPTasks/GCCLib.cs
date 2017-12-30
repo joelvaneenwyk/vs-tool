@@ -19,7 +19,7 @@ using Microsoft.Build.Framework;
 using Microsoft.Build.CPPTasks;
 using Microsoft.Build.Utilities;
 
-namespace vs_android.Build.CPPTasks.Android
+namespace vs.tool.Build.CPPTasks
 {
 	public class GCCLib : TrackedVCToolTask
 	{
@@ -44,7 +44,7 @@ namespace vs_android.Build.CPPTasks.Android
 		
 
 		public GCCLib()
-			: base(new ResourceManager("vs_android.Build.CppTasks.Android.Properties.Resources", Assembly.GetExecutingAssembly()))
+			: base(new ResourceManager("vs.tool.Build.CPPTasks.Properties.Resources", Assembly.GetExecutingAssembly()))
 		{
 
 		}

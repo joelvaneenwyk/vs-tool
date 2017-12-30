@@ -34,10 +34,10 @@ set SLN=%~dp0\workspace\vs-tool.%1.sln
 
 if "%1" == "vs2010" (
 	set PRJ=vs-tool.Build.CPPTasks.%1
-	set OPTIONS=!SLN! %VERBOSE% /Build Release /Project !PRJ!
+	set OPTIONS=!SLN! %VERBOSE% /Rebuild Release /Project !PRJ!
 ) else (
 	set PRJ=%~dp0\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.%1.csproj
-	set OPTIONS=!SLN! %VERBOSE% /Build Release /Project !PRJ!
+	set OPTIONS=!SLN! %VERBOSE% /Rebuild Release /Project !PRJ!
 )
 
 echo.

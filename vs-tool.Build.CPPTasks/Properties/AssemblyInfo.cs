@@ -9,11 +9,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle( "vs-android.Build.CppTasks.Android" )]
+[assembly: AssemblyTitle( "vs-tool.Build.CPPTasks" )]
 [assembly: AssemblyDescription( "" )]
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany("Gavin Pugh")]
-[assembly: AssemblyProduct("vs-android.Build.CppTasks.Android (vs2015)")]
+[assembly: AssemblyProduct("vs-tool.Build.CPPTasks (vs2015)")]
 [assembly: AssemblyCopyright( "Copyright © Gavin Pugh 2014" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]

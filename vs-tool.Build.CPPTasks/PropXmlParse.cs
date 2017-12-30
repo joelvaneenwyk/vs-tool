@@ -19,7 +19,7 @@ using System.Diagnostics;
 
 using Microsoft.Build.Framework;
 
-namespace vs_android.Build.CPPTasks.Android
+namespace vs.tool.Build.CPPTasks
 {
 	class PropXmlParse
 	{
