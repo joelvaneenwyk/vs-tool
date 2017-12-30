@@ -5,6 +5,7 @@
 *.VC.db
 *.opendb
 *.vcxproj.user
+*.DotSettings.user
 pythonemcc\bin\**
 obj
 Debug
