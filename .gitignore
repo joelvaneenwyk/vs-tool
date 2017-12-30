@@ -9,7 +9,7 @@
 *.pdb
 *.vshost.exe
 *.exe.manifest
-pythonemcc\bin\**
+pythonemcc/bin/Release/**
 obj
 Debug
 Release
