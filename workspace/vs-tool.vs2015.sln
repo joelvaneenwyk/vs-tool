@@ -3,44 +3,60 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vs-tool.Build.CPPTasks.vs2015", "..\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.vs2015.csproj", "{1C222A87-6E30-42F3-8875-D030CEA12178}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vs-tool.Build.CPPTasks.vs2015", "..\Source\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.vs2015.csproj", "{1C222A87-6E30-42F3-8875-D030CEA12178}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pythonemcc.vs2015", "..\pythonemcc\pythonemcc.vs2015.csproj", "{C46BDD5F-2B07-49B9-83BF-DD62D066EA3E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pythonemcc.vs2015", "..\Source\pythonemcc\pythonemcc.vs2015.csproj", "{C46BDD5F-2B07-49B9-83BF-DD62D066EA3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vs-android_launch.vs2015", "..\vs-android_launch\vs-android_launch.vs2015.csproj", "{FB6D5828-159E-492E-911A-ECA25FDBA110}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vs-android_launch.vs2015", "..\Source\vs-android_launch\vs-android_launch.vs2015.csproj", "{FB6D5828-159E-492E-911A-ECA25FDBA110}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sample.vs2015", "..\Sample\sample.vs2015.vcxproj", "{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simple.vs2015", "..\Samples\simple\simple.vs2015.vcxproj", "{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{BF32333D-9620-42ED-9218-2D6E6ADB6831}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{A9D77DF4-E2FC-4DB5-9461-F3BB4697D3D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|Emscripten = Debug|Emscripten
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
 		Release|Emscripten = Release|Emscripten
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1C222A87-6E30-42F3-8875-D030CEA12178}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C222A87-6E30-42F3-8875-D030CEA12178}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C222A87-6E30-42F3-8875-D030CEA12178}.Debug|Emscripten.ActiveCfg = Debug|Any CPU
 		{1C222A87-6E30-42F3-8875-D030CEA12178}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{1C222A87-6E30-42F3-8875-D030CEA12178}.Debug|x86.Build.0 = Debug|Any CPU
+		{1C222A87-6E30-42F3-8875-D030CEA12178}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C222A87-6E30-42F3-8875-D030CEA12178}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1C222A87-6E30-42F3-8875-D030CEA12178}.Release|Emscripten.ActiveCfg = Release|Any CPU
 		{1C222A87-6E30-42F3-8875-D030CEA12178}.Release|x86.ActiveCfg = Release|Any CPU
 		{1C222A87-6E30-42F3-8875-D030CEA12178}.Release|x86.Build.0 = Release|Any CPU
+		{C46BDD5F-2B07-49B9-83BF-DD62D066EA3E}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{C46BDD5F-2B07-49B9-83BF-DD62D066EA3E}.Debug|Emscripten.ActiveCfg = Debug|x86
 		{C46BDD5F-2B07-49B9-83BF-DD62D066EA3E}.Debug|x86.ActiveCfg = Debug|x86
 		{C46BDD5F-2B07-49B9-83BF-DD62D066EA3E}.Debug|x86.Build.0 = Debug|x86
+		{C46BDD5F-2B07-49B9-83BF-DD62D066EA3E}.Release|Any CPU.ActiveCfg = Release|x86
 		{C46BDD5F-2B07-49B9-83BF-DD62D066EA3E}.Release|Emscripten.ActiveCfg = Release|x86
 		{C46BDD5F-2B07-49B9-83BF-DD62D066EA3E}.Release|x86.ActiveCfg = Release|x86
 		{C46BDD5F-2B07-49B9-83BF-DD62D066EA3E}.Release|x86.Build.0 = Release|x86
+		{FB6D5828-159E-492E-911A-ECA25FDBA110}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{FB6D5828-159E-492E-911A-ECA25FDBA110}.Debug|Emscripten.ActiveCfg = Debug|x86
 		{FB6D5828-159E-492E-911A-ECA25FDBA110}.Debug|x86.ActiveCfg = Debug|x86
 		{FB6D5828-159E-492E-911A-ECA25FDBA110}.Debug|x86.Build.0 = Debug|x86
+		{FB6D5828-159E-492E-911A-ECA25FDBA110}.Release|Any CPU.ActiveCfg = Release|x86
 		{FB6D5828-159E-492E-911A-ECA25FDBA110}.Release|Emscripten.ActiveCfg = Release|x86
 		{FB6D5828-159E-492E-911A-ECA25FDBA110}.Release|x86.ActiveCfg = Release|x86
 		{FB6D5828-159E-492E-911A-ECA25FDBA110}.Release|x86.Build.0 = Release|x86
+		{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}.Debug|Emscripten.ActiveCfg = Debug|Emscripten
 		{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}.Debug|Emscripten.Build.0 = Debug|Emscripten
 		{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}.Debug|x86.ActiveCfg = Debug|Win32
 		{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}.Debug|x86.Build.0 = Debug|Win32
+		{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}.Release|Any CPU.ActiveCfg = Release|Win32
 		{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}.Release|Emscripten.ActiveCfg = Release|Emscripten
 		{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}.Release|Emscripten.Build.0 = Release|Emscripten
 		{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}.Release|x86.ActiveCfg = Release|Win32
@@ -48,5 +64,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1C222A87-6E30-42F3-8875-D030CEA12178} = {A9D77DF4-E2FC-4DB5-9461-F3BB4697D3D0}
+		{C46BDD5F-2B07-49B9-83BF-DD62D066EA3E} = {A9D77DF4-E2FC-4DB5-9461-F3BB4697D3D0}
+		{FB6D5828-159E-492E-911A-ECA25FDBA110} = {A9D77DF4-E2FC-4DB5-9461-F3BB4697D3D0}
+		{8B67BFA0-224F-45EA-9CA8-2AD48186FD48} = {BF32333D-9620-42ED-9218-2D6E6ADB6831}
 	EndGlobalSection
 EndGlobal

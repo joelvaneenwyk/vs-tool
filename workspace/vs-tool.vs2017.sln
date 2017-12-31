@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vs-tool.Build.CPPTasks.vs2017", "..\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.vs2017.csproj", "{1C222A87-6E30-42F3-8875-D030CEA12178}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vs-tool.Build.CPPTasks.vs2017", "..\Source\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.vs2017.csproj", "{1C222A87-6E30-42F3-8875-D030CEA12178}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sample.vs2017", "..\Sample\sample.vs2017.vcxproj", "{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simple.vs2017", "..\Samples\simple\simple.vs2017.vcxproj", "{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

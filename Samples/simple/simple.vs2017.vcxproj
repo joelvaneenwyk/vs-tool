@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Emscripten">
       <Configuration>Debug</Configuration>
@@ -21,31 +21,28 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}</ProjectGuid>
     <RootNamespace>sample</RootNamespace>
-    <VSToolRoot>$(ProjectDir)..\MSBuild</VSToolRoot>
+    <VSToolRoot>$(ProjectDir)..\..\MSBuild</VSToolRoot>
     <ClangPath>E:\ThirdParty\emsdk\clang\e1.37.26_64bit</ClangPath>
     <EmccPath>E:\ThirdParty\emsdk\emscripten\1.37.26</EmccPath>
-    <WindowsTargetPlatformVersion>
-    </WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VSToolRoot)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Emscripten'" Label="Configuration">
     <ConfigurationType>JSApplication</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Emscripten'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>

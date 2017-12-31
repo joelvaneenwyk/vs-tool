@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vs-tool.Build.CPPTasks.vs2010", "..\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.vs2010.csproj", "{1C222A87-6E30-42F3-8875-D030CEA12178}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vs-tool.Build.CPPTasks.vs2010", "..\Source\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.vs2010.csproj", "{1C222A87-6E30-42F3-8875-D030CEA12178}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sample.vs2010", "..\Sample\sample.vs2010.vcxproj", "{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simple.vs2010", "..\Samples\simple\simple.vs2010.vcxproj", "{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
