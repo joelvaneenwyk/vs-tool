@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hello-gl2", "hello-gl2.vcxproj", "{158CCAFB-7A8D-4532-91DF-99284FCDABEA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Android = Debug|Android
+		Release|Android = Release|Android
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{158CCAFB-7A8D-4532-91DF-99284FCDABEA}.Debug|Android.ActiveCfg = Debug|Android
+		{158CCAFB-7A8D-4532-91DF-99284FCDABEA}.Debug|Android.Build.0 = Debug|Android
+		{158CCAFB-7A8D-4532-91DF-99284FCDABEA}.Release|Android.ActiveCfg = Release|Android
+		{158CCAFB-7A8D-4532-91DF-99284FCDABEA}.Release|Android.Build.0 = Release|Android
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

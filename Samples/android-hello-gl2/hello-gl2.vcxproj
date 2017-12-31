@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Android">
+      <Configuration>Debug</Configuration>
+      <Platform>Android</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Android">
+      <Configuration>Release</Configuration>
+      <Platform>Android</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{158CCAFB-7A8D-4532-91DF-99284FCDABEA}</ProjectGuid>
+    <RootNamespace>hellogl2</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Android'">
+    <AntBuild>
+      <AntBuildPath>$(ProjectDir)\AndroidApk</AntBuildPath>
+    </AntBuild>
+    <Link>
+      <AdditionalOptions>-lGLESv2 %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Android'">
+    <AntBuild>
+      <AntBuildPath>$(ProjectDir)\AndroidApk</AntBuildPath>
+    </AntBuild>
+    <Link>
+      <AdditionalOptions>-lGLESv2 %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="CppSource\gl_code.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AndroidApk\AndroidManifest.xml" />
+    <None Include="AndroidApk\build.xml" />
+    <None Include="AndroidApk\project.properties" />
+    <None Include="AndroidApk\res\values\strings.xml" />
+    <None Include="AndroidApk\src\com\android\gl2jni\GL2JNIActivity.java" />
+    <None Include="AndroidApk\src\com\android\gl2jni\GL2JNILib.java" />
+    <None Include="AndroidApk\src\com\android\gl2jni\GL2JNIView.java" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
