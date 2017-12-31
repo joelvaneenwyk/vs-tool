@@ -20,346 +20,346 @@ using Microsoft.Build.Framework;
 
 namespace vs.tool.Build.CPPTasks
 {
-	class PropXmlParse
-	{
-		private Dictionary<string, Property> m_properties = new Dictionary<string, Property>();
-		private string m_switchPrefix;
+    class PropXmlParse
+    {
+        private Dictionary<string, Property> m_properties = new Dictionary<string, Property>();
+        private string m_switchPrefix;
 
-		public PropXmlParse( string path )
-		{
-			XmlTextReader reader = new XmlTextReader( path );
+        public PropXmlParse(string path)
+        {
+            XmlTextReader reader = new XmlTextReader(path);
 
-		    this.m_switchPrefix = null;
+            this.m_switchPrefix = null;
 
-			while ( reader.Read() )
-			{
-				switch ( reader.NodeType )
-				{
-					case XmlNodeType.Element: // The node is an element.
-						{
-							switch ( reader.Name )
-							{
-								case "Rule":
-								    this.m_switchPrefix = reader.GetAttribute( "SwitchPrefix" );
-									break;
+            while (reader.Read())
+            {
+                switch (reader.NodeType)
+                {
+                    case XmlNodeType.Element: // The node is an element.
+                        {
+                            switch (reader.Name)
+                            {
+                                case "Rule":
+                                    this.m_switchPrefix = reader.GetAttribute("SwitchPrefix");
+                                    break;
 
-								case "StringListProperty":
-								    this.NewProperty( reader, new StringListProperty() );
-									break;
-								case "StringProperty":
-								case "IntProperty":
-								    this.NewProperty( reader, new StringProperty() );
-									break;
-								case "BoolProperty":
-								    this.NewProperty( reader, new BoolProperty() );
-									break;
-								case "EnumProperty":
-								    this.NewProperty( reader, new EnumProperty() );
-									break;
-							}
-						}
-						break;
-				}
-			}
-		}
+                                case "StringListProperty":
+                                    this.NewProperty(reader, new StringListProperty());
+                                    break;
+                                case "StringProperty":
+                                case "IntProperty":
+                                    this.NewProperty(reader, new StringProperty());
+                                    break;
+                                case "BoolProperty":
+                                    this.NewProperty(reader, new BoolProperty());
+                                    break;
+                                case "EnumProperty":
+                                    this.NewProperty(reader, new EnumProperty());
+                                    break;
+                            }
+                        }
+                        break;
+                }
+            }
+        }
 
-		public string ProcessProperties(ITaskItem taskItem)
-		{
-			StringBuilder returnStr = new StringBuilder(Utils.EST_MAX_CMDLINE_LEN);
+        public string ProcessProperties(ITaskItem taskItem)
+        {
+            StringBuilder returnStr = new StringBuilder(Utils.EST_MAX_CMDLINE_LEN);
 
-			foreach ( string metaName in taskItem.MetadataNames )
-			{
-				string propValue = taskItem.GetMetadata(metaName);
-				string processed = this.ProcessProperty(metaName, propValue).Trim();
+            foreach (string metaName in taskItem.MetadataNames)
+            {
+                string propValue = taskItem.GetMetadata(metaName);
+                string processed = this.ProcessProperty(metaName, propValue).Trim();
 
-				if (( processed != null ) && ( processed.Length > 0 ))
-				{
-					returnStr.Append(processed);
-					returnStr.Append(" ");
-				}
-			}
+                if ((processed != null) && (processed.Length > 0))
+                {
+                    returnStr.Append(processed);
+                    returnStr.Append(" ");
+                }
+            }
 
-			return returnStr.ToString().Trim();
-		}
+            return returnStr.ToString().Trim();
+        }
 
-		private string ProcessProperty( string propName, string propVal )
-		{
-			Property prop;
-			if (this.m_properties.TryGetValue( propName, out prop ) )
-			{
-				if ( prop.Ignored )
-				{
-					return string.Empty;
-				}
+        private string ProcessProperty(string propName, string propVal)
+        {
+            Property prop;
+            if (this.m_properties.TryGetValue(propName, out prop))
+            {
+                if (prop.Ignored)
+                {
+                    return string.Empty;
+                }
 
-				return prop.Process( propVal );
-			}
-			return string.Empty;
-		}
+                return prop.Process(propVal);
+            }
+            return string.Empty;
+        }
 
-		private void NewProperty( XmlTextReader xml, Property prop )
-		{
-			string name = xml.GetAttribute( "Name" );
-			string switchPrefixOverride = xml.GetAttribute( "SwitchPrefix" );
-			string separator = xml.GetAttribute( "Separator" );
-			string includeInCmdLine = xml.GetAttribute( "IncludeInCommandLine" );
-			string subType = xml.GetAttribute( "Subtype" );
+        private void NewProperty(XmlTextReader xml, Property prop)
+        {
+            string name = xml.GetAttribute("Name");
+            string switchPrefixOverride = xml.GetAttribute("SwitchPrefix");
+            string separator = xml.GetAttribute("Separator");
+            string includeInCmdLine = xml.GetAttribute("IncludeInCommandLine");
+            string subType = xml.GetAttribute("Subtype");
 
-			// Just need at least a valid name
-			if ( name != null )
-			{
-				// Choose correct switch prefix
-				string prefix = this.m_switchPrefix;
-				if ( switchPrefixOverride != null )
-				{
-					prefix = switchPrefixOverride;
-				}
-				if ( prefix == null )
-				{
-					prefix = string.Empty;
-				}
+            // Just need at least a valid name
+            if (name != null)
+            {
+                // Choose correct switch prefix
+                string prefix = this.m_switchPrefix;
+                if (switchPrefixOverride != null)
+                {
+                    prefix = switchPrefixOverride;
+                }
+                if (prefix == null)
+                {
+                    prefix = string.Empty;
+                }
 
-				// Separator for string, int and stringlist properties
-				if ( separator == null )
-				{
-					separator = string.Empty;
-				}
+                // Separator for string, int and stringlist properties
+                if (separator == null)
+                {
+                    separator = string.Empty;
+                }
 
-				if ( includeInCmdLine != null )
-				{
-					if ( includeInCmdLine.ToLower() == "false" )
-					{
-						// Ignore the ones that aren't meant to be in the cmdline
-						return;
-					}
-				}
+                if (includeInCmdLine != null)
+                {
+                    if (includeInCmdLine.ToLower() == "false")
+                    {
+                        // Ignore the ones that aren't meant to be in the cmdline
+                        return;
+                    }
+                }
 
-				// Will quote fix for files or folder params
-				bool shouldQuoteFix = false;
-				if (subType != null)
-				{
-					if ((subType.ToLower() == "file") || (subType.ToLower() == "folder"))
-					{
-						shouldQuoteFix = true;
-					}
-				}
+                // Will quote fix for files or folder params
+                bool shouldQuoteFix = false;
+                if (subType != null)
+                {
+                    if ((subType.ToLower() == "file") || (subType.ToLower() == "folder"))
+                    {
+                        shouldQuoteFix = true;
+                    }
+                }
 
-				prop.Setup(xml, prefix, separator, shouldQuoteFix );
+                prop.Setup(xml, prefix, separator, shouldQuoteFix);
 
-			    this.m_properties.Add( name, prop );
-			}
-		}
+                this.m_properties.Add(name, prop);
+            }
+        }
 
-		public abstract class Property
-		{
-			public abstract string Process( string propVal );
+        public abstract class Property
+        {
+            public abstract string Process(string propVal);
 
-			public bool Ignored
-			{
-				get { return this.m_ignored; }
-			}
+            public bool Ignored
+            {
+                get { return this.m_ignored; }
+            }
 
-			public void Setup( XmlTextReader xml, string switchPrefix, string separator, bool quoteFix )
-			{
-			    this.m_switchPrefix = switchPrefix;
-			    this.m_separator = separator;
-			    this.m_quoteFix = quoteFix;
+            public void Setup(XmlTextReader xml, string switchPrefix, string separator, bool quoteFix)
+            {
+                this.m_switchPrefix = switchPrefix;
+                this.m_separator = separator;
+                this.m_quoteFix = quoteFix;
 
-				Debug.Assert(this.m_switchPrefix != null ); 
-				Debug.Assert(this.m_separator != null );
+                Debug.Assert(this.m_switchPrefix != null);
+                Debug.Assert(this.m_separator != null);
 
-				string switchValue = xml.GetAttribute( "Switch" );
-			    this.m_ignored = (switchValue == "ignore");
+                string switchValue = xml.GetAttribute("Switch");
+                this.m_ignored = (switchValue == "ignore");
 
-			    this.SetupProperty( xml );
-			}
+                this.SetupProperty(xml);
+            }
 
-			protected string FixString( string str )
-			{
-				if (this.m_quoteFix == false )
-				{
-					// Just fix the slashes, no quoting
-					return Utils.PathFixSlashes(str);
-				}
-				else
-				{
-					// Slash fixing AND possible quoting
-					return Utils.PathSanitize(str);
-				}
-			}
+            protected string FixString(string str)
+            {
+                if (this.m_quoteFix == false)
+                {
+                    // Just fix the slashes, no quoting
+                    return Utils.PathFixSlashes(str);
+                }
+                else
+                {
+                    // Slash fixing AND possible quoting
+                    return Utils.PathSanitize(str);
+                }
+            }
 
-			protected abstract void SetupProperty( XmlTextReader xml );
+            protected abstract void SetupProperty(XmlTextReader xml);
 
-			protected string m_switchPrefix;
-			protected string m_separator;
-			protected bool m_quoteFix;
-			protected bool m_ignored;
-		}
+            protected string m_switchPrefix;
+            protected string m_separator;
+            protected bool m_quoteFix;
+            protected bool m_ignored;
+        }
 
-		public class EnumProperty : Property
-		{
-			public override string Process( string propVal )
-			{
-				string found;
-				if (this.m_switches.TryGetValue( propVal, out found ) )
-				{
-					return found;
-				}
+        public class EnumProperty : Property
+        {
+            public override string Process(string propVal)
+            {
+                string found;
+                if (this.m_switches.TryGetValue(propVal, out found))
+                {
+                    return found;
+                }
 
-				return string.Empty;
-			}
+                return string.Empty;
+            }
 
-			protected override void SetupProperty( XmlTextReader xml )
-			{
-				// switchString is just the prefix for enum properties
-				int nestLevel = 1;
+            protected override void SetupProperty(XmlTextReader xml)
+            {
+                // switchString is just the prefix for enum properties
+                int nestLevel = 1;
 
-				while ( xml.Read() )
-				{
-					switch ( xml.NodeType )
-					{
-						case XmlNodeType.Element: // The node is an element.
-							{
-								if ( xml.IsEmptyElement == false )
-								{
-									nestLevel++;
-								}
+                while (xml.Read())
+                {
+                    switch (xml.NodeType)
+                    {
+                        case XmlNodeType.Element: // The node is an element.
+                            {
+                                if (xml.IsEmptyElement == false)
+                                {
+                                    nestLevel++;
+                                }
 
-								if ( xml.Name == "EnumValue" )
-								{
-									string switchVal = xml.GetAttribute( "Switch" );
-									string nameStr = xml.GetAttribute( "Name" );
+                                if (xml.Name == "EnumValue")
+                                {
+                                    string switchVal = xml.GetAttribute("Switch");
+                                    string nameStr = xml.GetAttribute("Name");
 
-									if ( nameStr != null )
-									{
-										if ((switchVal != null) && (switchVal != String.Empty))
-										{
-										    this.m_switches.Add( nameStr, this.m_switchPrefix + switchVal );
-										}
-										else
-										{
-										    this.m_switches.Add( nameStr, string.Empty );
-										}
-									}
-								}
-							}
-							break;
+                                    if (nameStr != null)
+                                    {
+                                        if ((switchVal != null) && (switchVal != String.Empty))
+                                        {
+                                            this.m_switches.Add(nameStr, this.m_switchPrefix + switchVal);
+                                        }
+                                        else
+                                        {
+                                            this.m_switches.Add(nameStr, string.Empty);
+                                        }
+                                    }
+                                }
+                            }
+                            break;
 
-						case XmlNodeType.EndElement: // The node is an element.
-							{
-								nestLevel--;
+                        case XmlNodeType.EndElement: // The node is an element.
+                            {
+                                nestLevel--;
 
-								if ( nestLevel == 0 )
-								{
-									return;
-								}
-							}
-							break;
-					}
-				}
-			}
-			
-			private Dictionary<string, string> m_switches = new Dictionary<string, string>();
-		}
+                                if (nestLevel == 0)
+                                {
+                                    return;
+                                }
+                            }
+                            break;
+                    }
+                }
+            }
 
-		public class BoolProperty : Property
-		{
-			public override string Process( string propVal )
-			{
-				if ( propVal.ToLower() == "true" )
-				{
-					if (this.m_trueSwitch != null )
-					{
-						return this.m_switchPrefix + this.m_trueSwitch;
-					}
-				}
-				else if ( propVal.ToLower() != "ignore" )
-				{
-					if (this.m_falseSwitch != null )
-					{
-						return this.m_switchPrefix + this.m_falseSwitch;
-					}
-				}
-				return string.Empty;
-			}
+            private Dictionary<string, string> m_switches = new Dictionary<string, string>();
+        }
 
-			protected override void SetupProperty( XmlTextReader xml )
-			{
-			    this.m_trueSwitch = xml.GetAttribute( "Switch" );
-			    this.m_falseSwitch = xml.GetAttribute( "ReverseSwitch" );
-			}
+        public class BoolProperty : Property
+        {
+            public override string Process(string propVal)
+            {
+                if (propVal.ToLower() == "true")
+                {
+                    if (this.m_trueSwitch != null)
+                    {
+                        return this.m_switchPrefix + this.m_trueSwitch;
+                    }
+                }
+                else if (propVal.ToLower() != "ignore")
+                {
+                    if (this.m_falseSwitch != null)
+                    {
+                        return this.m_switchPrefix + this.m_falseSwitch;
+                    }
+                }
+                return string.Empty;
+            }
 
-			private string m_falseSwitch;
-			private string m_trueSwitch;
-		}
+            protected override void SetupProperty(XmlTextReader xml)
+            {
+                this.m_trueSwitch = xml.GetAttribute("Switch");
+                this.m_falseSwitch = xml.GetAttribute("ReverseSwitch");
+            }
 
-		public class StringProperty : Property
-		{
-			public override string Process( string propVal )
-			{
-				if (this.m_switch == null)
-				{
-					return this.FixString(propVal);
-				}
+            private string m_falseSwitch;
+            private string m_trueSwitch;
+        }
 
-				if (propVal.Length > 0)
-				{
-					// Ignore switches entirely if we don't have one
-					if (this.m_switch != null)
-					{
-						return this.m_switchPrefix + this.m_switch + this.m_separator + this.FixString(propVal);
-					}
-					else
-					{
-						return this.FixString(propVal);
-					}
-				}
+        public class StringProperty : Property
+        {
+            public override string Process(string propVal)
+            {
+                if (this.m_switch == null)
+                {
+                    return this.FixString(propVal);
+                }
 
-				return string.Empty;
-			}
+                if (propVal.Length > 0)
+                {
+                    // Ignore switches entirely if we don't have one
+                    if (this.m_switch != null)
+                    {
+                        return this.m_switchPrefix + this.m_switch + this.m_separator + this.FixString(propVal);
+                    }
+                    else
+                    {
+                        return this.FixString(propVal);
+                    }
+                }
 
-			protected override void SetupProperty( XmlTextReader xml )
-			{
-			    this.m_switch = xml.GetAttribute( "Switch" );
-			}
+                return string.Empty;
+            }
 
-			private string m_switch;
-		}
+            protected override void SetupProperty(XmlTextReader xml)
+            {
+                this.m_switch = xml.GetAttribute("Switch");
+            }
 
-		public class StringListProperty : Property
-		{
-			public override string Process( string propVal )
-			{
-				StringBuilder sBuilder = new StringBuilder(1024);
-				string [] strings = propVal.Split( ';' );
+            private string m_switch;
+        }
 
-				foreach ( string str in strings )
-				{
-					if (str.Length > 0)
-					{
-						// Ignore switches entirely if we don't have one
-						if (this.m_switch != null)
-						{
-							sBuilder.Append(this.m_switchPrefix);
-							sBuilder.Append(this.m_switch);
-							sBuilder.Append(this.m_separator);
-						}
+        public class StringListProperty : Property
+        {
+            public override string Process(string propVal)
+            {
+                StringBuilder sBuilder = new StringBuilder(1024);
+                string[] strings = propVal.Split(';');
 
-						sBuilder.Append(this.FixString(str));
-						sBuilder.Append(" ");
-					}
-				}
+                foreach (string str in strings)
+                {
+                    if (str.Length > 0)
+                    {
+                        // Ignore switches entirely if we don't have one
+                        if (this.m_switch != null)
+                        {
+                            sBuilder.Append(this.m_switchPrefix);
+                            sBuilder.Append(this.m_switch);
+                            sBuilder.Append(this.m_separator);
+                        }
 
-				return sBuilder.ToString();
-			}
+                        sBuilder.Append(this.FixString(str));
+                        sBuilder.Append(" ");
+                    }
+                }
 
-			protected override void SetupProperty( XmlTextReader xml )
-			{
-			    this.m_switch = xml.GetAttribute( "Switch" );
-			}
+                return sBuilder.ToString();
+            }
 
-			private string m_switch;
-		}
-	}
+            protected override void SetupProperty(XmlTextReader xml)
+            {
+                this.m_switch = xml.GetAttribute("Switch");
+            }
+
+            private string m_switch;
+        }
+    }
 
 }

@@ -34,7 +34,7 @@ namespace pythonemcc
             }
             else // No .rsp file, pass the arguments directly
                 emccargs.AddRange(args);
-//            Console.WriteLine("Invoking emcc with cmdline: " + emccargs);
+            //            Console.WriteLine("Invoking emcc with cmdline: " + emccargs);
             ProcessStartInfo psi = new ProcessStartInfo();
             psi.CreateNoWindow = true;
             psi.UseShellExecute = false;
@@ -46,7 +46,7 @@ namespace pythonemcc
             foreach (var filePATH in parsedPATH)
             {
                 //We need to search for something containing python2, so it doesn't work on computers with python3 in the path
-                if (Regex.IsMatch(filePATH, @"python2+",RegexOptions.IgnoreCase))
+                if (Regex.IsMatch(filePATH, @"python2+", RegexOptions.IgnoreCase))
                 {
                     psi.FileName = filePATH;
                     //The file needs to point towards python.exe, since we use that directly
@@ -64,7 +64,7 @@ namespace pythonemcc
             {
                 if (!File.Exists("c:\\python27\\python.exe"))
                     Console.WriteLine("Error: c:\\python27\\python.exe does not exist! Recompile vs-tool with a proper path to python!");
-                psi.FileName = "c:\\python27\\python.exe"; 
+                psi.FileName = "c:\\python27\\python.exe";
             } // On Win7, it seems just having here "python" works, but not on Vista.
             // We assume that the 'emcc' python executable and this application reside in the
             // same directory.
@@ -74,13 +74,13 @@ namespace pythonemcc
 
             var toolname = Path.GetFileNameWithoutExtension(path);
             string a = directory + "\\" + toolname;
-            foreach(string s in emccargs)
+            foreach (string s in emccargs)
                 a += " " + s;
 
             psi.Arguments = a;
             psi.RedirectStandardError = true;
             psi.RedirectStandardOutput = true;
-            
+
             // We don't do anything with the StandardInput redirect, but it exists to workaround Python bugs. See:
             // http://bugs.python.org/issue3905
             // and https://github.com/kripken/emscripten/issues/718

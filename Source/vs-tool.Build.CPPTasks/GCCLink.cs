@@ -16,241 +16,241 @@ using Microsoft.Build.CPPTasks;
 
 namespace vs.tool.Build.CPPTasks
 {
-	public class GCCLink : TrackedVCToolTask
-	{
-		private string m_toolFileName;
-		private PropXmlParse m_propXmlParse;
+    public class GCCLink : TrackedVCToolTask
+    {
+        private string m_toolFileName;
+        private PropXmlParse m_propXmlParse;
 
-		public bool BuildingInIDE { get; set; }
+        public bool BuildingInIDE { get; set; }
 
-		[Required]
-		public string GCCToolPath { get; set; }
+        [Required]
+        public string GCCToolPath { get; set; }
 
-		[Required]
-		public string PropertyXmlFile { get; set; }
+        [Required]
+        public string PropertyXmlFile { get; set; }
 
-		[Required]
-		public string EchoCommandLines { get; set; }
+        [Required]
+        public string EchoCommandLines { get; set; }
 
-		[Required]
-		public virtual string OutputFile { get; set; }
+        [Required]
+        public virtual string OutputFile { get; set; }
 
-		[Required]
-		public virtual ITaskItem[] Sources { get; set; }
-		
+        [Required]
+        public virtual ITaskItem[] Sources { get; set; }
 
-		public GCCLink()
-			: base( new ResourceManager( "vs.tool.Build.CPPTasks.Properties.Resources", Assembly.GetExecutingAssembly() ) )
-		{
 
-		}
+        public GCCLink()
+            : base(new ResourceManager("vs.tool.Build.CPPTasks.Properties.Resources", Assembly.GetExecutingAssembly()))
+        {
 
-		protected override bool ValidateParameters()
-		{
-		    this.m_propXmlParse = new PropXmlParse(this.PropertyXmlFile);
+        }
 
-		    this.m_toolFileName = Path.GetFileNameWithoutExtension(this.GCCToolPath);
+        protected override bool ValidateParameters()
+        {
+            this.m_propXmlParse = new PropXmlParse(this.PropertyXmlFile);
 
-			return base.ValidateParameters();
-		}
+            this.m_toolFileName = Path.GetFileNameWithoutExtension(this.GCCToolPath);
+
+            return base.ValidateParameters();
+        }
 
 #if !VS2010DLL && !VS2015DLL && !VS2017DLL
-		protected override string GenerateResponseFileCommands(VCToolTask.CommandLineFormat format)
-		{
-			return GenerateResponseFileCommands();
-		}
+        protected override string GenerateResponseFileCommands(VCToolTask.CommandLineFormat format)
+        {
+            return GenerateResponseFileCommands();
+        }
 #endif
 
-		protected override string GenerateResponseFileCommands()
-		{
-			StringBuilder templateStr = new StringBuilder(Utils.EST_MAX_CMDLINE_LEN);
+        protected override string GenerateResponseFileCommands()
+        {
+            StringBuilder templateStr = new StringBuilder(Utils.EST_MAX_CMDLINE_LEN);
 
-			foreach ( ITaskItem sourceFile in this.Sources )
-			{
-				templateStr.Append( Utils.PathSanitize( sourceFile.GetMetadata("Identity")) );
-				templateStr.Append(" ");
-			}
+            foreach (ITaskItem sourceFile in this.Sources)
+            {
+                templateStr.Append(Utils.PathSanitize(sourceFile.GetMetadata("Identity")));
+                templateStr.Append(" ");
+            }
 
-			templateStr.Append(this.m_propXmlParse.ProcessProperties(this.Sources[0]));
-			 
-			return templateStr.ToString();
-		}
+            templateStr.Append(this.m_propXmlParse.ProcessProperties(this.Sources[0]));
 
-		private void CleanUnusedTLogFiles()
-		{
-			// These tlog files are seemingly unused dep-wise, but cause problems when I add them to the proper TLog list
-			// Incremental builds keep appending to them, so this keeps them from just growing and growing.
-			string ignoreReadLogPath = Path.GetFullPath(this.TrackerLogDirectory + "\\" + this.m_toolFileName + ".read.1.tlog");
-			string ignoreWriteLogPath = Path.GetFullPath(this.TrackerLogDirectory + "\\" + this.m_toolFileName + ".write.1.tlog");
+            return templateStr.ToString();
+        }
 
-			try
-			{
-				File.Delete(ignoreReadLogPath);
-				File.Delete(ignoreWriteLogPath);
-			}
-			catch (Exception ex)
-			{
-			    this.Log.LogWarningFromException(ex);
-			}
-		}
+        private void CleanUnusedTLogFiles()
+        {
+            // These tlog files are seemingly unused dep-wise, but cause problems when I add them to the proper TLog list
+            // Incremental builds keep appending to them, so this keeps them from just growing and growing.
+            string ignoreReadLogPath = Path.GetFullPath(this.TrackerLogDirectory + "\\" + this.m_toolFileName + ".read.1.tlog");
+            string ignoreWriteLogPath = Path.GetFullPath(this.TrackerLogDirectory + "\\" + this.m_toolFileName + ".write.1.tlog");
 
-		protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)
-		{
-			try
-			{
-			    this.CleanUnusedTLogFiles();
+            try
+            {
+                File.Delete(ignoreReadLogPath);
+                File.Delete(ignoreWriteLogPath);
+            }
+            catch (Exception ex)
+            {
+                this.Log.LogWarningFromException(ex);
+            }
+        }
 
-				if (this.EchoCommandLines == "true")
-				{
-				    this.Log.LogMessage(MessageImportance.High, pathToTool + " " + responseFileCommands);
-				}
-			}
-			catch (Exception ex)
-			{
-			    this.Log.LogWarningFromException(ex);
-			}
+        protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)
+        {
+            try
+            {
+                this.CleanUnusedTLogFiles();
 
-			int returnValue = 0;
+                if (this.EchoCommandLines == "true")
+                {
+                    this.Log.LogMessage(MessageImportance.High, pathToTool + " " + responseFileCommands);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Log.LogWarningFromException(ex);
+            }
 
-			try
-			{
-				returnValue = base.ExecuteTool(pathToTool, responseFileCommands, commandLineCommands);
-			}
-			catch (Exception ex)
-			{
-			    this.Log.LogWarningFromException(ex);
-			}
+            int returnValue = 0;
 
-			return returnValue;
-		}
+            try
+            {
+                returnValue = base.ExecuteTool(pathToTool, responseFileCommands, commandLineCommands);
+            }
+            catch (Exception ex)
+            {
+                this.Log.LogWarningFromException(ex);
+            }
 
-		// Called when linker outputs a line
-		protected override void LogEventsFromTextOutput(string singleLine, MessageImportance messageImportance)
-		{
-			base.LogEventsFromTextOutput(Utils.GCCOutputReplace(singleLine), messageImportance);   
-		}
+            return returnValue;
+        }
 
-		protected override void PostProcessSwitchList()
-		{
+        // Called when linker outputs a line
+        protected override void LogEventsFromTextOutput(string singleLine, MessageImportance messageImportance)
+        {
+            base.LogEventsFromTextOutput(Utils.GCCOutputReplace(singleLine), messageImportance);
+        }
 
-		}
+        protected override void PostProcessSwitchList()
+        {
 
-		public override bool AttributeFileTracking
-		{
-			get
-			{
-				return true;
-			}
-		}
+        }
 
-		protected override bool MaintainCompositeRootingMarkers
-		{
-			get
-			{
-				return true;
-			}
-		}
+        public override bool AttributeFileTracking
+        {
+            get
+            {
+                return true;
+            }
+        }
 
-		public virtual string PlatformToolset
-		{
-			get
-			{
-				return "GCC";
-			}
-			set
-			{
-			}
-		}
+        protected override bool MaintainCompositeRootingMarkers
+        {
+            get
+            {
+                return true;
+            }
+        }
 
-		protected override Encoding ResponseFileEncoding
-		{
-			get
-			{
-				return Encoding.ASCII;
-			}
-		}
+        public virtual string PlatformToolset
+        {
+            get
+            {
+                return "GCC";
+            }
+            set
+            {
+            }
+        }
 
-		protected override string ToolName
-		{
-			get
-			{
-				return this.GCCToolPath;
-			}
-		}
+        protected override Encoding ResponseFileEncoding
+        {
+            get
+            {
+                return Encoding.ASCII;
+            }
+        }
 
-		protected override ITaskItem[] TrackedInputFiles
-		{
-			get
-			{
-				return this.Sources;
-			}
-		}
+        protected override string ToolName
+        {
+            get
+            {
+                return this.GCCToolPath;
+            }
+        }
 
-		protected override string TrackerIntermediateDirectory
-		{
-			get
-			{
-				if ( this.TrackerLogDirectory != null )
-				{
-					return this.TrackerLogDirectory;
-				}
-				return string.Empty;
-			}
-		}
+        protected override ITaskItem[] TrackedInputFiles
+        {
+            get
+            {
+                return this.Sources;
+            }
+        }
 
-		public virtual string TrackerLogDirectory
-		{
-			get
-			{
-				if ( this.IsPropertySet( "TrackerLogDirectory" ) )
-				{
-					return this.ActiveToolSwitches["TrackerLogDirectory"].Value;
-				}
-				return null;
-			}
-			set
-			{
-				this.ActiveToolSwitches.Remove( "TrackerLogDirectory" );
-				ToolSwitch switch2 = new ToolSwitch( ToolSwitchType.Directory )
-				{
-					DisplayName = "Tracker Log Directory",
-					Description = "Tracker log directory.",
-					ArgumentRelationList = new ArrayList(),
-					Value = EnsureTrailingSlash( value )
-				};
-				this.ActiveToolSwitches.Add( "TrackerLogDirectory", switch2 );
-				this.AddActiveSwitchToolValue( switch2 );
-			}
-		}
+        protected override string TrackerIntermediateDirectory
+        {
+            get
+            {
+                if (this.TrackerLogDirectory != null)
+                {
+                    return this.TrackerLogDirectory;
+                }
+                return string.Empty;
+            }
+        }
 
-		protected override string CommandTLogName
-		{
-			get
-			{
-				return this.m_toolFileName + "-link.command.1.tlog";
-			}
-		}
+        public virtual string TrackerLogDirectory
+        {
+            get
+            {
+                if (this.IsPropertySet("TrackerLogDirectory"))
+                {
+                    return this.ActiveToolSwitches["TrackerLogDirectory"].Value;
+                }
+                return null;
+            }
+            set
+            {
+                this.ActiveToolSwitches.Remove("TrackerLogDirectory");
+                ToolSwitch switch2 = new ToolSwitch(ToolSwitchType.Directory)
+                {
+                    DisplayName = "Tracker Log Directory",
+                    Description = "Tracker log directory.",
+                    ArgumentRelationList = new ArrayList(),
+                    Value = EnsureTrailingSlash(value)
+                };
+                this.ActiveToolSwitches.Add("TrackerLogDirectory", switch2);
+                this.AddActiveSwitchToolValue(switch2);
+            }
+        }
 
-		protected override string[] ReadTLogNames
-		{
-			get
-			{
-				return new string[] {
-				                            this.m_toolFileName + "-collect2.read.*.tlog", this.m_toolFileName + "-collect2.*.read.*.tlog", this.m_toolFileName + "-collect2-ld.read.*.tlog", this.m_toolFileName + "-collect2-ld.*.read.*.tlog"
-				};
-			}
-		}
+        protected override string CommandTLogName
+        {
+            get
+            {
+                return this.m_toolFileName + "-link.command.1.tlog";
+            }
+        }
 
-		protected override string[] WriteTLogNames
-		{
-			get
-			{
-				return new string[] {
-				                            this.m_toolFileName + "-collect2.write.*.tlog", this.m_toolFileName + "-collect2.*.write.*.tlog", this.m_toolFileName + "-collect2-ld.write.*.tlog", this.m_toolFileName + "-collect2-ld.*.write.*.tlog"
-				};
-			}
-		}
-	}
+        protected override string[] ReadTLogNames
+        {
+            get
+            {
+                return new string[] {
+                                            this.m_toolFileName + "-collect2.read.*.tlog", this.m_toolFileName + "-collect2.*.read.*.tlog", this.m_toolFileName + "-collect2-ld.read.*.tlog", this.m_toolFileName + "-collect2-ld.*.read.*.tlog"
+                };
+            }
+        }
+
+        protected override string[] WriteTLogNames
+        {
+            get
+            {
+                return new string[] {
+                                            this.m_toolFileName + "-collect2.write.*.tlog", this.m_toolFileName + "-collect2.*.write.*.tlog", this.m_toolFileName + "-collect2-ld.write.*.tlog", this.m_toolFileName + "-collect2-ld.*.write.*.tlog"
+                };
+            }
+        }
+    }
 
 
 }
