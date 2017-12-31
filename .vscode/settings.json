@@ -1,0 +1,15 @@
+{
+    "files.exclude": {
+      "**/.git": true,
+      "**/.svn": true,
+      "**/.hg": true,
+      "**/CVS": true,
+      "**/.DS_Store": true,
+      "**/*.sdf": true,
+      "**/*.suo": true,
+      "**/.vs": true,
+      "Workspace/Debug/**": true,
+      "Workspace/Emscripten/**": true,
+      "Workspace/Win32/**": true
+    }
+}
