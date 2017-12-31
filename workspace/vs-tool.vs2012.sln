@@ -1,7 +1,9 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vs-tool.Build.CPPTasks", "..\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.vs2012.csproj", "{1C222A87-6E30-42F3-8875-D030CEA12178}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vs-tool.Build.CPPTasks.vs2012", "..\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.vs2012.csproj", "{1C222A87-6E30-42F3-8875-D030CEA12178}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sample.vs2012", "..\Sample\sample.vs2012.vcxproj", "{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,12 +19,10 @@ Global
 		{1C222A87-6E30-42F3-8875-D030CEA12178}.Release|Emscripten.ActiveCfg = Release|Any CPU
 		{1C222A87-6E30-42F3-8875-D030CEA12178}.Release|x86.ActiveCfg = Release|Any CPU
 		{1C222A87-6E30-42F3-8875-D030CEA12178}.Release|x86.Build.0 = Release|Any CPU
-		{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}.Debug|Emscripten.ActiveCfg = Debug|Emscripten
-		{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}.Debug|Emscripten.Build.0 = Debug|Emscripten
+		{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}.Debug|Emscripten.ActiveCfg = Debug|Win32
 		{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}.Debug|x86.ActiveCfg = Debug|Win32
 		{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}.Debug|x86.Build.0 = Debug|Win32
-		{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}.Release|Emscripten.ActiveCfg = Release|Emscripten
-		{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}.Release|Emscripten.Build.0 = Release|Emscripten
+		{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}.Release|Emscripten.ActiveCfg = Release|Win32
 		{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}.Release|x86.ActiveCfg = Release|Win32
 		{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
