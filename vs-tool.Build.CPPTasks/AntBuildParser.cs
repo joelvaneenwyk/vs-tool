@@ -1,18 +1,6 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Collections;
-using System.IO;
-using System.Reflection;
-using System.Resources;
-using System.Text.RegularExpressions;
-using System.Diagnostics;
+﻿using System.IO;
 using System.Xml;
 
-using Microsoft.Build.Framework;
-using Microsoft.Build.CPPTasks;
 using Microsoft.Build.Utilities;
 
 namespace vs.tool.Build.CPPTasks
@@ -52,20 +40,20 @@ namespace vs.tool.Build.CPPTasks
 			}
 
 			// Parse the xml to grab the finished apk path
-			if (ParseBuildXml(buildXml))
+			if (this.ParseBuildXml(buildXml))
 			{
 				if (antBuildType.ToLower() == "debug")
 				{
-					OutputFile = Path.GetFullPath(antBuildPath + "\\" + BUILD_BIN_PATH + "\\" + ApkName + "-debug.apk");
+				    this.OutputFile = Path.GetFullPath(antBuildPath + "\\" + BUILD_BIN_PATH + "\\" + this.ApkName + "-debug.apk");
 				}
 				else
 				{
-					OutputFile = Path.GetFullPath(antBuildPath + "\\" + BUILD_BIN_PATH + "\\" + ApkName + "-release.apk");
+				    this.OutputFile = Path.GetFullPath(antBuildPath + "\\" + BUILD_BIN_PATH + "\\" + this.ApkName + "-release.apk");
 				}
 
 				if ( outputInQuotes )
 				{
-					OutputFile = "\"" + OutputFile + "\"";
+				    this.OutputFile = "\"" + this.OutputFile + "\"";
 				}
 			}
 			else
@@ -75,7 +63,7 @@ namespace vs.tool.Build.CPPTasks
 				return false;
 			}
 
-			if (ParseAndroidManifestXml(manifestXml) == false)
+			if (this.ParseAndroidManifestXml(manifestXml) == false)
 			{
 				// Parse failed, oh dear.
 				log.LogError("Failed parsing '" + manifestXml + "'");
@@ -101,7 +89,7 @@ namespace vs.tool.Build.CPPTasks
 							string attrib = reader.GetAttribute("name");
 							if (attrib != null)
 							{
-								ApkName = attrib;
+							    this.ApkName = attrib;
 								return true;
 							}
 						}
@@ -128,7 +116,7 @@ namespace vs.tool.Build.CPPTasks
 							string attrib = reader.GetAttribute("package");
 							if (attrib != null)
 							{
-								PackageName = attrib;
+							    this.PackageName = attrib;
 							}
 						}
 						else if (reader.Name == "activity")
@@ -136,14 +124,14 @@ namespace vs.tool.Build.CPPTasks
 							string attrib = reader.GetAttribute("android:name");
 							if (attrib != null)
 							{
-								ActivityName = attrib;
+							    this.ActivityName = attrib;
 							}
 						}
 						break;
 				}
 			}
 
-			return (PackageName.Length > 0 && ActivityName.Length > 0);
+			return (this.PackageName.Length > 0 && this.ActivityName.Length > 0);
 		}
 	}
 }

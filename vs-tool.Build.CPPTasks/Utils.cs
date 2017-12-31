@@ -5,8 +5,6 @@
 // Misc pathing utils, and some constants.
  
 using System;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Diagnostics;
 using System.Management;

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Web;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq; 
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 
@@ -43,7 +40,7 @@ namespace pythonemcc
             psi.UseShellExecute = false;
 
             //Get the windows PATH: http://stackoverflow.com/questions/5578385/assembly-searchpath-via-path-environment
-            string sysPATH = System.Environment.GetEnvironmentVariable("PATH");
+            string sysPATH = Environment.GetEnvironmentVariable("PATH");
             var parsedPATH = sysPATH.Split(';');
 
             foreach (var filePATH in parsedPATH)
@@ -73,9 +70,9 @@ namespace pythonemcc
             // same directory.
             // http://stackoverflow.com/questions/837488/how-can-i-get-the-applications-path-in-net-in-a-console-app
             string path = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            var directory = System.IO.Path.GetDirectoryName(path);
+            var directory = Path.GetDirectoryName(path);
 
-            var toolname = System.IO.Path.GetFileNameWithoutExtension(path);
+            var toolname = Path.GetFileNameWithoutExtension(path);
             string a = directory + "\\" + toolname;
             foreach(string s in emccargs)
                 a += " " + s;
@@ -93,18 +90,20 @@ namespace pythonemcc
             try
             {
                 Process p = Process.Start(psi);
-                p.OutputDataReceived += new DataReceivedEventHandler(p_OutputDataReceived);
-                p.ErrorDataReceived += new DataReceivedEventHandler(p_OutputDataReceived);
-                p.BeginOutputReadLine();
-                p.BeginErrorReadLine();
-
-                while (!p.HasExited)
+                if (p != null)
                 {
-                    p.WaitForExit(10000);
-                    if (!p.HasExited)
-                        Console.WriteLine(toolname + " running.. please wait.");
+                    p.OutputDataReceived += new DataReceivedEventHandler(p_OutputDataReceived);
+                    p.ErrorDataReceived += new DataReceivedEventHandler(p_OutputDataReceived);
+                    p.BeginOutputReadLine();
+                    p.BeginErrorReadLine();
+
+                    while (!p.HasExited)
+                    {
+                        p.WaitForExit(10000);
+                        if (!p.HasExited) Console.WriteLine(toolname + " running.. please wait.");
+                    }
+                    processReturnCode = p.ExitCode;
                 }
-                processReturnCode = p.ExitCode;
             }
             catch (Exception e)
             {

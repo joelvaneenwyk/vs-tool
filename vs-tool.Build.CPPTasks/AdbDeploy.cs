@@ -4,17 +4,12 @@
 
 // Apache Ant, Apk Building Task.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Collections;
 using System.IO;
 using System.Reflection;
 using System.Resources;
-using System.Text.RegularExpressions;
 using System.Diagnostics;
-using System.Xml;
 
 using Microsoft.Build.Framework;
 using Microsoft.Build.CPPTasks;
@@ -55,19 +50,19 @@ namespace vs.tool.Build.CPPTasks
 
 		private void WriteDebugRunCmdFile()
 		{
-			string destCmdFile = Path.GetFullPath(GenerateCmdFilePath);
+			string destCmdFile = Path.GetFullPath(this.GenerateCmdFilePath);
 
 			using (StreamWriter outfile = new StreamWriter(destCmdFile))
 			{
-				outfile.Write(string.Format("{0} {1} shell am start -n {2}/{3}\n", AdbPath, MakeStringReplacements(DeviceArgs), m_parser.PackageName, m_parser.ActivityName));
+				outfile.Write(string.Format("{0} {1} shell am start -n {2}/{3}\n", this.AdbPath, this.MakeStringReplacements(this.DeviceArgs), this.m_parser.PackageName, this.m_parser.ActivityName));
 			}
 		}
 
 		protected override bool ValidateParameters()
 		{
-			m_toolFileName = Path.GetFileNameWithoutExtension(ToolName);
+		    this.m_toolFileName = Path.GetFileNameWithoutExtension(this.ToolName);
 
-			if ( !m_parser.Parse( AntBuildPath, AntBuildType, Log, false ) )
+			if ( !this.m_parser.Parse(this.AntBuildPath, this.AntBuildType, this.Log, false ) )
 			{
 				return false;
 			}
@@ -77,7 +72,7 @@ namespace vs.tool.Build.CPPTasks
 
 		public override void Cancel()
 		{
-			Process.Start(AdbPath, "kill-server");
+			Process.Start(this.AdbPath, "kill-server");
 
 			base.Cancel();
 		}
@@ -89,11 +84,11 @@ namespace vs.tool.Build.CPPTasks
 
 		protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)
 		{
-			Log.LogMessage(MessageImportance.High, "{0} {1}", pathToTool, commandLineCommands);
+		    this.Log.LogMessage(MessageImportance.High, "{0} {1}", pathToTool, commandLineCommands);
 
-			if ( ( GenerateCmdFilePath != null ) && ( GenerateCmdFilePath.Length > 0 ) )
+			if ( (this.GenerateCmdFilePath != null ) && (this.GenerateCmdFilePath.Length > 0 ) )
 			{
-				WriteDebugRunCmdFile();
+			    this.WriteDebugRunCmdFile();
 			}
 
 			if ( commandLineCommands.Contains( "wait-for-device" ) || commandLineCommands.Contains( "start-server" ) )
@@ -118,21 +113,21 @@ namespace vs.tool.Build.CPPTasks
 
 		protected override string GetWorkingDirectory()
 		{
-			return AntBuildPath;
+			return this.AntBuildPath;
 		}
 
 		private string MakeStringReplacements( string theString )
 		{
 			string paramCopy = theString;
-			paramCopy = paramCopy.Replace("{PackageName}", m_parser.PackageName);
-			paramCopy = paramCopy.Replace("{ApkPath}", "\"" + m_parser.OutputFile + "\"");
-			paramCopy = paramCopy.Replace("{ActivityName}", m_parser.ActivityName);
+			paramCopy = paramCopy.Replace("{PackageName}", this.m_parser.PackageName);
+			paramCopy = paramCopy.Replace("{ApkPath}", "\"" + this.m_parser.OutputFile + "\"");
+			paramCopy = paramCopy.Replace("{ActivityName}", this.m_parser.ActivityName);
 			return paramCopy.Trim();
 		}
 
 		protected override string GenerateCommandLineCommands()
 		{
-			return (MakeStringReplacements(DeviceArgs) + " " + MakeStringReplacements(Params)).Trim();
+			return (this.MakeStringReplacements(this.DeviceArgs) + " " + this.MakeStringReplacements(this.Params)).Trim();
 		}
 
 #if !VS2010DLL && !VS2015DLL && !VS2017DLL
@@ -175,7 +170,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return AdbPath;
+				return this.AdbPath;
 			}
 		}
 
@@ -183,7 +178,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return new TaskItem[] { new TaskItem( m_parser.OutputFile) };
+				return new TaskItem[] { new TaskItem(this.m_parser.OutputFile) };
 			}
 		}
 
@@ -203,24 +198,24 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				if (base.IsPropertySet("TrackerLogDirectory"))
+				if (this.IsPropertySet("TrackerLogDirectory"))
 				{
-					return base.ActiveToolSwitches["TrackerLogDirectory"].Value;
+					return this.ActiveToolSwitches["TrackerLogDirectory"].Value;
 				}
 				return null;
 			}
 			set
 			{
-				base.ActiveToolSwitches.Remove("TrackerLogDirectory");
+				this.ActiveToolSwitches.Remove("TrackerLogDirectory");
 				ToolSwitch switch2 = new ToolSwitch(ToolSwitchType.Directory)
 				{
 					DisplayName = "Tracker Log Directory",
 					Description = "Tracker log directory.",
 					ArgumentRelationList = new ArrayList(),
-					Value = VCToolTask.EnsureTrailingSlash(value)
+					Value = EnsureTrailingSlash(value)
 				};
-				base.ActiveToolSwitches.Add("TrackerLogDirectory", switch2);
-				base.AddActiveSwitchToolValue(switch2);
+				this.ActiveToolSwitches.Add("TrackerLogDirectory", switch2);
+				this.AddActiveSwitchToolValue(switch2);
 			}
 		}
 
@@ -228,7 +223,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return (m_toolFileName + ".command.1.tlog");
+				return (this.m_toolFileName + ".command.1.tlog");
 			}
 		}
 
@@ -236,7 +231,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return new string[] { (m_toolFileName + ".read.*.tlog"), (m_toolFileName + ".*.read.*.tlog") };
+				return new string[] { (this.m_toolFileName + ".read.*.tlog"), (this.m_toolFileName + ".*.read.*.tlog") };
 			}
 		}
 
@@ -244,7 +239,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return new string[] { (m_toolFileName + ".write.*.tlog"), (m_toolFileName + ".*.write.*.tlog") };
+				return new string[] { (this.m_toolFileName + ".write.*.tlog"), (this.m_toolFileName + ".*.write.*.tlog") };
 			}
 		}
 

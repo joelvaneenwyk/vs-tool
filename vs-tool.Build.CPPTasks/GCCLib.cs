@@ -6,14 +6,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Collections;
 using System.IO;
 using System.Reflection;
 using System.Resources;
-using System.Text.RegularExpressions;
-using System.Diagnostics;
 
 using Microsoft.Build.Framework;
 using Microsoft.Build.CPPTasks;
@@ -51,7 +48,7 @@ namespace vs.tool.Build.CPPTasks
 
 		protected override bool ValidateParameters()
 		{
-			m_toolFileName = Path.GetFileNameWithoutExtension(ToolName);
+		    this.m_toolFileName = Path.GetFileNameWithoutExtension(this.ToolName);
 
 			return base.ValidateParameters();
         }
@@ -66,8 +63,8 @@ namespace vs.tool.Build.CPPTasks
         protected override string GenerateResponseFileCommands()
 		{
 			StringBuilder builder = new StringBuilder(Utils.EST_MAX_CMDLINE_LEN);
-			builder.Append("rcs " + Utils.PathSanitize(OutputFile) + " ");
-			foreach (ITaskItem item in Sources)
+			builder.Append("rcs " + Utils.PathSanitize(this.OutputFile) + " ");
+			foreach (ITaskItem item in this.Sources)
 			{
 				builder.Append(Utils.PathSanitize(item.ToString()) + " ");
 			}
@@ -76,9 +73,9 @@ namespace vs.tool.Build.CPPTasks
 
 		protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)
 		{
-			if (EchoCommandLines == "true")
+			if (this.EchoCommandLines == "true")
 			{
-				Log.LogMessage(MessageImportance.High, pathToTool + " " + responseFileCommands);
+			    this.Log.LogMessage(MessageImportance.High, pathToTool + " " + responseFileCommands);
 			}
 
 			return base.ExecuteTool(pathToTool, responseFileCommands, commandLineCommands);
@@ -92,7 +89,7 @@ namespace vs.tool.Build.CPPTasks
 			foreach (KeyValuePair<string, Dictionary<string, DateTime>> pair in compactOutputs.DependencyTable)
 			{
 				pair.Value.Clear();
-				pair.Value.Add(Path.GetFullPath(OutputFile).ToUpperInvariant(), DateTime.Now);
+				pair.Value.Add(Path.GetFullPath(this.OutputFile).ToUpperInvariant(), DateTime.Now);
 			}
 		}
 
@@ -124,7 +121,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return GCCToolPath;
+				return this.GCCToolPath;
 			}
 		}
 
@@ -132,7 +129,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return Sources;
+				return this.Sources;
 			}
 		}
 
@@ -152,24 +149,24 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				if (base.IsPropertySet("TrackerLogDirectory"))
+				if (this.IsPropertySet("TrackerLogDirectory"))
 				{
-					return base.ActiveToolSwitches["TrackerLogDirectory"].Value;
+					return this.ActiveToolSwitches["TrackerLogDirectory"].Value;
 				}
 				return null;
 			}
 			set
 			{
-				base.ActiveToolSwitches.Remove("TrackerLogDirectory");
+				this.ActiveToolSwitches.Remove("TrackerLogDirectory");
 				ToolSwitch switch2 = new ToolSwitch(ToolSwitchType.Directory)
 				{
 					DisplayName = "Tracker Log Directory",
 					Description = "Tracker log directory.",
 					ArgumentRelationList = new ArrayList(),
-					Value = VCToolTask.EnsureTrailingSlash(value)
+					Value = EnsureTrailingSlash(value)
 				};
-				base.ActiveToolSwitches.Add("TrackerLogDirectory", switch2);
-				base.AddActiveSwitchToolValue(switch2);
+				this.ActiveToolSwitches.Add("TrackerLogDirectory", switch2);
+				this.AddActiveSwitchToolValue(switch2);
 			}
 		}
 
@@ -177,7 +174,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return (m_toolFileName + ".command.1.tlog");
+				return (this.m_toolFileName + ".command.1.tlog");
 			}
 		}
 
@@ -185,7 +182,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return new string[] { (m_toolFileName + ".read.*.tlog"), (m_toolFileName + ".*.read.*.tlog") };
+				return new string[] { (this.m_toolFileName + ".read.*.tlog"), (this.m_toolFileName + ".*.read.*.tlog") };
 			}
 		}
 
@@ -193,7 +190,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return new string[] { (m_toolFileName + ".write.*.tlog"), (m_toolFileName + ".*.write.*.tlog") };
+				return new string[] { (this.m_toolFileName + ".write.*.tlog"), (this.m_toolFileName + ".*.write.*.tlog") };
 			}
 		}
 	}

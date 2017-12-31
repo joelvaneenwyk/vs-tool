@@ -6,15 +6,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Collections;
 using System.IO;
 using System.Reflection;
 using System.Resources;
-using System.Text.RegularExpressions;
-using System.Diagnostics;
-using System.Xml;
 
 using Microsoft.Build.Framework;
 using Microsoft.Build.CPPTasks;
@@ -85,42 +81,42 @@ namespace vs.tool.Build.CPPTasks
 
 		protected override bool ValidateParameters()
 		{
-			m_toolFileName = Path.GetFileNameWithoutExtension(ToolName);
+		    this.m_toolFileName = Path.GetFileNameWithoutExtension(this.ToolName);
 
-			if ( !m_parser.Parse( AntBuildPath, AntBuildType, Log, true ) )
+			if ( !this.m_parser.Parse(this.AntBuildPath, this.AntBuildType, this.Log, true ) )
 			{
 				return false;
 			}
 
-			ActivityName = m_parser.ActivityName;
-			ApkName = m_parser.ApkName;
-			PackageName = m_parser.PackageName;
-			OutputFile = m_parser.OutputFile;
+		    this.ActivityName = this.m_parser.ActivityName;
+		    this.ApkName = this.m_parser.ApkName;
+		    this.PackageName = this.m_parser.PackageName;
+		    this.OutputFile = this.m_parser.OutputFile;
 
 			// Only one .so library should be input to this task
-			if ( Sources.Length > 1 )
+			if (this.Sources.Length > 1 )
 			{
-				Log.LogError("More than one .so library being built!");
+			    this.Log.LogError("More than one .so library being built!");
 				return false;
 			}
 
-			m_inputSoPath = Path.GetFullPath(Sources[0].GetMetadata("FullPath"));
+		    this.m_inputSoPath = Path.GetFullPath(this.Sources[0].GetMetadata("FullPath"));
 
 			// Copy the .so file into the correct place
-			m_armEabiSoPath = Path.GetFullPath(AntBuildPath + "\\" + BUILD_LIB_PATH + "\\" + ApkLibsPath + "\\" + AntLibraryName + ".so");
+		    this.m_armEabiSoPath = Path.GetFullPath(this.AntBuildPath + "\\" + BUILD_LIB_PATH + "\\" + this.ApkLibsPath + "\\" + this.AntLibraryName + ".so");
 
-			m_antOpts = string.Empty;
-			if (JVMHeapInitial != null && JVMHeapInitial.Length > 0)
+		    this.m_antOpts = string.Empty;
+			if (this.JVMHeapInitial != null && this.JVMHeapInitial.Length > 0)
 			{
-				m_antOpts += "-Xms" + JVMHeapInitial + "m";
+			    this.m_antOpts += "-Xms" + this.JVMHeapInitial + "m";
 			}
-			if (JVMHeapMaximum != null && JVMHeapMaximum.Length > 0)
+			if (this.JVMHeapMaximum != null && this.JVMHeapMaximum.Length > 0)
 			{
-				if ( m_antOpts.Length > 0 )
+				if (this.m_antOpts.Length > 0 )
 				{
-					m_antOpts += " ";
+				    this.m_antOpts += " ";
 				}
-				m_antOpts += "-Xmx" + JVMHeapMaximum + "m";
+			    this.m_antOpts += "-Xmx" + this.JVMHeapMaximum + "m";
 			}
 
 			return base.ValidateParameters();
@@ -129,53 +125,53 @@ namespace vs.tool.Build.CPPTasks
 		protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)
 		{
 			// Copy over the .so file to the correct directory in the build structure
-			Directory.CreateDirectory(AntBuildPath + "\\" + BUILD_LIB_PATH + "\\" + ApkLibsPath);
-			File.Copy(m_inputSoPath, m_armEabiSoPath, true);
+			Directory.CreateDirectory(this.AntBuildPath + "\\" + BUILD_LIB_PATH + "\\" + this.ApkLibsPath);
+			File.Copy(this.m_inputSoPath, this.m_armEabiSoPath, true);
 
 			// Create local properties file from Android SDK Path
-			WriteLocalProperties();
+		    this.WriteLocalProperties();
 
 			// List of environment variables
 			List<String> envList = new List<String>();
 
 			// Set JAVA_HOME for the ant build
-			SetEnvVar( envList, "JAVA_HOME", AntJavaHomePath );
+		    this.SetEnvVar( envList, "JAVA_HOME", this.AntJavaHomePath );
 
 			// Set ANT_OPTS, if appropriate
-			if ( m_antOpts.Length > 0 )
+			if (this.m_antOpts.Length > 0 )
 			{
-				SetEnvVar( envList, "ANT_OPTS", m_antOpts );
+			    this.SetEnvVar( envList, "ANT_OPTS", this.m_antOpts );
 			}
 
 			// Ignore JAVA_OPTS?
-			if ( IgnoreJavaOpts )
+			if (this.IgnoreJavaOpts )
 			{
-				SetEnvVar( envList, "JAVA_OPTS", "" );
+			    this.SetEnvVar( envList, "JAVA_OPTS", "" );
 			}
 
 			// Set environment variables
 			this.EnvironmentVariables = envList.ToArray();
 
-			Log.LogMessage( MessageImportance.High, "{0} {1}", pathToTool, commandLineCommands );            
+		    this.Log.LogMessage( MessageImportance.High, "{0} {1}", pathToTool, commandLineCommands );            
 
 			return base.ExecuteTool(pathToTool, responseFileCommands, commandLineCommands);
 		}
 
 		private void SetEnvVar( List<String> envList, string var, string setting )
 		{
-			Log.LogMessage( MessageImportance.High, "Envvar: {0} is set to '{1}'", var, setting );
+		    this.Log.LogMessage( MessageImportance.High, "Envvar: {0} is set to '{1}'", var, setting );
 			envList.Add( var + "=" + setting );
-			System.Environment.SetEnvironmentVariable( var, setting, EnvironmentVariableTarget.Process );
+			Environment.SetEnvironmentVariable( var, setting, EnvironmentVariableTarget.Process );
 		}
 
 		private void WriteLocalProperties()
 		{
-			string localPropsFile = Path.GetFullPath(AntBuildPath + "\\local.properties");
+			string localPropsFile = Path.GetFullPath(this.AntBuildPath + "\\local.properties");
 
 			// Need double backslashes for this path
-			string sdkPath = Path.GetFullPath(AntAndroidSdkPath).Replace( "\\", "\\\\" );
+			string sdkPath = Path.GetFullPath(this.AntAndroidSdkPath).Replace( "\\", "\\\\" );
 
-			string fileContents = vs.tool.Build.CPPTasks.Properties.Resources.localproperties_ant_file;
+			string fileContents = Properties.Resources.localproperties_ant_file;
 			fileContents = fileContents.Replace("{SDKDIR}", sdkPath);
 			
 			using (StreamWriter outfile = new StreamWriter(localPropsFile))
@@ -213,13 +209,13 @@ namespace vs.tool.Build.CPPTasks
 				}
 
 				// Add the two .so files to the inputs
-				if ( pair.Value.ContainsKey( m_inputSoPath.ToUpperInvariant() ) == false )
+				if ( pair.Value.ContainsKey(this.m_inputSoPath.ToUpperInvariant() ) == false )
 				{
-					pair.Value.Add( m_inputSoPath.ToUpperInvariant(), null );
+					pair.Value.Add(this.m_inputSoPath.ToUpperInvariant(), null );
 				}
-				if ( pair.Value.ContainsKey( m_armEabiSoPath.ToUpperInvariant() ) == false )
+				if ( pair.Value.ContainsKey(this.m_armEabiSoPath.ToUpperInvariant() ) == false )
 				{
-					pair.Value.Add( m_armEabiSoPath.ToUpperInvariant(), null );
+					pair.Value.Add(this.m_armEabiSoPath.ToUpperInvariant(), null );
 				}
 			}
 		}
@@ -265,13 +261,13 @@ namespace vs.tool.Build.CPPTasks
 
 		protected override string GetWorkingDirectory()
 		{
-			return AntBuildPath;
+			return this.AntBuildPath;
 		}
 
 		protected override string GenerateCommandLineCommands()
 		{
 			// Simply 'debug', or 'release'.
-			return AntBuildType.ToLower();
+			return this.AntBuildType.ToLower();
 		}
 
 #if !VS2010DLL && !VS2015DLL && !VS2017DLL
@@ -314,7 +310,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return GCCToolPath;
+				return this.GCCToolPath;
 			}
 		}
 
@@ -322,7 +318,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return Sources;
+				return this.Sources;
 			}
 		}
 
@@ -342,24 +338,24 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				if (base.IsPropertySet("TrackerLogDirectory"))
+				if (this.IsPropertySet("TrackerLogDirectory"))
 				{
-					return base.ActiveToolSwitches["TrackerLogDirectory"].Value;
+					return this.ActiveToolSwitches["TrackerLogDirectory"].Value;
 				}
 				return null;
 			}
 			set
 			{
-				base.ActiveToolSwitches.Remove("TrackerLogDirectory");
+				this.ActiveToolSwitches.Remove("TrackerLogDirectory");
 				ToolSwitch switch2 = new ToolSwitch(ToolSwitchType.Directory)
 				{
 					DisplayName = "Tracker Log Directory",
 					Description = "Tracker log directory.",
 					ArgumentRelationList = new ArrayList(),
-					Value = VCToolTask.EnsureTrailingSlash(value)
+					Value = EnsureTrailingSlash(value)
 				};
-				base.ActiveToolSwitches.Add("TrackerLogDirectory", switch2);
-				base.AddActiveSwitchToolValue(switch2);
+				this.ActiveToolSwitches.Add("TrackerLogDirectory", switch2);
+				this.AddActiveSwitchToolValue(switch2);
 			}
 		}
 
@@ -367,7 +363,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return (m_toolFileName + ".command.1.tlog");
+				return (this.m_toolFileName + ".command.1.tlog");
 			}
 		}
 

@@ -7,7 +7,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 
@@ -26,7 +25,7 @@ namespace vs.tool.Build.CPPTasks
 		{ 
 			get 
 			{ 
-				return m_dependentFiles; 
+				return this.m_dependentFiles; 
 			}
 		}
 
@@ -37,7 +36,7 @@ namespace vs.tool.Build.CPPTasks
 				string str = reader.ReadToEnd();
 				reader.Close();
 
-				Parse(str);
+			    this.Parse(str);
 			}
 		}
 
@@ -48,7 +47,7 @@ namespace vs.tool.Build.CPPTasks
 
 		private bool IsWhitespace(char c)
 		{
-			return (IsReturn(c) || (c == ' ') || (c == '\t'));
+			return (this.IsReturn(c) || (c == ' ') || (c == '\t'));
 		}
 
 		private bool IsSlash(char c)
@@ -58,30 +57,30 @@ namespace vs.tool.Build.CPPTasks
 
 		private string FixPath( StringBuilder srcPath )
 		{
-			m_finalPath.Length = 0;
+		    this.m_finalPath.Length = 0;
 			bool slash = false;
 
 			// Replace any contigious slashes with just one slash. Make it a backslash too.
 			for (int i = 0; i < srcPath.Length;i++ )
 			{
 				char c = srcPath[i];
-				if (IsSlash(c))
+				if (this.IsSlash(c))
 				{
 					if (slash == false)
 					{
-						m_finalPath.Append('\\');
+					    this.m_finalPath.Append('\\');
 						slash = true;
 					}
 				}
 				else
 				{
 					slash = false;
-					m_finalPath.Append(c);
+				    this.m_finalPath.Append(c);
 				}
 			}
 
 			// Return an absolute path
-			return Path.GetFullPath(m_finalPath.ToString());
+			return Path.GetFullPath(this.m_finalPath.ToString());
 		}
 
 		private void Parse( string contents )
@@ -115,17 +114,17 @@ namespace vs.tool.Build.CPPTasks
 					// Only escaping spaces.
 					if ( c == ' ' )
 					{
-						m_concatPath.Append(c);
+					    this.m_concatPath.Append(c);
 						continue;
 					}
 
-					if ( IsWhitespace( c ) && ( m_concatPath.Length == 0 ) )
+					if (this.IsWhitespace( c ) && (this.m_concatPath.Length == 0 ) )
 					{
 						// Skip it, if we're already empty and it's just whitespace
 						continue;
 					}
 
-					m_concatPath.Append("\\");
+				    this.m_concatPath.Append("\\");
 				}
 
 				if (c == '\\')
@@ -145,7 +144,7 @@ namespace vs.tool.Build.CPPTasks
 					else
 					{
 						// In quotes, so anything goes
-						m_concatPath.Append(c);
+					    this.m_concatPath.Append(c);
 					}
 				}
 				else
@@ -155,12 +154,12 @@ namespace vs.tool.Build.CPPTasks
 						// Start quotes?
 						inQuotes = true;
 
-						m_concatPath.Length = 0;
+					    this.m_concatPath.Length = 0;
 					}
-					else if (IsWhitespace(c))
+					else if (this.IsWhitespace(c))
 					{
 						// Whitespace. If we have anything, then save it out. Otherwise ignore it
-						if (m_concatPath.Length > 0)
+						if (this.m_concatPath.Length > 0)
 						{
 							terminated = true;
 						}
@@ -168,21 +167,21 @@ namespace vs.tool.Build.CPPTasks
 					else
 					{
 						// Append to this path
-						m_concatPath.Append(c);
+					    this.m_concatPath.Append(c);
 					}
 				}
 
 				if (terminated)
 				{
-					if ( m_concatPath.Length > 1 )
+					if (this.m_concatPath.Length > 1 )
 					{
 						// Ignore the path if it ends with ':', that's going to be the first object file line.
-						if ( m_concatPath[ m_concatPath.Length - 1] != ':' )
+						if (this.m_concatPath[this.m_concatPath.Length - 1] != ':' )
 						{
-							string pathMade = FixPath(m_concatPath).ToUpperInvariant();
-							m_dependentFiles.Add(pathMade);
+							string pathMade = this.FixPath(this.m_concatPath).ToUpperInvariant();
+						    this.m_dependentFiles.Add(pathMade);
 						}
-						m_concatPath.Length = 0;
+					    this.m_concatPath.Length = 0;
 					}
 				}
 			}

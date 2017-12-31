@@ -11,23 +11,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Collections;
 using System.IO;
-using System.Reflection;
 using System.Resources;
-using System.Text.RegularExpressions;
-using System.Security;
-using System.Diagnostics;
-using System.Threading;
 
-using Microsoft.Win32.SafeHandles;
 using Microsoft.Build.Framework;
 using Microsoft.Build.CPPTasks;
 using Microsoft.Build.Utilities;
-using Microsoft.Build.Shared;
-
 
 namespace vs.tool.Build.CPPTasks
 {
@@ -335,12 +325,12 @@ namespace vs.tool.Build.CPPTasks
 				{
 					throw;
 				}
-				base.Log.LogWarningWithCodeFromResources("TrackedVCToolTask.RebuildingDueToInvalidTLog", new object[] { exception.Message });
+				this.Log.LogWarningWithCodeFromResources("TrackedVCToolTask.RebuildingDueToInvalidTLog", new object[] { exception.Message });
 				return true;
 			}
 			if (!File.Exists(path))
 			{
-				base.Log.LogMessageFromResources(MessageImportance.Low, "TrackedVCToolTask.RebuildingNoCommandTLog", new object[] { this.TLogCommandFile.GetMetadata("FullPath") });
+				this.Log.LogMessageFromResources(MessageImportance.Low, "TrackedVCToolTask.RebuildingNoCommandTLog", new object[] { this.TLogCommandFile.GetMetadata("FullPath") });
 				return true;
 			}
 			return false;
@@ -360,14 +350,14 @@ namespace vs.tool.Build.CPPTasks
 			}
 			if (this.MaintainCompositeRootingMarkers)
 			{
-				string str = this.ApplyPrecompareCommandFilter(base.GenerateCommandLine());
+				string str = this.ApplyPrecompareCommandFilter(this.GenerateCommandLine());
 				string str2 = null;
 				if (dictionary.TryGetValue(FileTracker.FormatRootingMarker(this.TrackedInputFiles), out str2))
 				{
 					str2 = this.ApplyPrecompareCommandFilter(str2);
 					if ((str2 == null) || !str.Equals(str2, StringComparison.Ordinal))
 					{
-						base.Log.LogMessageFromResources(MessageImportance.Low, "TrackedVCToolTask.RebuildingAllSourcesCommandLineChanged", new object[0]);
+						this.Log.LogMessageFromResources(MessageImportance.Low, "TrackedVCToolTask.RebuildingAllSourcesCommandLineChanged", new object[0]);
 						foreach (ITaskItem item2 in this.TrackedInputFiles)
 						{
 							list.Add(item2);
@@ -382,7 +372,7 @@ namespace vs.tool.Build.CPPTasks
 				return list;
 			}
 			string str3 = this.SourcesPropertyName ?? "Sources";
-			string str4 = base.GenerateCommandLineExceptSwitches(new string[] { str3 });
+			string str4 = this.GenerateCommandLineExceptSwitches(new string[] { str3 });
 			foreach (ITaskItem item4 in this.TrackedInputFiles)
 			{
 				string str5 = this.ApplyPrecompareCommandFilter(str4 + " " + item4.GetMetadata("FullPath").ToUpperInvariant());
@@ -451,7 +441,7 @@ namespace vs.tool.Build.CPPTasks
 					}
 					if (flag)
 					{
-						base.Log.LogWarningWithCodeFromResources("TrackedVCToolTask.RebuildingDueToInvalidTLogContents", new object[] { metadata });
+						this.Log.LogWarningWithCodeFromResources("TrackedVCToolTask.RebuildingDueToInvalidTLogContents", new object[] { metadata });
 						dictionary = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 					}
 				}
@@ -469,13 +459,13 @@ namespace vs.tool.Build.CPPTasks
 			{
 				if (sourcesWithChangedCommandLines.Count == this.TrackedInputFiles.Length)
 				{
-					base.Log.LogMessageFromResources(MessageImportance.Low, "TrackedVCToolTask.RebuildingAllSourcesCommandLineChanged", new object[0]);
+					this.Log.LogMessageFromResources(MessageImportance.Low, "TrackedVCToolTask.RebuildingAllSourcesCommandLineChanged", new object[0]);
 				}
 				else
 				{
 					foreach (ITaskItem item in sourcesWithChangedCommandLines)
 					{
-						base.Log.LogMessageFromResources(MessageImportance.Low, "TrackedVCToolTask.RebuildingSourceCommandLineChanged", new object[] { item.GetMetadata("FullPath") });
+						this.Log.LogMessageFromResources(MessageImportance.Low, "TrackedVCToolTask.RebuildingSourceCommandLineChanged", new object[] { item.GetMetadata("FullPath") });
 					}
 				}
 				return sourcesWithChangedCommandLines.ToArray();
@@ -486,7 +476,7 @@ namespace vs.tool.Build.CPPTasks
 			}
 			if (sourcesWithChangedCommandLines.Count == this.TrackedInputFiles.Length)
 			{
-				base.Log.LogMessageFromResources(MessageImportance.Low, "TrackedVCToolTask.RebuildingAllSourcesCommandLineChanged", new object[0]);
+				this.Log.LogMessageFromResources(MessageImportance.Low, "TrackedVCToolTask.RebuildingAllSourcesCommandLineChanged", new object[0]);
 				return this.TrackedInputFiles;
 			}
 			Dictionary<ITaskItem, bool> dictionary = new Dictionary<ITaskItem, bool>();
@@ -510,7 +500,7 @@ namespace vs.tool.Build.CPPTasks
 					list.Add(item4);
 					if (flag)
 					{
-						base.Log.LogMessageFromResources(MessageImportance.Low, "TrackedVCToolTask.RebuildingSourceCommandLineChanged", new object[] { item4.GetMetadata("FullPath") });
+						this.Log.LogMessageFromResources(MessageImportance.Low, "TrackedVCToolTask.RebuildingSourceCommandLineChanged", new object[] { item4.GetMetadata("FullPath") });
 					}
 				}
 			}

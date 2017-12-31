@@ -12,7 +12,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Diagnostics;
@@ -30,7 +29,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			XmlTextReader reader = new XmlTextReader( path );
 
-			m_switchPrefix = null;
+		    this.m_switchPrefix = null;
 
 			while ( reader.Read() )
 			{
@@ -41,21 +40,21 @@ namespace vs.tool.Build.CPPTasks
 							switch ( reader.Name )
 							{
 								case "Rule":
-									m_switchPrefix = reader.GetAttribute( "SwitchPrefix" );
+								    this.m_switchPrefix = reader.GetAttribute( "SwitchPrefix" );
 									break;
 
 								case "StringListProperty":
-									NewProperty( reader, new StringListProperty() );
+								    this.NewProperty( reader, new StringListProperty() );
 									break;
 								case "StringProperty":
 								case "IntProperty":
-									NewProperty( reader, new StringProperty() );
+								    this.NewProperty( reader, new StringProperty() );
 									break;
 								case "BoolProperty":
-									NewProperty( reader, new BoolProperty() );
+								    this.NewProperty( reader, new BoolProperty() );
 									break;
 								case "EnumProperty":
-									NewProperty( reader, new EnumProperty() );
+								    this.NewProperty( reader, new EnumProperty() );
 									break;
 							}
 						}
@@ -71,7 +70,7 @@ namespace vs.tool.Build.CPPTasks
 			foreach ( string metaName in taskItem.MetadataNames )
 			{
 				string propValue = taskItem.GetMetadata(metaName);
-				string processed = ProcessProperty(metaName, propValue).Trim();
+				string processed = this.ProcessProperty(metaName, propValue).Trim();
 
 				if (( processed != null ) && ( processed.Length > 0 ))
 				{
@@ -86,7 +85,7 @@ namespace vs.tool.Build.CPPTasks
 		private string ProcessProperty( string propName, string propVal )
 		{
 			Property prop;
-			if ( m_properties.TryGetValue( propName, out prop ) )
+			if (this.m_properties.TryGetValue( propName, out prop ) )
 			{
 				if ( prop.Ignored )
 				{
@@ -110,7 +109,7 @@ namespace vs.tool.Build.CPPTasks
 			if ( name != null )
 			{
 				// Choose correct switch prefix
-				string prefix = m_switchPrefix;
+				string prefix = this.m_switchPrefix;
 				if ( switchPrefixOverride != null )
 				{
 					prefix = switchPrefixOverride;
@@ -147,37 +146,37 @@ namespace vs.tool.Build.CPPTasks
 
 				prop.Setup(xml, prefix, separator, shouldQuoteFix );
 
-				m_properties.Add( name, prop );
+			    this.m_properties.Add( name, prop );
 			}
 		}
 
 		public abstract class Property
 		{
-			abstract public string Process( string propVal );
+			public abstract string Process( string propVal );
 
 			public bool Ignored
 			{
-				get { return m_ignored; }
+				get { return this.m_ignored; }
 			}
 
 			public void Setup( XmlTextReader xml, string switchPrefix, string separator, bool quoteFix )
 			{
-				m_switchPrefix = switchPrefix;
-				m_separator = separator;
-				m_quoteFix = quoteFix;
+			    this.m_switchPrefix = switchPrefix;
+			    this.m_separator = separator;
+			    this.m_quoteFix = quoteFix;
 
-				Debug.Assert( m_switchPrefix != null ); 
-				Debug.Assert( m_separator != null );
+				Debug.Assert(this.m_switchPrefix != null ); 
+				Debug.Assert(this.m_separator != null );
 
 				string switchValue = xml.GetAttribute( "Switch" );
-				m_ignored = (switchValue == "ignore");
+			    this.m_ignored = (switchValue == "ignore");
 
-				SetupProperty( xml );
+			    this.SetupProperty( xml );
 			}
 
 			protected string FixString( string str )
 			{
-				if ( m_quoteFix == false )
+				if (this.m_quoteFix == false )
 				{
 					// Just fix the slashes, no quoting
 					return Utils.PathFixSlashes(str);
@@ -189,7 +188,7 @@ namespace vs.tool.Build.CPPTasks
 				}
 			}
 
-			abstract protected void SetupProperty( XmlTextReader xml );
+			protected abstract void SetupProperty( XmlTextReader xml );
 
 			protected string m_switchPrefix;
 			protected string m_separator;
@@ -199,10 +198,10 @@ namespace vs.tool.Build.CPPTasks
 
 		public class EnumProperty : Property
 		{
-			override public string Process( string propVal )
+			public override string Process( string propVal )
 			{
 				string found;
-				if ( m_switches.TryGetValue( propVal, out found ) )
+				if (this.m_switches.TryGetValue( propVal, out found ) )
 				{
 					return found;
 				}
@@ -210,7 +209,7 @@ namespace vs.tool.Build.CPPTasks
 				return string.Empty;
 			}
 
-			override protected void SetupProperty( XmlTextReader xml )
+			protected override void SetupProperty( XmlTextReader xml )
 			{
 				// switchString is just the prefix for enum properties
 				int nestLevel = 1;
@@ -235,11 +234,11 @@ namespace vs.tool.Build.CPPTasks
 									{
 										if ((switchVal != null) && (switchVal != String.Empty))
 										{
-											m_switches.Add( nameStr, m_switchPrefix + switchVal );
+										    this.m_switches.Add( nameStr, this.m_switchPrefix + switchVal );
 										}
 										else
 										{
-											m_switches.Add( nameStr, string.Empty );
+										    this.m_switches.Add( nameStr, string.Empty );
 										}
 									}
 								}
@@ -265,29 +264,29 @@ namespace vs.tool.Build.CPPTasks
 
 		public class BoolProperty : Property
 		{
-			override public string Process( string propVal )
+			public override string Process( string propVal )
 			{
 				if ( propVal.ToLower() == "true" )
 				{
-					if ( m_trueSwitch != null )
+					if (this.m_trueSwitch != null )
 					{
-						return m_switchPrefix + m_trueSwitch;
+						return this.m_switchPrefix + this.m_trueSwitch;
 					}
 				}
 				else if ( propVal.ToLower() != "ignore" )
 				{
-					if ( m_falseSwitch != null )
+					if (this.m_falseSwitch != null )
 					{
-						return m_switchPrefix + m_falseSwitch;
+						return this.m_switchPrefix + this.m_falseSwitch;
 					}
 				}
 				return string.Empty;
 			}
 
-			override protected void SetupProperty( XmlTextReader xml )
+			protected override void SetupProperty( XmlTextReader xml )
 			{
-				m_trueSwitch = xml.GetAttribute( "Switch" );
-				m_falseSwitch = xml.GetAttribute( "ReverseSwitch" );
+			    this.m_trueSwitch = xml.GetAttribute( "Switch" );
+			    this.m_falseSwitch = xml.GetAttribute( "ReverseSwitch" );
 			}
 
 			private string m_falseSwitch;
@@ -296,32 +295,32 @@ namespace vs.tool.Build.CPPTasks
 
 		public class StringProperty : Property
 		{
-			override public string Process( string propVal )
+			public override string Process( string propVal )
 			{
-				if (m_switch == null)
+				if (this.m_switch == null)
 				{
-					return FixString(propVal);
+					return this.FixString(propVal);
 				}
 
 				if (propVal.Length > 0)
 				{
 					// Ignore switches entirely if we don't have one
-					if (m_switch != null)
+					if (this.m_switch != null)
 					{
-						return m_switchPrefix + m_switch + m_separator + FixString(propVal);
+						return this.m_switchPrefix + this.m_switch + this.m_separator + this.FixString(propVal);
 					}
 					else
 					{
-						return FixString(propVal);
+						return this.FixString(propVal);
 					}
 				}
 
 				return string.Empty;
 			}
 
-			override protected void SetupProperty( XmlTextReader xml )
+			protected override void SetupProperty( XmlTextReader xml )
 			{
-				m_switch = xml.GetAttribute( "Switch" );
+			    this.m_switch = xml.GetAttribute( "Switch" );
 			}
 
 			private string m_switch;
@@ -329,7 +328,7 @@ namespace vs.tool.Build.CPPTasks
 
 		public class StringListProperty : Property
 		{
-			override public string Process( string propVal )
+			public override string Process( string propVal )
 			{
 				StringBuilder sBuilder = new StringBuilder(1024);
 				string [] strings = propVal.Split( ';' );
@@ -339,14 +338,14 @@ namespace vs.tool.Build.CPPTasks
 					if (str.Length > 0)
 					{
 						// Ignore switches entirely if we don't have one
-						if (m_switch != null)
+						if (this.m_switch != null)
 						{
-							sBuilder.Append(m_switchPrefix);
-							sBuilder.Append(m_switch);
-							sBuilder.Append(m_separator);
+							sBuilder.Append(this.m_switchPrefix);
+							sBuilder.Append(this.m_switch);
+							sBuilder.Append(this.m_separator);
 						}
 
-						sBuilder.Append(FixString(str));
+						sBuilder.Append(this.FixString(str));
 						sBuilder.Append(" ");
 					}
 				}
@@ -354,9 +353,9 @@ namespace vs.tool.Build.CPPTasks
 				return sBuilder.ToString();
 			}
 
-			override protected void SetupProperty( XmlTextReader xml )
+			protected override void SetupProperty( XmlTextReader xml )
 			{
-				m_switch = xml.GetAttribute( "Switch" );
+			    this.m_switch = xml.GetAttribute( "Switch" );
 			}
 
 			private string m_switch;

@@ -12,15 +12,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Collections;
 using System.IO;
 using System.Reflection;
 using System.Resources;
-using System.Text.RegularExpressions;
-using System.Security;
-using System.Diagnostics;
 
 using Microsoft.Build.Framework;
 using Microsoft.Build.CPPTasks;
@@ -115,31 +111,31 @@ namespace vs.tool.Build.CPPTasks
 		{
 			if (!File.Exists(pathToTool))
 			{
-				base.Log.LogMessageFromText( "Could not find GCC compiler: " + pathToTool , MessageImportance.High);
+				this.Log.LogMessageFromText( "Could not find GCC compiler: " + pathToTool , MessageImportance.High);
 				return -1;
 			}
 
 			int retCode = 0;
 			try
 			{
-				retCode = CompileWithGCC(pathToTool);
+				retCode = this.CompileWithGCC(pathToTool);
 			}
 			catch (Exception ex)
 			{
-				Log.LogWarningFromException(ex);
+			    this.Log.LogWarningFromException(ex);
 			}
 			finally
 			{
 				try
 				{
 					// Update tlog files
-					CanonicalTrackedOutputFiles outputs = ConstructWriteTLog(SourcesCompiled);
-					ConstructReadTLog(SourcesCompiled, outputs);
-					ConstructCommandTLog(SourcesCompiled, null);
+					CanonicalTrackedOutputFiles outputs = this.ConstructWriteTLog(this.SourcesCompiled);
+				    this.ConstructReadTLog(this.SourcesCompiled, outputs);
+				    this.ConstructCommandTLog(this.SourcesCompiled, null);
 				}
 				catch (Exception ex)
 				{
-					Log.LogWarningFromException(ex);
+				    this.Log.LogWarningFromException(ex);
 				}
 			}
 
@@ -164,14 +160,14 @@ namespace vs.tool.Build.CPPTasks
 			// Check the command lines for each source file. We'll build up a list of those with changed command lines, or those
 			// that didn't exist in the original command tlog file at all.
 			StringBuilder cmdLine = new StringBuilder(Utils.EST_MAX_CMDLINE_LEN);
-			foreach (ITaskItem sourceFile in Sources)
+			foreach (ITaskItem sourceFile in this.Sources)
 			{
 				try
 				{
 					cmdLine.Length = 0;
-					m_currentSourceItem = sourceFile;
+				    this.m_currentSourceItem = sourceFile;
 
-					cmdLine.Append(GenerateCommandLine());
+					cmdLine.Append(this.GenerateCommandLine());
 					cmdLine.Append(" ");
 
 					cmdLine.Append(sourceFile.GetMetadata("FullPath").ToUpperInvariant());
@@ -191,7 +187,7 @@ namespace vs.tool.Build.CPPTasks
 				}
 				catch (Exception ex)
 				{
-					base.Log.LogWarningFromException(ex);
+					this.Log.LogWarningFromException(ex);
 				}
 			}
 			return list;
@@ -199,9 +195,9 @@ namespace vs.tool.Build.CPPTasks
 
 		protected override bool ValidateParameters()
 		{
-			m_propXmlParse = new PropXmlParse(PropertyXmlFile);
+		    this.m_propXmlParse = new PropXmlParse(this.PropertyXmlFile);
 
-			m_toolfilename = Path.GetFileNameWithoutExtension(ToolName);
+		    this.m_toolfilename = Path.GetFileNameWithoutExtension(this.ToolName);
 
 			return base.ValidateParameters();
 		}
@@ -211,23 +207,23 @@ namespace vs.tool.Build.CPPTasks
 			int retCode = 0;
 			bool hitError = false;
 
-			foreach (ITaskItem sourceFile in SourcesCompiled)
+			foreach (ITaskItem sourceFile in this.SourcesCompiled)
 			{
-				m_currentSourceItem = sourceFile;
+			    this.m_currentSourceItem = sourceFile;
 
 				try
 				{
 					// Command line we'll be using
-					string responseFileCommands = GenerateResponseFileCommands();
+					string responseFileCommands = this.GenerateResponseFileCommands();
 					string logString = pathToTool + " " + responseFileCommands;
 
 					// Echo name of just the source file. Win32's CL does this.
-					base.Log.LogMessageFromText(Path.GetFileName(sourceFile.ToString()), MessageImportance.High);
+					this.Log.LogMessageFromText(Path.GetFileName(sourceFile.ToString()), MessageImportance.High);
 
 					// Echo full command line if we want it
-					if (EchoCommandLines == "true")
+					if (this.EchoCommandLines == "true")
 					{
-						Log.LogMessageFromText(logString, MessageImportance.High);
+					    this.Log.LogMessageFromText(logString, MessageImportance.High);
 					}
 
 					// Create dummy .h file for precompiled headers. Units with the "use" setting can forcefully include it, which
@@ -253,11 +249,11 @@ namespace vs.tool.Build.CPPTasks
 				}
 				catch (Exception ex)
 				{
-					Log.LogWarningFromException(ex);
+				    this.Log.LogWarningFromException(ex);
 
 					// Exception caught, bail out here
 					hitError = true;
-					retCode = base.ExitCode;
+					retCode = this.ExitCode;
 				}
 
 				if ( hitError )
@@ -278,36 +274,36 @@ namespace vs.tool.Build.CPPTasks
 		protected override string GenerateResponseFileCommands()
 		{
 			StringBuilder templateStr = new StringBuilder( Utils.EST_MAX_CMDLINE_LEN );
-			if ( m_currentSourceItem != null )
+			if (this.m_currentSourceItem != null )
 			{
-				string objectFile = Path.GetFullPath(m_currentSourceItem.GetMetadata("ObjectFileName"));
+				string objectFile = Path.GetFullPath(this.m_currentSourceItem.GetMetadata("ObjectFileName"));
 				if (Path.GetFileName(objectFile) == string.Empty)
 				{
-					Log.LogError("The ObjectFileName setting in the Visual Studio C/C++ - Output Files sheet is set to a directory:");
-					Log.LogError(objectFile);
-					Log.LogError("^ This should be set to a filename instead. Consider using the default of: $(IntDir)%(FileName).o" );
+				    this.Log.LogError("The ObjectFileName setting in the Visual Studio C/C++ - Output Files sheet is set to a directory:");
+				    this.Log.LogError(objectFile);
+				    this.Log.LogError("^ This should be set to a filename instead. Consider using the default of: $(IntDir)%(FileName).o" );
 					return string.Empty;
 				}
 
-				string pchSetting = m_currentSourceItem.GetMetadata("PrecompiledHeader").ToLowerInvariant();
+				string pchSetting = this.m_currentSourceItem.GetMetadata("PrecompiledHeader").ToLowerInvariant();
 				if ( pchSetting == "use" )
 				{
-					string pchOutputH = Path.GetFullPath(m_currentSourceItem.GetMetadata("PrecompiledHeaderOutputFile"));
+					string pchOutputH = Path.GetFullPath(this.m_currentSourceItem.GetMetadata("PrecompiledHeaderOutputFile"));
 					templateStr.Append( " -include " );
 					templateStr.Append( Utils.PathSanitize( pchOutputH ) );
 					templateStr.Append( " " );
 				}
 
-				string sourcePath = Utils.PathSanitize( m_currentSourceItem.ToString() );
+				string sourcePath = Utils.PathSanitize(this.m_currentSourceItem.ToString() );
 
 				// -c = Compile the C/C++ file
 				// -MD = Generate dependency .d file
-				templateStr.Append( m_propXmlParse.ProcessProperties( m_currentSourceItem ) );
+				templateStr.Append(this.m_propXmlParse.ProcessProperties(this.m_currentSourceItem ) );
 				templateStr.Append( " -c -MD " );
 				templateStr.Append( sourcePath );
 
 				// Remove rtti stuff from plain C builds. -Wall generates warnings otherwise.
-				string compileAs = m_currentSourceItem.GetMetadata( "CompileAs" );
+				string compileAs = this.m_currentSourceItem.GetMetadata( "CompileAs" );
 				if (( compileAs != null ) && ( compileAs == "CompileAsC" ))
 				{
 					templateStr.Replace("-fno-rtti", "");
@@ -321,9 +317,9 @@ namespace vs.tool.Build.CPPTasks
 		private CanonicalTrackedOutputFiles ConstructWriteTLog( ITaskItem[] upToDateSources )
 		{
 			// Remove any files we're about to compile from the log
-			TaskItem item = new TaskItem( Path.Combine( TrackerIntermediateDirectory, WriteTLogNames[0] ) );
+			TaskItem item = new TaskItem( Path.Combine(this.TrackerIntermediateDirectory, this.WriteTLogNames[0] ) );
 			CanonicalTrackedOutputFiles files = new CanonicalTrackedOutputFiles( new TaskItem[] { item } );
-			files.RemoveEntriesForSource( Sources );
+			files.RemoveEntriesForSource(this.Sources );
 
 			// Add in the files we're compiling right now. Essentially just updating their output object filenames.
 			foreach ( ITaskItem sourceItem in upToDateSources )
@@ -342,12 +338,12 @@ namespace vs.tool.Build.CPPTasks
 
 		private void ConstructReadTLog( ITaskItem[] upToDateSources, CanonicalTrackedOutputFiles outputs )
 		{
-			string readTrackerPath = Path.GetFullPath( TrackerIntermediateDirectory + "\\" + ReadTLogNames[0] );
+			string readTrackerPath = Path.GetFullPath(this.TrackerIntermediateDirectory + "\\" + this.ReadTLogNames[0] );
 
 			// Rewrite out read log, with the sources we're *not* compiling right now.
 			TaskItem readTrackerItem = new TaskItem( readTrackerPath );
-			CanonicalTrackedInputFiles files = new CanonicalTrackedInputFiles(new TaskItem[] { readTrackerItem }, Sources, outputs, false, false);
-			files.RemoveEntriesForSource(Sources);
+			CanonicalTrackedInputFiles files = new CanonicalTrackedInputFiles(new TaskItem[] { readTrackerItem }, this.Sources, outputs, false, false);
+			files.RemoveEntriesForSource(this.Sources);
 			files.SaveTlog();
 
 			// Now append onto the read log the sources we're compiling. It'll parse the .d files for each compiled file, so we know the
@@ -408,7 +404,7 @@ namespace vs.tool.Build.CPPTasks
 						}
 						catch (Exception ex)
 						{
-							Log.LogWarningFromException(ex);
+						    this.Log.LogWarningFromException(ex);
 						}
 
 						// Finally write out the file and its dependencies, must ensure success before doing this
@@ -419,8 +415,8 @@ namespace vs.tool.Build.CPPTasks
 					}
 					catch ( Exception ex )
 					{
-						Log.LogError( "Failed processing dependencies in: " + dotDFile );
-						Log.LogError(ex.ToString());
+					    this.Log.LogError( "Failed processing dependencies in: " + dotDFile );
+					    this.Log.LogError(ex.ToString());
 					}
 				}
 			}
@@ -432,19 +428,19 @@ namespace vs.tool.Build.CPPTasks
 
 			// This updates any newly built source files' command line in the tlog files. So the dep checker can see when we modify 
 			// compiler switches, that the command line changed and we have to rebuild the file.
-			IDictionary<string, string> sourcesToCommandLines = MapSourcesToCommandLines();
+			IDictionary<string, string> sourcesToCommandLines = this.MapSourcesToCommandLines();
 			if ( upToDateSources != null )
 			{
 				foreach ( ITaskItem item in upToDateSources )
 				{
-					m_currentSourceItem = item;
+				    this.m_currentSourceItem = item;
 
 					string sourcePath = item.GetMetadata( "FullPath" );
 					if ( ( inputFilter == null ) || inputFilter( sourcePath ) )
 					{
 						// Add this newly built source files' command line into the tlog file
 						cmdLine.Length = 0;
-						cmdLine.Append( GenerateResponseFileCommands() );
+						cmdLine.Append(this.GenerateResponseFileCommands() );
 						cmdLine.Append( " " );
 						cmdLine.Append( sourcePath.ToUpperInvariant() );
 
@@ -456,7 +452,7 @@ namespace vs.tool.Build.CPPTasks
 					}
 				}
 			}
-			WriteSourcesToCommandLinesTable( sourcesToCommandLines );
+		    this.WriteSourcesToCommandLinesTable( sourcesToCommandLines );
 		}
 
 		private string CheckLineForWarningOrError(string[] parts, int errorIndex)
@@ -467,7 +463,7 @@ namespace vs.tool.Build.CPPTasks
 				// <relative file name>:<line number>: [error|warning]:<message>
 				if (parts[errorIndex - 1].Equals(" error") || parts[errorIndex - 1].Equals(" warning"))
 				{
-					string fullSourceFile = m_currentSourceItem.GetMetadata("FullPath");
+					string fullSourceFile = this.m_currentSourceItem.GetMetadata("FullPath");
 
 					// Reformat in a way VS knows how to handle
 					return String.Format("{0}({1}): {2}: {3}", fullSourceFile, parts[1], parts[errorIndex - 1],
@@ -488,7 +484,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return GCCToolPath;
+				return this.GCCToolPath;
 			}
 		}
 
@@ -528,7 +524,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return Sources;
+				return this.Sources;
 			}
 		}
 
@@ -548,24 +544,24 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				if ( base.IsPropertySet( "TrackerLogDirectory" ) )
+				if ( this.IsPropertySet( "TrackerLogDirectory" ) )
 				{
-					return base.ActiveToolSwitches["TrackerLogDirectory"].Value;
+					return this.ActiveToolSwitches["TrackerLogDirectory"].Value;
 				}
 				return null;
 			}
 			set
 			{
-				base.ActiveToolSwitches.Remove( "TrackerLogDirectory" );
+				this.ActiveToolSwitches.Remove( "TrackerLogDirectory" );
 				ToolSwitch switch2 = new ToolSwitch( ToolSwitchType.Directory )
 				{
 					DisplayName = "Tracker Log Directory",
 					Description = "Tracker Log Directory.",
 					ArgumentRelationList = new ArrayList(),
-					Value = VCToolTask.EnsureTrailingSlash( value )
+					Value = EnsureTrailingSlash( value )
 				};
-				base.ActiveToolSwitches.Add( "TrackerLogDirectory", switch2 );
-				base.AddActiveSwitchToolValue( switch2 );
+				this.ActiveToolSwitches.Add( "TrackerLogDirectory", switch2 );
+				this.AddActiveSwitchToolValue( switch2 );
 			}
 		}
 
@@ -573,7 +569,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return m_toolfilename + ".compile.command.1.tlog";
+				return this.m_toolfilename + ".compile.command.1.tlog";
 			}
 		}
 
@@ -581,7 +577,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return new string[] { m_toolfilename + ".compile.read.1.tlog" };
+				return new string[] { this.m_toolfilename + ".compile.read.1.tlog" };
 			}
 		}
 
@@ -589,7 +585,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return new string[] { m_toolfilename + ".compile.write.1.tlog" };
+				return new string[] { this.m_toolfilename + ".compile.write.1.tlog" };
 			}
 		}
 	}

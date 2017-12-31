@@ -5,18 +5,14 @@
 // GCC Linker task. Switches are data-driven via PropXmlParse.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Collections;
 using System.IO;
 using System.Reflection;
 using System.Resources;
-using System.Text.RegularExpressions;
 
 using Microsoft.Build.Framework;
 using Microsoft.Build.CPPTasks;
-using Microsoft.Build.Utilities;
 
 namespace vs.tool.Build.CPPTasks
 {
@@ -51,9 +47,9 @@ namespace vs.tool.Build.CPPTasks
 
 		protected override bool ValidateParameters()
 		{
-			m_propXmlParse = new PropXmlParse(PropertyXmlFile);
+		    this.m_propXmlParse = new PropXmlParse(this.PropertyXmlFile);
 
-			m_toolFileName = Path.GetFileNameWithoutExtension(GCCToolPath);
+		    this.m_toolFileName = Path.GetFileNameWithoutExtension(this.GCCToolPath);
 
 			return base.ValidateParameters();
 		}
@@ -69,13 +65,13 @@ namespace vs.tool.Build.CPPTasks
 		{
 			StringBuilder templateStr = new StringBuilder(Utils.EST_MAX_CMDLINE_LEN);
 
-			foreach ( ITaskItem sourceFile in Sources )
+			foreach ( ITaskItem sourceFile in this.Sources )
 			{
 				templateStr.Append( Utils.PathSanitize( sourceFile.GetMetadata("Identity")) );
 				templateStr.Append(" ");
 			}
 
-			templateStr.Append(m_propXmlParse.ProcessProperties(Sources[0]));
+			templateStr.Append(this.m_propXmlParse.ProcessProperties(this.Sources[0]));
 			 
 			return templateStr.ToString();
 		}
@@ -84,8 +80,8 @@ namespace vs.tool.Build.CPPTasks
 		{
 			// These tlog files are seemingly unused dep-wise, but cause problems when I add them to the proper TLog list
 			// Incremental builds keep appending to them, so this keeps them from just growing and growing.
-			string ignoreReadLogPath = Path.GetFullPath(TrackerLogDirectory + "\\" + m_toolFileName + ".read.1.tlog");
-			string ignoreWriteLogPath = Path.GetFullPath(TrackerLogDirectory + "\\" + m_toolFileName + ".write.1.tlog");
+			string ignoreReadLogPath = Path.GetFullPath(this.TrackerLogDirectory + "\\" + this.m_toolFileName + ".read.1.tlog");
+			string ignoreWriteLogPath = Path.GetFullPath(this.TrackerLogDirectory + "\\" + this.m_toolFileName + ".write.1.tlog");
 
 			try
 			{
@@ -94,7 +90,7 @@ namespace vs.tool.Build.CPPTasks
 			}
 			catch (Exception ex)
 			{
-				Log.LogWarningFromException(ex);
+			    this.Log.LogWarningFromException(ex);
 			}
 		}
 
@@ -102,16 +98,16 @@ namespace vs.tool.Build.CPPTasks
 		{
 			try
 			{
-				CleanUnusedTLogFiles();
+			    this.CleanUnusedTLogFiles();
 
-				if (EchoCommandLines == "true")
+				if (this.EchoCommandLines == "true")
 				{
-					Log.LogMessage(MessageImportance.High, pathToTool + " " + responseFileCommands);
+				    this.Log.LogMessage(MessageImportance.High, pathToTool + " " + responseFileCommands);
 				}
 			}
 			catch (Exception ex)
 			{
-				Log.LogWarningFromException(ex);
+			    this.Log.LogWarningFromException(ex);
 			}
 
 			int returnValue = 0;
@@ -122,7 +118,7 @@ namespace vs.tool.Build.CPPTasks
 			}
 			catch (Exception ex)
 			{
-				Log.LogWarningFromException(ex);
+			    this.Log.LogWarningFromException(ex);
 			}
 
 			return returnValue;
@@ -178,7 +174,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return GCCToolPath;
+				return this.GCCToolPath;
 			}
 		}
 
@@ -206,24 +202,24 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				if ( base.IsPropertySet( "TrackerLogDirectory" ) )
+				if ( this.IsPropertySet( "TrackerLogDirectory" ) )
 				{
-					return base.ActiveToolSwitches["TrackerLogDirectory"].Value;
+					return this.ActiveToolSwitches["TrackerLogDirectory"].Value;
 				}
 				return null;
 			}
 			set
 			{
-				base.ActiveToolSwitches.Remove( "TrackerLogDirectory" );
+				this.ActiveToolSwitches.Remove( "TrackerLogDirectory" );
 				ToolSwitch switch2 = new ToolSwitch( ToolSwitchType.Directory )
 				{
 					DisplayName = "Tracker Log Directory",
 					Description = "Tracker log directory.",
 					ArgumentRelationList = new ArrayList(),
-					Value = VCToolTask.EnsureTrailingSlash( value )
+					Value = EnsureTrailingSlash( value )
 				};
-				base.ActiveToolSwitches.Add( "TrackerLogDirectory", switch2 );
-				base.AddActiveSwitchToolValue( switch2 );
+				this.ActiveToolSwitches.Add( "TrackerLogDirectory", switch2 );
+				this.AddActiveSwitchToolValue( switch2 );
 			}
 		}
 
@@ -231,7 +227,7 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return m_toolFileName + "-link.command.1.tlog";
+				return this.m_toolFileName + "-link.command.1.tlog";
 			}
 		}
 
@@ -239,11 +235,8 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return new string[] { 
-					m_toolFileName + "-collect2.read.*.tlog", 
-					m_toolFileName + "-collect2.*.read.*.tlog", 
-					m_toolFileName + "-collect2-ld.read.*.tlog", 
-					m_toolFileName + "-collect2-ld.*.read.*.tlog"
+				return new string[] {
+				                            this.m_toolFileName + "-collect2.read.*.tlog", this.m_toolFileName + "-collect2.*.read.*.tlog", this.m_toolFileName + "-collect2-ld.read.*.tlog", this.m_toolFileName + "-collect2-ld.*.read.*.tlog"
 				};
 			}
 		}
@@ -252,11 +245,8 @@ namespace vs.tool.Build.CPPTasks
 		{
 			get
 			{
-				return new string[] { 
-					m_toolFileName + "-collect2.write.*.tlog", 
-					m_toolFileName + "-collect2.*.write.*.tlog", 
-					m_toolFileName + "-collect2-ld.write.*.tlog", 
-					m_toolFileName + "-collect2-ld.*.write.*.tlog"
+				return new string[] {
+				                            this.m_toolFileName + "-collect2.write.*.tlog", this.m_toolFileName + "-collect2.*.write.*.tlog", this.m_toolFileName + "-collect2-ld.write.*.tlog", this.m_toolFileName + "-collect2-ld.*.write.*.tlog"
 				};
 			}
 		}
