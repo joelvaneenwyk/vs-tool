@@ -30,27 +30,30 @@ if "%1" == "vs2017" (
 	set DEVENV="C:\Program Files (x86)\Microsoft Visual Studio %VS%\Common7\IDE\devenv.com"
 )
 
-set SLN=%~dp0\workspace\vs-tool.%1.sln
+set SLN=%~dp0\Workspace\vs-tool.%1.sln
 
 if "%1" == "vs2010" (
 	set PRJ1=vs-tool.Build.CPPTasks.%1
-	set PRJ2=sample.%1
+	set PRJ2=simple.%1
 ) else (
-	set PRJ1=%~dp0\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.%1.csproj
-	set PRJ2=%~dp0\sample\sample.%1.vcxproj
+	set PRJ1=%~dp0\Source\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.%1.csproj
+	set PRJ2=%~dp0\Samples\simple\simple.%1.vcxproj
 )
 
 set OPTIONS_VSTOOL=!SLN! %VERBOSE% /Rebuild Release /Project !PRJ1!
 set OPTIONS_EMSCRIPTEN=!SLN! %VERBOSE% /Rebuild "Release|Emscripten" /Project !PRJ2!
 
-echo.
-echo ===========================================================================
-echo.
+echo ===========================================================================-----
+echo Compiling %1 [%VS%]
+echo ===========================================================================-----
 
 if exist %DEVENV% (
-	echo Compiling %1 [%VS%]
 	echo %DEVENV% %OPTIONS_VSTOOL%
 	%DEVENV% %OPTIONS_VSTOOL%
+
+	echo.
+	echo ===========================================================================-----
+
 	echo %DEVENV% %OPTIONS_EMSCRIPTEN%
 	%DEVENV% %OPTIONS_EMSCRIPTEN%
 ) else (
@@ -58,7 +61,7 @@ if exist %DEVENV% (
 )
 
 echo.
-echo ===========================================================================
+echo ===========================================================================-----
 echo.
 
 ENDLOCAL
