@@ -33,12 +33,15 @@ if "%1" == "vs2017" (
 set SLN=%~dp0\workspace\vs-tool.%1.sln
 
 if "%1" == "vs2010" (
-	set PRJ=vs-tool.Build.CPPTasks.%1
-	set OPTIONS=!SLN! %VERBOSE% /Rebuild Release /Project !PRJ!
+	set PRJ1=vs-tool.Build.CPPTasks.%1
+	set PRJ2=sample.%1
 ) else (
-	set PRJ=%~dp0\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.%1.csproj
-	set OPTIONS=!SLN! %VERBOSE% /Rebuild Release /Project !PRJ!
+	set PRJ1=%~dp0\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.%1.csproj
+	set PRJ2=%~dp0\sample\sample.%1.vcxproj
 )
+
+set OPTIONS_VSTOOL=!SLN! %VERBOSE% /Rebuild Release /Project !PRJ1!
+set OPTIONS_EMSCRIPTEN=!SLN! %VERBOSE% /Rebuild "Release|Emscripten" /Project !PRJ2!
 
 echo.
 echo ===========================================================================
@@ -46,8 +49,10 @@ echo.
 
 if exist %DEVENV% (
 	echo Compiling %1 [%VS%]
-	echo %DEVENV% %OPTIONS%
-	%DEVENV% %OPTIONS%
+	echo %DEVENV% %OPTIONS_VSTOOL%
+	%DEVENV% %OPTIONS_VSTOOL%
+	echo %DEVENV% %OPTIONS_EMSCRIPTEN%
+	%DEVENV% %OPTIONS_EMSCRIPTEN%
 ) else (
 	echo Can't find compiler for %1
 )
