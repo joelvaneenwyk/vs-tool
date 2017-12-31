@@ -10,6 +10,8 @@
 *.vshost.exe
 *.exe.manifest
 pythonemcc/bin/Release/**
+Bin/**/Microsoft.Build*.dll
+Bin/Common/**
 obj
 Debug
 Release
