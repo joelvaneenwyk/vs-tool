@@ -235,8 +235,11 @@ namespace vs.tool.Build.CPPTasks
         {
             get
             {
-                return new string[] {
-                                            this.m_toolFileName + "-collect2.read.*.tlog", this.m_toolFileName + "-collect2.*.read.*.tlog", this.m_toolFileName + "-collect2-ld.read.*.tlog", this.m_toolFileName + "-collect2-ld.*.read.*.tlog"
+                return new[] {
+                    this.m_toolFileName + "-collect2.read.*.tlog",
+                    this.m_toolFileName + "-collect2.*.read.*.tlog",
+                    this.m_toolFileName + "-collect2-ld.read.*.tlog",
+                    this.m_toolFileName + "-collect2-ld.*.read.*.tlog"
                 };
             }
         }
@@ -246,7 +249,10 @@ namespace vs.tool.Build.CPPTasks
             get
             {
                 return new string[] {
-                                            this.m_toolFileName + "-collect2.write.*.tlog", this.m_toolFileName + "-collect2.*.write.*.tlog", this.m_toolFileName + "-collect2-ld.write.*.tlog", this.m_toolFileName + "-collect2-ld.*.write.*.tlog"
+                    this.m_toolFileName + "-collect2.write.*.tlog",
+                    this.m_toolFileName + "-collect2.*.write.*.tlog",
+                    this.m_toolFileName + "-collect2-ld.write.*.tlog",
+                    this.m_toolFileName + "-collect2-ld.*.write.*.tlog"
                 };
             }
         }

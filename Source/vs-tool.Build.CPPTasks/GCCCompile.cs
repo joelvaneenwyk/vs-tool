@@ -27,7 +27,7 @@ namespace vs.tool.Build.CPPTasks
     public class GCCCompile : CustomTrackedVCToolTask
     {
         private string m_toolfilename;
-        private ITaskItem m_currentSourceItem = null;
+        private ITaskItem m_currentSourceItem;
         private PropXmlParse m_propXmlParse;
 
         public bool BuildingInIDE { get; set; }

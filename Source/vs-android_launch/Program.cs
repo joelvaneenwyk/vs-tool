@@ -2,9 +2,9 @@
 
 namespace vs_android_launch
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             try
             {
@@ -29,7 +29,10 @@ namespace vs_android_launch
                         }
 
                         Process proc = Process.Start(adbPath, adbParams);
-                        proc.WaitForExit();
+                        if (proc != null)
+                        {
+                            proc.WaitForExit();
+                        }
                     }
                 }
             }
