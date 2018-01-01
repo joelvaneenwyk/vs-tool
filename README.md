@@ -1,19 +1,20 @@
-vs-tool
-=======
+# vs-tool
+
+[![License: Zlib](https://img.shields.io/badge/License-Zlib-lightgrey.svg)](https://opensource.org/licenses/Zlib)
 
 <img src="http://www.gavpugh.com/img/vs-android/paneicon.png" align="right">
 
-vs-tool is a Visual Studio plugin to integrate external compiler/linker toolchains to the VS IDE. It supports Visual Studio 2010, 2012, 2013, 2015, and 2017. Earlier versions lack the MSBuild integration with the C/C++ compilation systems. It is also intended to provide a collection of scripts and utilities to support integrated development of Android NDK C/C++ software under Microsoft Visual Studio.
+vs-tool is a Visual Studio plugin originally created by [Jukka Jylänki](http://clb.demon.fi) ([original vs-tool](https://github.com/juj/vs-tool)) to integrate external compiler/linker toolchains to the VS IDE. It supports Visual Studio 2010, 2012, 2013, 2015, and 2017. Earlier versions (pre-VS2010) lack the MSBuild integration with the C/C++ compilation systems. It's also intended to provide a collection of scripts and utilities to support integrated development of Android NDK C/C++ software under Microsoft Visual Studio.
+
+This version of vs-tool differs in the following ways:
+
+1. You can use these plugins without installing (aka. copying) it to the MSBuild directory. Instead you can use the _Import_ command to load them directly. This is done by using **$(MSBuildThisFileDirectory)** in most places instead of using **$(VCTargetsPath)**.
+2. Samples are provided in the directory tree and are tested.
+3. The source code for vs-android.Build.CPPTasks.Android (now renamed to vs-tool.Build.CPPTasks) is part of the repository.
 
 This plugin is a derivation of the excellent work done by Gavin Pugh for the [vs-android](http://code.google.com/p/vs-android/) tool, and is therefore also licensed under the [Zlib license](http://en.wikipedia.org/wiki/Zlib_License).
 
-Also, the free "Express" editions of Visual Studio are not supported. If you wish to use a free version of Visual Studio, use the new "Community Edition" of Visual Studio 2013. That works fine with external plugins, like vs-android.
-
-## Installation Download
-
-* Latest version: [vs-android-0.964.zip](http://www.gavpugh.com/downloads/vs-android-0.964.zip)
-* Samples: [vs-android_samples.zip](http://www.gavpugh.com/downloads/vs-android_samples.zip) - Set of sample projects<br>(last updated for v0.94 - 24th July 2012 - Still works with latest)
-
+Also, the free "Express" editions of Visual Studio are **not** supported. If you wish to use a free version of Visual Studio, use the new "Community Edition" of Visual Studio 2013. That version works fine with external plugins like this one.
 
 ## Features
 
@@ -33,7 +34,7 @@ Also, the free "Express" editions of Visual Studio are not supported. If you wis
 * Does not require setting up new solution/project files to target, can be added to existing solutions.
 * Adapts the Project Properties dialog to show compiler/linker parameters specific to each tool.
 
-Important! At the current stage, the vs-tool plugin should be considered experimental and hackish in nature. This means that when you update to a newer version of the plugin, solutions that use vs-tool CAN LOSE previously set configuration in the solution/project property pages, or even completely FAIL to load into Visual Studio. You were warned.
+**Important!** At the current stage, the vs-tool plugin should be considered experimental and hackish in nature. This means that when you update to a newer version of the plugin, solutions that use vs-tool CAN LOSE previously set configuration in the solution/project property pages, or even completely FAIL to load into Visual Studio. **You were warned**.
 
 If you want to help with the project, please contribute with bug reports and patches.
 
@@ -50,17 +51,15 @@ If you want to help with the project, please contribute with bug reports and pat
 
 * [Technical notes about implementation, and future plans for vs-android] (https://github.com/gavinpugh/vs-android/blob/wiki/TechNotesFuturePlans.md)
 
-Plugin Installation
--------------------
+## Plugin Installation
 
-For each *platform* you are interested in using (Clang, Emscripten, MinGW and/or NaCl), do the following:
+For each *platform* you are interested in using (Android, Clang, Emscripten, MinGW and/or NaCl), do the following:
 
 1. Copy the folder *platform*\ from this repository to C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Platforms\\*platform*\ (or the corresponding location where MSBuild exists on your system)
 1. To enable an existing solution to be built via vs-tool, create a a platform for it from Configuration Manager -> Active Solution Platform -> New... -> *platform*.
 1. To choose the toolchain to build with, edit the dropdown list at Project Properties -> General -> Platform Toolset.
 
-Setup for MinGW
----------------
+## Setup for MinGW
 
 MinGW is a toolchain to compile native Windows applications using a Windows port of the GCC compiler. With vs-tool you can build Visual Studio solutions using MinGW.
 
@@ -68,8 +67,7 @@ MinGW is a toolchain to compile native Windows applications using a Windows port
 1. Set MINGW_BIN environment variable to point to the bin\ directory where the MinGW toolchain executables (gcc.exe et al.) reside in.
 1. Alternatively, in Visual Studio, go to Project Properties -> Toolchain Directories -> MinGW Compiler Path, and specify there the bin\ directory where the MinGW toolchain executables are located.
 
-Setup for Clang
----------------
+## Setup for Clang
 
 [Clang](http://clang.llvm.org/) is a C/C++ frontend for the [LLVM Compiler Infrastructure](http://llvm.org/). Vs-tool can also invoke Clang to build Visual Studio solutions. Note however, that Clang does not yet support building native Windows applications.
 
@@ -77,8 +75,7 @@ Setup for Clang
 1. Set CLANG_BIN environment variable to point to the directory where the Clang toolchain executables (clang.exe and the rest) reside in.
 1. Alternatively, in Visual Studio, go to Project Properties -> Toolchain Directories -> Clang Compiler Path, and specify there the directory where the Clang toolchain executables are located.
 
-Setup for Emscripten (emcc)
---------------
+## Setup for Emscripten (emcc)
 
 Emscripten is a compiler/linker that allows you to compile C/C++ code to JavaScript. See [http://emscripten.org/](http://emscripten.org/). **Vs-tool** can be used to build Visual Studio solutions to JavaScript.
 
@@ -165,6 +162,7 @@ v0.94 - 24th July 2012
 * Fix to make sure ARM5/ARM7 GCC flags are passed correctly to the compiler. Thanks to 'Drew Dunlop'.
 
 v0.93 - 13th November 2011
+
 * NDK 'r7' was a breaking change for vs-android. This version now requires 'r7' or newer to be installed.
 * Fixed breaking changes to the location of STL libraries. Also fixed new linking issues introduced by STL changes.
 * Removed support for defunct arm 4.4.0 toolset.
@@ -234,5 +232,5 @@ v0.1 - 30th Jan 2011
 
 (c) 2015 <a href="https://plus.google.com/116894316812948433768?rel=author" rel="author">Gavin Pugh</a>
 
-vs-android is released under the zlib license.
+vs-android and vs-tool are released under the zlib license.
 http://en.wikipedia.org/wiki/Zlib_License
