@@ -39,13 +39,8 @@ init:
   - appveyor DownloadFile %ANDROID_TOOLS_URL% -FileName android-tools.zip
   - 7z x android-tools.zip -o"%ANDROID_HOME%" > nul
 
-  - mkdir %ANDROID_HOME%\licenses
-  - ps: 'Add-Content -Value "`n8933bad161af4178b1185d1a37fbf41ea5269c55`n`nd56f5187479451eabf01fb78af6dfcb131a6481e" -Path $env:ANDROID_HOME\licenses\android-sdk-license -Encoding ASCII'
-  - ps: 'Add-Content -Value "`n84831b9409646a918e30573bab4c9c91346d8abd`n504667f4c0de7af1a06de9f4b1727b84351f2910" -Path $env:ANDROID_HOME\licenses\android-sdk-preview-license -Encoding ASCII'
-  - ps: 'Add-Content -Value "`nd975f751698a77b662f1254ddbeed3901e976f5a" -Path $env:ANDROID_HOME\licenses\intel-android-extra-license -Encoding ASCII'
-  - mkdir C:\Users\appveyor\.android
-  - ps: 'New-Item C:\Users\appveyor\.android\repositories.cfg -type file'
-  - '%ANDROID_HOME%\tools\bin\sdkmanager.bat licenses'
+  - FOR /L %i IN (1,1,10) DO ( ECHO y>>accept_all.txt )
+  - '%ANDROID_HOME%\tools\bin\sdkmanager.bat licenses < accept_all.txt'
   - '%ANDROID_HOME%\tools\bin\sdkmanager.bat tools'
   - '%ANDROID_HOME%\tools\bin\sdkmanager.bat platform-tools'
   - '%ANDROID_HOME%\tools\bin\sdkmanager.bat build-tools;25.0.0'
