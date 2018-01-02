@@ -35,7 +35,7 @@ install:
   - cmd: %APPVEYOR_BUILD_FOLDER%\emsdk\emsdk activate latest
 
 environment:
-  EMSCRIPTEN: %APPVEYOR_BUILD_FOLDER%\emsdk
+  - EMSCRIPTEN: %APPVEYOR_BUILD_FOLDER%\emsdk
 
 before_build:
   - nuget restore Workspace\vs-tool.%VERSION%.sln
