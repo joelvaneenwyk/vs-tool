@@ -38,7 +38,7 @@ before_build:
   - nuget restore %SRC_FOLDER%\%SLN_NAME%
 
 build_script:
-  - msbuild Source\vs-tool.Build.CPPTasks\%PROJECT_NAME%.vcxproj /p:Platform="x86"
+  - msbuild Source\vs-tool.Build.CPPTasks\%PROJECT_NAME%.csproj /p:Platform="x86"
 
 after_test:
    -
