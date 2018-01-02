@@ -22,8 +22,10 @@
     <ProjectGuid>{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}</ProjectGuid>
     <RootNamespace>sample</RootNamespace>
     <VSToolRoot>$(ProjectDir)..\..\MSBuild</VSToolRoot>
-    <ClangPath>E:\ThirdParty\emsdk\clang\e1.37.26_64bit</ClangPath>
-    <EmccPath>E:\ThirdParty\emsdk\emscripten\1.37.26</EmccPath>
+    <PlatformToolset>
+    </PlatformToolset>
+    <VCToolsInstallDir>
+    </VCToolsInstallDir>
     <WindowsTargetPlatformVersion>
     </WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -66,23 +68,21 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Emscripten'">
-    <ClangPath>$(ClangPath)</ClangPath>
+  <PropertyGroup>
+    <OutDir>$(SolutionDir)$(Platform)\$(VisualStudioVersion)\$(Configuration)\</OutDir>
+    <TargetPath>$(SolutionDir)$(Platform)\$(VisualStudioVersion)\$(Configuration)</TargetPath>
+    <IntDir>$(OutDir)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Emscripten'">
-    <EmccPath>$(EmccPath)</EmccPath>
-    <IntDir>$(OutDir)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Emscripten'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Emscripten'">
     <IntDir>$(OutDir)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

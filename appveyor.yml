@@ -1,29 +1,86 @@
 version: 1.0.{build}
 
 environment:
-   matrix:
-      # Visual Studio 2015
-      - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-        SRC_FOLDER: Workspace
-        PROJECT_NAME: vs-tool.Build.CPPTasks.vs2015
-        SLN_NAME: vs-tool.vs2015.sln
-      # Visual Studio 2017
-      - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-        SRC_FOLDER: Workspace
-        PROJECT_NAME: vs-tool.Build.CPPTasks.vs2017
-        SLN_NAME: vs-tool.vs2017.sln
+  EMSDK: "C:\\emsdk"
+  ANDROID_HOME: "C:\\android-sdk-windows"
+  ANDROID_NDK_HOME: "C:\\android-sdk-windows\\ndk-bundle"
+  JAVA_HOME: "C:\\Program Files\\Java\\jdk1.8.0"
+  ANDROID_TOOLS_URL: "https://dl.google.com/android/repository/sdk-tools-windows-3859397.zip"
+  EMSCRIPTEN_VERSION: 1.37.26
+  EMSCRIPTEN: c:\emsdk\emscripten\1.37.26
+  LLVM_ROOT: c:\emsdk\clang\e1.37.26_64bit
+  CLANG_BIN: c:\emsdk\clang\e1.37.26_64bit
+  MINGW_BIN: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1
+  matrix:
+    # Visual Studio 2010
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+      VERSION: vs2010
+      DEFINES: VS2010DLL
+    # Visual Studio 2012
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+      VERSION: vs2012
+      DEFINES: VS2012DLL
+    # Visual Studio 2013
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+      VERSION: vs2013
+      DEFINES: VS2013DLL
+    # Visual Studio 2015
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      VERSION: vs2015
+      DEFINES: VS2015DLL
+    # Visual Studio 2017
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      VERSION: vs2017
+      DEFINES: VS2017DLL
+
+clone_folder: c:\projects\vs-tool
 
 configuration:
-   - Release
+  - Release
 
 install:
-   -
+  # Download the Android SDK
+  - appveyor DownloadFile %ANDROID_TOOLS_URL% -FileName android-tools.zip
+  - 7z x android-tools.zip -o"%ANDROID_HOME%" > nul
+
+  - mkdir C:\Users\appveyor\.android
+  - ps: 'New-Item C:\Users\appveyor\.android\repositories.cfg -type file | out-null'
+  - ps: for($i=0;$i -lt 30;$i++) { $response += "y`n"}; $response | & $Env:ANDROID_HOME\tools\bin\sdkmanager --licenses | out-null
+  - 'move %ANDROID_HOME%\tools %ANDROID_HOME%\old_tools >nul 2>&1'
+  - '%ANDROID_HOME%\old_tools\bin\sdkmanager.bat tools >nul 2>&1'
+  - 'rmdir /s /q %ANDROID_HOME%\old_tools'
+  - '%ANDROID_HOME%\tools\bin\sdkmanager.bat platform-tools'
+  - '%ANDROID_HOME%\tools\bin\sdkmanager.bat build-tools;25.0.0'
+  - '%ANDROID_HOME%\tools\bin\sdkmanager.bat platforms;android-25'
+  - '%ANDROID_HOME%\tools\bin\sdkmanager.bat extras;android;m2repository'
+  - '%ANDROID_HOME%\tools\bin\sdkmanager.bat --channel=1 ndk-bundle'
+  - '%ANDROID_HOME%\tools\bin\sdkmanager.bat cmake;3.6.4111459'
+
+  # Download the Emscripten SDK
+  - ps: Start-FileDownload 'https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable-64bit.zip'
+  - cmd: 7z x emsdk-portable-64bit.zip -o%EMSDK%
+  - cmd: '%EMSDK%\emsdk update'
+
+  # We install latest to get node, java, etc but we intentionally
+  # also install the version we know about so we can specify it
+  # manually and pass it in correctly.
+  - cmd: '%EMSDK%\emsdk install latest'
+  - cmd: '%EMSDK%\emsdk install clang-e%EMSCRIPTEN_VERSION%-64bit'
+  - cmd: '%EMSDK%\emsdk install emscripten-%EMSCRIPTEN_VERSION%'
 
 before_build:
-   - nuget restore %SRC_FOLDER%
+  # Not necessary at the moment but adding for good measure
+  - nuget restore Workspace\vs-tool.%VERSION%.sln
 
 build_script:
-   - msbuild %SLN_NAME% /t:%PROJECT_NAME% /p:configuration=Release
+  # Build the vs-tool task
+  - msbuild Source\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.%VERSION%.csproj /property:Configuration=Release /p:Platform="Any CPU" /p:DefineConstants="%DEFINES%" /t:Clean,Build
+
+  # Set environment up for Emscripten
+  - cmd: '%EMSDK%\emsdk activate emscripten-%EMSCRIPTEN_VERSION%'
+
+  # Build release version of Emscripten
+  - msbuild Samples\simple\simple.%VERSION%.vcxproj /property:Configuration=Release /p:Platform="Emscripten" /t:Clean,Build
 
 after_test:
    -
