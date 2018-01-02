@@ -8,6 +8,7 @@ environment:
   EMSCRIPTEN_VERSION: 1.37.27
   EMSCRIPTEN: c:\projects\vs-tool\emsdk\emscripten\1.37.27
   CLANG_BIN: c:\projects\vs-tool\emsdk\clang\e1.37.27_64bit
+  MINGW_BIN: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1
   matrix:
     # Visual Studio 2010
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
@@ -42,6 +43,7 @@ init:
   - ps: 'Add-Content -Value "`n8933bad161af4178b1185d1a37fbf41ea5269c55`n`nd56f5187479451eabf01fb78af6dfcb131a6481e" -Path $env:ANDROID_HOME\licenses\android-sdk-license -Encoding ASCII'
   - ps: 'Add-Content -Value "`n84831b9409646a918e30573bab4c9c91346d8abd`n504667f4c0de7af1a06de9f4b1727b84351f2910" -Path $env:ANDROID_HOME\licenses\android-sdk-preview-license -Encoding ASCII'
   - ps: 'Add-Content -Value "`nd975f751698a77b662f1254ddbeed3901e976f5a" -Path $env:ANDROID_HOME\licenses\intel-android-extra-license -Encoding ASCII'
+  - mkdir C:\Users\appveyor\.android
   - ps: 'New-Item C:\Users\appveyor\.android\repositories.cfg -type file'
   - '%ANDROID_HOME%\tools\bin\sdkmanager.bat licenses'
   - '%ANDROID_HOME%\tools\bin\sdkmanager.bat tools'
