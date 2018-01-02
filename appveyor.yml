@@ -41,9 +41,10 @@ init:
 
   - mkdir C:\Users\appveyor\.android
   - ps: 'New-Item C:\Users\appveyor\.android\repositories.cfg -type file'
-  - ps: for($i=0;$i -lt 30;$i++) { $response += "y`n"}; $response | & $Env:ANDROID_HOME\tools\bin\sdkmanager --licenses
-  - move %ANDROID_HOME%\tools %ANDROID_HOME%\old_tools
-  - '%ANDROID_HOME%\old_tools\bin\sdkmanager.bat tools'
+  - ps: for($i=0;$i -lt 30;$i++) { $response += "y`n"}; $response | & $Env:ANDROID_HOME\tools\bin\sdkmanager --licenses | out-null
+  - 'move %ANDROID_HOME%\tools %ANDROID_HOME%\old_tools >nul 2>&1'
+  - '%ANDROID_HOME%\old_tools\bin\sdkmanager.bat tools >nul 2>&1'
+  - 'rmdir /s /q %ANDROID_HOME%\old_tools'
   - '%ANDROID_HOME%\tools\bin\sdkmanager.bat platform-tools'
   - '%ANDROID_HOME%\tools\bin\sdkmanager.bat build-tools;25.0.0'
   - '%ANDROID_HOME%\tools\bin\sdkmanager.bat platforms;android-25'
