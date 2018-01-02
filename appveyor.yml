@@ -39,7 +39,7 @@ init:
   - appveyor DownloadFile %ANDROID_TOOLS_URL% -FileName android-tools.zip
   - 7z x android-tools.zip -o"%ANDROID_HOME%" > nul
 
-  - ps: for($i=0;$i -lt 30;$i++) { $response += "y`n"}; $response | $Env:ANDROID_HOME\tools\bin\sdkmanager --licenses
+  - ps: for($i=0;$i -lt 30;$i++) { $response += "y`n"}; $response | & $Env:ANDROID_HOME\tools\bin\sdkmanager --licenses
   - '%ANDROID_HOME%\tools\bin\sdkmanager.bat tools'
   - '%ANDROID_HOME%\tools\bin\sdkmanager.bat platform-tools'
   - '%ANDROID_HOME%\tools\bin\sdkmanager.bat build-tools;25.0.0'
