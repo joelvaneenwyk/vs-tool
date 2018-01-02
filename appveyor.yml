@@ -39,6 +39,8 @@ init:
   - appveyor DownloadFile %ANDROID_TOOLS_URL% -FileName android-tools.zip
   - 7z x android-tools.zip -o"%ANDROID_HOME%" > nul
 
+  - mkdir C:\Users\appveyor\.android
+  - ps: 'New-Item C:\Users\appveyor\.android\repositories.cfg -type file'
   - ps: for($i=0;$i -lt 30;$i++) { $response += "y`n"}; $response | & $Env:ANDROID_HOME\tools\bin\sdkmanager --licenses
   - '%ANDROID_HOME%\tools\bin\sdkmanager.bat tools'
   - '%ANDROID_HOME%\tools\bin\sdkmanager.bat platform-tools'
