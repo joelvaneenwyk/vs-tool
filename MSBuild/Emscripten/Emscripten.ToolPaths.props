@@ -1,7 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <!-- Present in ALL Emscripten builds, and use the '-Xclang -isystem' prefix. -->
-    <ClangPath Condition="'$(ClangPath)' == ''">$(CLANG_BIN)</ClangPath>
+    <ClangPath Condition="!exists('$(ClangPath)\clang.exe')">$(CLANG_BIN)</ClangPath>
     <MinGWPath Condition="'$(MinGWPath)' == ''">$(MINGW_BIN)</MinGWPath>
     <EmccPath Condition="!exists('$(EmccPath)\emsdk')">$(EMSCRIPTEN)</EmccPath>
     <NaclPath Condition="'$(NaclPath)' == ''">$(NACL_BIN)</NaclPath>

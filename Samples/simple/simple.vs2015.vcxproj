@@ -22,8 +22,6 @@
     <ProjectGuid>{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}</ProjectGuid>
     <RootNamespace>sample</RootNamespace>
     <VSToolRoot>$(ProjectDir)..\..\MSBuild</VSToolRoot>
-    <ClangPath>E:\ThirdParty\emsdk\clang\e1.37.26_64bit</ClangPath>
-    <EmccPath>E:\ThirdParty\emsdk\emscripten\1.37.26</EmccPath>
     <WindowsTargetPlatformVersion>
     </WindowsTargetPlatformVersion>
   </PropertyGroup>
