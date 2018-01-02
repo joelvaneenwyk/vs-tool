@@ -28,7 +28,11 @@ configuration:
   - Release
 
 install:
-  -
+  - ps: Start-FileDownload 'https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable-64bit.zip'
+  - cmd: 7z x emsdk-portable-64bit.zip -oemsdk
+  - cmd: emsdk\emsdk update
+  - cmd: emsdk\emsdk install latest
+  - cmd: emsdk\emsdk activate latest
 
 before_build:
   - nuget restore Workspace\vs-tool.%VERSION%.sln
