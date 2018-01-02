@@ -1,0 +1,29 @@
+version: 1.0.{build}
+
+environment:
+   matrix:
+      # Visual Studio 2015
+      - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+        SRC_FOLDER: Workspace
+        PROJECT_NAME: vs-tool.Build.CPPTasks.vs2015
+        SLN_NAME: vs-tool.vs2015.sln
+      # Visual Studio 2017
+      - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+        SRC_FOLDER: Workspace
+        PROJECT_NAME: vs-tool.Build.CPPTasks.vs2017
+        SLN_NAME: vs-tool.vs2017.sln
+
+configuration:
+   - Release
+
+install:
+   -
+
+before_build:
+   - nuget restore %SRC_FOLDER%
+
+build_script:
+   - msbuild %SLN_NAME% /t:%PROJECT_NAME% /p:configuration=Release
+
+after_test:
+   -
