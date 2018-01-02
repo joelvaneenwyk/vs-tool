@@ -5,28 +5,28 @@ environment:
     # Visual Studio 2010
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
       SRC_FOLDER: Workspace
-      PROJECT_NAME: vs-tool.Build.CPPTasks.vs2010
-      SLN_NAME: vs-tool.vs2010.sln
+      VERSION: vs2010
+      DEFINES: VS2010DLL
     # Visual Studio 2012
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
       SRC_FOLDER: Workspace
-      PROJECT_NAME: vs-tool.Build.CPPTasks.vs2012
-      SLN_NAME: vs-tool.vs2012.sln
+      VERSION: vs2012
+      DEFINES: VS2012DLL
     # Visual Studio 2013
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
       SRC_FOLDER: Workspace
-      PROJECT_NAME: vs-tool.Build.CPPTasks.vs2013
-      SLN_NAME: vs-tool.vs2013.sln
+      VERSION: vs2013
+      DEFINES: VS2013DLL
     # Visual Studio 2015
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
       SRC_FOLDER: Workspace
-      PROJECT_NAME: vs-tool.Build.CPPTasks.vs2015
-      SLN_NAME: vs-tool.vs2015.sln
+      VERSION: vs2015
+      DEFINES: VS2015DLL
     # Visual Studio 2017
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       SRC_FOLDER: Workspace
-      PROJECT_NAME: vs-tool.Build.CPPTasks.vs2017
-      SLN_NAME: vs-tool.vs2017.sln
+      VERSION: vs2017
+      DEFINES: VS2017DLL
 
 configuration:
   - Release
@@ -38,7 +38,6 @@ before_build:
   - nuget restore %SRC_FOLDER%\%SLN_NAME%
 
 build_script:
-  - msbuild Source\vs-tool.Build.CPPTasks\%PROJECT_NAME%.csproj /p:Platform="x86"
-
+  - msbuild Source\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.%VERSION%.csproj /property:Configuration=Release /p:Platform="Any CPU" /p:DefineConstants="%DEFINES%" /t:Clean,Build
 after_test:
    -
