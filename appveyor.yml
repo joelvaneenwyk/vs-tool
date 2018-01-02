@@ -6,9 +6,9 @@ environment:
   ANDROID_NDK_HOME: "C:\\android-sdk-windows\\ndk-bundle"
   JAVA_HOME: "C:\\Program Files\\Java\\jdk1.8.0"
   ANDROID_TOOLS_URL: "https://dl.google.com/android/repository/sdk-tools-windows-3859397.zip"
-  EMSCRIPTEN_VERSION: 1.37.27
-  EMSCRIPTEN: c:\emsdk\emscripten\1.37.27
-  CLANG_BIN: c:\emsdk\clang\e1.37.27_64bit
+  EMSCRIPTEN_VERSION: 1.37.26
+  EMSCRIPTEN: c:\emsdk\emscripten\1.37.26
+  CLANG_BIN: c:\emsdk\clang\e1.37.26_64bit
   MINGW_BIN: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1
   matrix:
     # Visual Studio 2010
