@@ -7,8 +7,8 @@ environment:
   JAVA_HOME: "C:\\Program Files\\Java\\jdk1.8.0"
   ANDROID_TOOLS_URL: "https://dl.google.com/android/repository/sdk-tools-windows-3859397.zip"
   EMSCRIPTEN_VERSION: 1.37.27
-  EMSCRIPTEN: c:\projects\vs-tool\emsdk\emscripten\1.37.27
-  CLANG_BIN: c:\projects\vs-tool\emsdk\clang\e1.37.27_64bit
+  EMSCRIPTEN: c:\emsdk\emscripten\1.37.27
+  CLANG_BIN: c:\emsdk\clang\e1.37.27_64bit
   MINGW_BIN: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1
   matrix:
     # Visual Studio 2010
@@ -34,7 +34,10 @@ environment:
 
 clone_folder: c:\projects\vs-tool
 
-init:
+configuration:
+  - Release
+
+install:
   # Download the Android SDK
   - appveyor DownloadFile %ANDROID_TOOLS_URL% -FileName android-tools.zip
   - 7z x android-tools.zip -o"%ANDROID_HOME%" > nul
@@ -55,11 +58,6 @@ init:
   # Download the Emscripten SDK
   - ps: Start-FileDownload 'https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable-64bit.zip'
   - cmd: 7z x emsdk-portable-64bit.zip -o%EMSDK%
-
-configuration:
-  - Release
-
-install:
   - cmd: '%EMSDK%\emsdk update'
   - cmd: '%EMSDK%\emsdk install emscripten-%EMSCRIPTEN_VERSION%'
   - cmd: '%EMSDK%\emsdk activate emscripten-%EMSCRIPTEN_VERSION%'
