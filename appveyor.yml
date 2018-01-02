@@ -1,6 +1,7 @@
 version: 1.0.{build}
 
 environment:
+  EMSDK: "C:\\emsdk"
   ANDROID_HOME: "C:\\android-sdk-windows"
   ANDROID_NDK_HOME: "C:\\android-sdk-windows\\ndk-bundle"
   JAVA_HOME: "C:\\Program Files\\Java\\jdk1.8.0"
@@ -20,7 +21,6 @@ environment:
       DEFINES: VS2012DLL
     # Visual Studio 2013
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
-      SRC_FOLDER: Workspace
       VERSION: vs2013
       DEFINES: VS2013DLL
     # Visual Studio 2015
@@ -40,7 +40,7 @@ init:
   - 7z x android-tools.zip -o"%ANDROID_HOME%" > nul
 
   - mkdir C:\Users\appveyor\.android
-  - ps: 'New-Item C:\Users\appveyor\.android\repositories.cfg -type file'
+  - ps: 'New-Item C:\Users\appveyor\.android\repositories.cfg -type file | out-null'
   - ps: for($i=0;$i -lt 30;$i++) { $response += "y`n"}; $response | & $Env:ANDROID_HOME\tools\bin\sdkmanager --licenses | out-null
   - 'move %ANDROID_HOME%\tools %ANDROID_HOME%\old_tools >nul 2>&1'
   - '%ANDROID_HOME%\old_tools\bin\sdkmanager.bat tools >nul 2>&1'
@@ -54,15 +54,15 @@ init:
 
   # Download the Emscripten SDK
   - ps: Start-FileDownload 'https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable-64bit.zip'
-  - cmd: 7z x emsdk-portable-64bit.zip -o%APPVEYOR_BUILD_FOLDER%\emsdk
+  - cmd: 7z x emsdk-portable-64bit.zip -o%EMSDK%
 
 configuration:
   - Release
 
 install:
-  - cmd: emsdk\emsdk update
-  - cmd: emsdk\emsdk install emscripten-%EMSCRIPTEN_VERSION%
-  - cmd: emsdk\emsdk activate emscripten-%EMSCRIPTEN_VERSION%
+  - cmd: '%EMSDK%\emsdk update'
+  - cmd: '%EMSDK%\emsdk install emscripten-%EMSCRIPTEN_VERSION%'
+  - cmd: '%EMSDK%\emsdk activate emscripten-%EMSCRIPTEN_VERSION%'
 
 before_build:
   - nuget restore Workspace\vs-tool.%VERSION%.sln
