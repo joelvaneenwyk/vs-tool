@@ -29,15 +29,20 @@ configuration:
 
 install:
   - ps: Start-FileDownload 'https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable-64bit.zip'
-  - cmd: 7z x emsdk-portable-64bit.zip -oemsdk
-  - cmd: emsdk\emsdk update
-  - cmd: emsdk\emsdk install latest
-  - cmd: emsdk\emsdk activate latest
+  - cmd: 7z x emsdk-portable-64bit.zip -o%APPVEYOR_BUILD_FOLDER%\emsdk
+  - cmd: %APPVEYOR_BUILD_FOLDER%\emsdk\emsdk update
+  - cmd: %APPVEYOR_BUILD_FOLDER%\emsdk\emsdk install latest
+  - cmd: %APPVEYOR_BUILD_FOLDER%\emsdk\emsdk activate latest
+
+environment:
+  EMSCRIPTEN: %APPVEYOR_BUILD_FOLDER%\emsdk
 
 before_build:
   - nuget restore Workspace\vs-tool.%VERSION%.sln
 
 build_script:
   - msbuild Source\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.%VERSION%.csproj /property:Configuration=Release /p:Platform="Any CPU" /p:DefineConstants="%DEFINES%" /t:Clean,Build
+  - msbuild Samples\simple\simple.%VERSION%.vcxproj /property:Configuration=Release /p:Platform="Emscritpen" /t:Clean,Build
+
 after_test:
    -
