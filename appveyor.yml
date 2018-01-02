@@ -2,6 +2,11 @@ version: 1.0.{build}
 
 environment:
    matrix:
+      # Visual Studio 2013
+      - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+        SRC_FOLDER: Workspace
+        PROJECT_NAME: vs-tool.Build.CPPTasks.vs2013
+        SLN_NAME: vs-tool.vs2013.sln
       # Visual Studio 2015
       - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
         SRC_FOLDER: Workspace
@@ -20,7 +25,7 @@ install:
    -
 
 before_build:
-   - nuget restore %SRC_FOLDER%
+   - nuget restore %SRC_FOLDER%\%SLN_NAME%
 
 build_script:
    - msbuild %SLN_NAME% /t:%PROJECT_NAME% /p:configuration=Release
