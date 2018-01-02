@@ -4,12 +4,10 @@ environment:
   matrix:
     # Visual Studio 2010
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
-      SRC_FOLDER: Workspace
       VERSION: vs2010
       DEFINES: VS2010DLL
     # Visual Studio 2012
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
-      SRC_FOLDER: Workspace
       VERSION: vs2012
       DEFINES: VS2012DLL
     # Visual Studio 2013
@@ -19,12 +17,10 @@ environment:
       DEFINES: VS2013DLL
     # Visual Studio 2015
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-      SRC_FOLDER: Workspace
       VERSION: vs2015
       DEFINES: VS2015DLL
     # Visual Studio 2017
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-      SRC_FOLDER: Workspace
       VERSION: vs2017
       DEFINES: VS2017DLL
 
@@ -35,7 +31,7 @@ install:
   -
 
 before_build:
-  - nuget restore %SRC_FOLDER%\%SLN_NAME%
+  - nuget restore Workspace\vs-tool.%VERSION%.sln
 
 build_script:
   - msbuild Source\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.%VERSION%.csproj /property:Configuration=Release /p:Platform="Any CPU" /p:DefineConstants="%DEFINES%" /t:Clean,Build
