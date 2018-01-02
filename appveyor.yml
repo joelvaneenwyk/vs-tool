@@ -6,23 +6,30 @@ environment:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
       VERSION: vs2010
       DEFINES: VS2010DLL
+      EMSCRIPTEN: c:\projects\vs-tool\emsdk
     # Visual Studio 2012
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
       VERSION: vs2012
       DEFINES: VS2012DLL
+      EMSCRIPTEN: c:\projects\vs-tool\emsdk
     # Visual Studio 2013
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
       SRC_FOLDER: Workspace
       VERSION: vs2013
       DEFINES: VS2013DLL
+      EMSCRIPTEN: c:\projects\vs-tool\emsdk
     # Visual Studio 2015
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
       VERSION: vs2015
       DEFINES: VS2015DLL
+      EMSCRIPTEN: c:\projects\vs-tool\emsdk
     # Visual Studio 2017
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       VERSION: vs2017
       DEFINES: VS2017DLL
+      EMSCRIPTEN: c:\projects\vs-tool\emsdk
+
+clone_folder: c:\projects\vs-tool
 
 configuration:
   - Release
@@ -30,12 +37,9 @@ configuration:
 install:
   - ps: Start-FileDownload 'https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable-64bit.zip'
   - cmd: 7z x emsdk-portable-64bit.zip -o%APPVEYOR_BUILD_FOLDER%\emsdk
-  - cmd: %APPVEYOR_BUILD_FOLDER%\emsdk\emsdk update
-  - cmd: %APPVEYOR_BUILD_FOLDER%\emsdk\emsdk install latest
-  - cmd: %APPVEYOR_BUILD_FOLDER%\emsdk\emsdk activate latest
-
-environment:
-  - EMSCRIPTEN: %APPVEYOR_BUILD_FOLDER%\emsdk
+  - cmd: emsdk\emsdk update
+  - cmd: emsdk\emsdk install latest
+  - cmd: emsdk\emsdk activate latest
 
 before_build:
   - nuget restore Workspace\vs-tool.%VERSION%.sln
