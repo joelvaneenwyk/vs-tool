@@ -39,7 +39,7 @@ init:
   - appveyor DownloadFile %ANDROID_TOOLS_URL% -FileName android-tools.zip
   - 7z x android-tools.zip -o"%ANDROID_HOME%" > nul
 
-  - FOR /L %i IN (1,1,10) DO ( ECHO y>>accept_all.txt )
+  - cmd: 'FOR /L %i IN (1,1,10) DO ( ECHO y>>accept_all.txt )'
   - '%ANDROID_HOME%\tools\bin\sdkmanager.bat licenses < accept_all.txt'
   - '%ANDROID_HOME%\tools\bin\sdkmanager.bat tools'
   - '%ANDROID_HOME%\tools\bin\sdkmanager.bat platform-tools'
