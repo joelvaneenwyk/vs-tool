@@ -1,10 +1,10 @@
-vs-android v0.964 - 28th December 2014
+vs-tool v1.1 - January 6th, 2018
 ======================================
 
-vs-android is intended to provide a collection of scripts and utilities to support integrated development of
-Android NDK C/C++ software under Microsoft Visual Studio.
+vs-tool is intended to provide a collection of scripts and utilities to support integrated development of
+Android NDK, Clang, MingW, and Emscripten software under Microsoft Visual Studio.
 
-Currently vs-android only works under Visual Studio 2010. Earlier versions lack the MSBuild integration with 
+Currently vs-tool works under Visual Studio 2010, 2012, 2013, 2015, and 2017. Versions before VS2010 lack the MSBuild integration with 
 the C/C++ compilation systems.
 
 
@@ -44,8 +44,8 @@ Troubleshooting:
 
 
 
-Version History
-===============
+Version History (vs-android)
+============================
 
 v0.964 - 28th December 2014
 
