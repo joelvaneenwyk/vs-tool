@@ -67,6 +67,12 @@ install:
   - cmd: '%EMSDK%\emsdk install latest'
   - cmd: '%EMSDK%\emsdk install clang-e%EMSCRIPTEN_VERSION%-64bit'
   - cmd: '%EMSDK%\emsdk install emscripten-%EMSCRIPTEN_VERSION%'
+  
+  # Set environment up for Emscripten by first setting up everything and then
+  # setting specific versions.
+  - cmd: '%EMSDK%\emsdk activate latest'
+  - cmd: '%EMSDK%\emsdk activate clang-e%EMSCRIPTEN_VERSION%-64bit'
+  - cmd: '%EMSDK%\emsdk activate emscripten-%EMSCRIPTEN_VERSION%'
 
 before_build:
   # Not necessary at the moment but adding for good measure
@@ -75,9 +81,6 @@ before_build:
 build_script:
   # Build the vs-tool task
   - msbuild Source\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.%VERSION%.csproj /property:Configuration=Release /p:Platform="Any CPU" /p:DefineConstants="%DEFINES%" /t:Clean,Build
-
-  # Set environment up for Emscripten
-  - cmd: '%EMSDK%\emsdk activate emscripten-%EMSCRIPTEN_VERSION%'
 
   # Build release version of Emscripten
   - msbuild Samples\simple\simple.%VERSION%.vcxproj /property:Configuration=Release /p:Platform="Emscripten" /t:Clean,Build
