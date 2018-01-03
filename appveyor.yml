@@ -60,6 +60,12 @@ install:
   - ps: Start-FileDownload 'https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable-64bit.zip'
   - cmd: 7z x emsdk-portable-64bit.zip -o%EMSDK%
   - cmd: '%EMSDK%\emsdk update'
+
+  # We install latest to get node, java, etc but we intentionally
+  # also install the version we know about so we can specify it
+  # manually and pass it in correctly.
+  - cmd: '%EMSDK%\emsdk install latest'
+  - cmd: '%EMSDK%\emsdk install clang-e%EMSCRIPTEN_VERSION%-64bit'
   - cmd: '%EMSDK%\emsdk install emscripten-%EMSCRIPTEN_VERSION%'
 
 before_build:
