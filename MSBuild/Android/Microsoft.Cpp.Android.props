@@ -5,13 +5,13 @@
 -->
 
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(VCTargetsPath)\Platforms\Android\ImportBefore\*.props" Condition="Exists('$(VCTargetsPath)\Platforms\Android\ImportBefore')" />
+  <Import Project="$(MSBuildThisFileDirectory)\ImportBefore\*.props" Condition="Exists('$(MSBuildThisFileDirectory)\ImportBefore')" />
 
   <!-- Bring in defaults for envvars we need -->
-  <Import Project="$(VCTargetsPath)\Platforms\Android\vs-android.EnvVars.props" />
+  <Import Project="$(MSBuildThisFileDirectory)\vs-android.EnvVars.props" />
 
   <!-- Bring in toolset props afterwards, since it's dependent on the envvars -->
-  <Import Condition="(exists('$(VCTargetsPath)\Platforms\Android\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Android.$(PlatformToolset).props'))" Project="$(VCTargetsPath)\Platforms\Android\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Android.$(PlatformToolset).props"/>
+  <Import Condition="(exists('$(MSBuildThisFileDirectory)\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Android.$(PlatformToolset).props'))" Project="$(MSBuildThisFileDirectory)\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Android.$(PlatformToolset).props"/>
 
   <!-- Debugger. Fake Android 'debugger' which simply launches the app on the device -->
   <PropertyGroup>
@@ -20,7 +20,7 @@
 
   <PropertyGroup Condition="$(VisualStudioVersion) == '10.0'">
     <RemoteDebuggerWorkingDirectory>$(IntDir)</RemoteDebuggerWorkingDirectory>
-    <RemoteDebuggerCommand>$(VCTargetsPath)\Platforms\Android\vs-android_launch.exe</RemoteDebuggerCommand>
+    <RemoteDebuggerCommand>$(MSBuildThisFileDirectory)\vs-android_launch.exe</RemoteDebuggerCommand>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(VisualStudioVersion) != '10.0'">
@@ -47,7 +47,7 @@
   </PropertyGroup>
 
   <!-- Bring in correct tool paths -->
-  <Import Project="$(VCTargetsPath)\Platforms\Android\vs-android.ToolPaths.props" />
+  <Import Project="$(MSBuildThisFileDirectory)\vs-android.ToolPaths.props" />
 
   <!-- Default preprocessor defines -->
   <PropertyGroup>
@@ -62,7 +62,7 @@
   <!-- Couple of things to disable that we don't need for Android -->
   <PropertyGroup>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
-    <GenerateManifest>false</GenerateManifest>  
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
 
   <!-- Settings specific to each build type -->
@@ -93,7 +93,7 @@
   </ItemDefinitionGroup>
 
   <!-- Bring in default props for each tool -->
-  <Import Project="$(VCTargetsPath)\Platforms\Android\vs-android.ToolDefaults.props" />
+  <Import Project="$(MSBuildThisFileDirectory)\vs-android.ToolDefaults.props" />
 
   <ItemGroup>
     <!-- Allow Pre/post build steps -->
@@ -103,5 +103,5 @@
     <PostBuildEvent Include="$(ProjectName)" />
   </ItemGroup>
 
-  <Import Project="$(VCTargetsPath)\Platforms\Android\ImportAfter\*.props" Condition="Exists('$(VCTargetsPath)\Platforms\Android\ImportAfter')" />
+  <Import Project="$(MSBuildThisFileDirectory)\ImportAfter\*.props" Condition="Exists('$(MSBuildThisFileDirectory)\ImportAfter')" />
 </Project>

@@ -7,7 +7,7 @@
 <!-- Largely based on: MSBuild\Microsoft.Cpp\v4.0\Platforms\Win32\Microsoft.Cpp.Win32.targets -->
 
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(VCTargetsPath)\Platforms\Android\ImportBefore\*.targets" Condition="Exists('$(VCTargetsPath)\Platforms\Android\ImportBefore')" />
+  <Import Project="$(MSBuildThisFileDirectory)\ImportBefore\*.targets" Condition="Exists('$(MSBuildThisFileDirectory)\ImportBefore')" />
   <Import Project="$(VCTargetsPath)\Microsoft.CppCommon.targets" />
 
   <UsingTask TaskName="GCCCompile" AssemblyFile="$(MSBuildThisFileDirectory)..\..\Bin\$(VisualStudioVersion)\vs-tool.Build.CPPTasks.dll" />
@@ -47,7 +47,7 @@
         <BrowseInformation			  >false</BrowseInformation>
       </ClCompile>
     </ItemGroup>
-    
+
     <!-- PCH handling -->
     <ItemGroup>
       <ClCompile>
@@ -91,7 +91,7 @@
 
         EchoCommandLines                   ="%(ClCompile.EchoCommandLines)"
         GCCToolPath                        ="$(GccCompiler)"
-        PropertyXmlFile                    ="$(VCTargetsPath)\Platforms\Android\Props\android_gcc_compile.xml"
+        PropertyXmlFile                    ="$(MSBuildThisFileDirectory)\Props\android_gcc_compile.xml"
     >
     </GCCCompile>
 
@@ -114,7 +114,7 @@
 
         EchoCommandLines                   ="%(ClCompile.EchoCommandLines)"
         GCCToolPath                        ="$(GccCompiler)"
-        PropertyXmlFile                    ="$(VCTargetsPath)\Platforms\Android\Props\android_gcc_compile.xml"
+        PropertyXmlFile                    ="$(MSBuildThisFileDirectory)\Props\android_gcc_compile.xml"
     >
     </GCCCompile>
 
@@ -157,7 +157,7 @@
 
         EchoCommandLines               ="%(Lib.EchoCommandLines)"
         GCCToolPath                    ="$(GccLibrarian)"
-        PropertyXmlFile                ="$(VCTargetsPath)\Platforms\Android\Props\android_gcc_lib.xml"
+        PropertyXmlFile                ="$(MSBuildThisFileDirectory)\Props\android_gcc_lib.xml"
       >
         <Output TaskParameter="SkippedExecution" PropertyName="LibSkippedExecution" />
     </GCCLib>
@@ -209,9 +209,9 @@
 
         AcceptableNonZeroExitCodes     ="%(Link.AcceptableNonZeroExitCodes)"
 
-        EchoCommandLines               ="%(Link.EchoCommandLines)"        
-        GCCToolPath                    ="$(GccLinker)"        
-        PropertyXmlFile                ="$(VCTargetsPath)\Platforms\Android\Props\android_gcc_link.xml"
+        EchoCommandLines               ="%(Link.EchoCommandLines)"
+        GCCToolPath                    ="$(GccLinker)"
+        PropertyXmlFile                ="$(MSBuildThisFileDirectory)\Props\android_gcc_link.xml"
     >
       <Output TaskParameter="SkippedExecution" PropertyName="LinkSkippedExecution" />
     </GCCLink>
@@ -447,7 +447,7 @@
 
 
   <!-- Override the Microsoft.CppBuild.targets stuff -->
-  <Import Project="$(VCTargetsPath)\Platforms\Android\vs-android.CppBuild.targets" />
+  <Import Project="$(MSBuildThisFileDirectory)\vs-android.CppBuild.targets" />
 
 
 
@@ -471,9 +471,9 @@
     </PropertyGroup>
 
     <!-- Error out if the project references a missing platform toolset -->
-    <VCMessage Code="MSB8008" Type="Error" Arguments="$(PlatformToolset)" Condition="!(exists('$(VCTargetsPath)\Platforms\Android\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Android.$(PlatformToolset).targets'))"/>
+    <VCMessage Code="MSB8008" Type="Error" Arguments="$(PlatformToolset)" Condition="!(exists('$(MSBuildThisFileDirectory)\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Android.$(PlatformToolset).targets'))"/>
 
-    <Error Condition="$(VisualStudioVersion) != '10.0' and $(VisualStudioVersion) != '11.0' and $(VisualStudioVersion) != '12.0'" 
+    <Error Condition="$(VisualStudioVersion) != '10.0' and $(VisualStudioVersion) != '11.0' and $(VisualStudioVersion) != '12.0'"
            Text="Unknown version of Visual Studio: $(VisualStudioVersion)" ></Error>
 
     <!-- Android NDK Checks -->
@@ -533,8 +533,8 @@
   </Target>
 
 
-  <Import Project="$(VCTargetsPath)\Platforms\Android\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Android.$(PlatformToolset).targets" Condition="(exists('$(VCTargetsPath)\Platforms\Android\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Android.$(PlatformToolset).targets'))" />
-  <Import Project="$(VCTargetsPath)\Platforms\Android\ImportAfter\*.targets" Condition="Exists('$(VCTargetsPath)\Platforms\Android\ImportAfter')" />
+  <Import Project="$(MSBuildThisFileDirectory)\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Android.$(PlatformToolset).targets" Condition="(exists('$(MSBuildThisFileDirectory)\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Android.$(PlatformToolset).targets'))" />
+  <Import Project="$(MSBuildThisFileDirectory)\ImportAfter\*.targets" Condition="Exists('$(MSBuildThisFileDirectory)\ImportAfter')" />
 </Project>
 
 
