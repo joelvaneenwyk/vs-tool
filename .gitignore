@@ -1,5 +1,6 @@
 # Visual Studio Files
 
+*.zip
 *.suo
 .vs
 *.VC.db
