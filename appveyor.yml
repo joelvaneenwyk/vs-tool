@@ -61,13 +61,19 @@ install:
   - cmd: 7z x emsdk-portable-64bit.zip -o%EMSDK%
   - cmd: '%EMSDK%\emsdk update'
   - cmd: '%EMSDK%\emsdk install emscripten-%EMSCRIPTEN_VERSION%'
-  - cmd: '%EMSDK%\emsdk activate emscripten-%EMSCRIPTEN_VERSION%'
 
 before_build:
+  # Not necessary at the moment but adding for good measure
   - nuget restore Workspace\vs-tool.%VERSION%.sln
 
 build_script:
+  # Build the vs-tool task
   - msbuild Source\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.%VERSION%.csproj /property:Configuration=Release /p:Platform="Any CPU" /p:DefineConstants="%DEFINES%" /t:Clean,Build
+
+  # Set environment up for Emscripten
+  - cmd: '%EMSDK%\emsdk activate emscripten-%EMSCRIPTEN_VERSION%'
+
+  # Build release version of Emscripten
   - msbuild Samples\simple\simple.%VERSION%.vcxproj /property:Configuration=Release /p:Platform="Emscripten" /t:Clean,Build
 
 after_test:
