@@ -43,13 +43,18 @@ install:
   - appveyor DownloadFile %ANDROID_TOOLS_URL% -FileName android-tools.zip
   - 7z x android-tools.zip -o"%ANDROID_HOME%" > nul
 
-  - 'if not exist C:\Users\appveyor\.android mkdir C:\Users\appveyor\.android'
   - ps: >-
-      if(![System.IO.File]::Exists(C:\Users\appveyor\.android\repositories.cfg)) {
-        New-Item C:\Users\appveyor\.android\repositories.cfg -type file | out-null
-      }
-      for ( $i=0; $i -lt 30; $i++) {
-        $response += "y`n"};
+      if (Test-Path "C:\Users\appveyor\") {
+        if (-not (Test-Path "C:\Users\appveyor\.android")) {
+          New-Item -ItemType directory -Path "C:\Users\appveyor\.android"
+        }
+        Set-Variable -name RepositoryConfig -value "C:\Users\appveyor\.android\repositories.cfg"
+        if (-not (Test-Path $RepositoryConfig)) {
+          New-Item $RepositoryConfig -type file | out-null
+        }
+        for ( $i=0; $i -lt 30; $i++) {
+          $response += "y`n"
+        };
         $response | & $Env:ANDROID_HOME\tools\bin\sdkmanager --licenses | out-null
       }
   - 'move %ANDROID_HOME%\tools %ANDROID_HOME%\old_tools >nul 2>&1'
