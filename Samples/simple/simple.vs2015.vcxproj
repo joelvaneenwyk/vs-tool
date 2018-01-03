@@ -5,13 +5,29 @@
       <Configuration>Debug</Configuration>
       <Platform>Emscripten</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Emscripten">
       <Configuration>Release</Configuration>
       <Platform>Emscripten</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Clang">
+      <Configuration>Debug</Configuration>
+      <Platform>Clang</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Clang">
+      <Configuration>Release</Configuration>
+      <Platform>Clang</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|MinGW">
+      <Configuration>Debug</Configuration>
+      <Platform>MinGW</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|MinGW">
+      <Configuration>Release</Configuration>
+      <Platform>MinGW</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>

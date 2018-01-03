@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{8B67BFA0-224F-45EA-9CA8-2AD48186FD48}</ProjectGuid>
+    <ProjectGuid>{8B67BFA0-224F-45EA-9CA8-2AD48186FD43}</ProjectGuid>
     <RootNamespace>sample</RootNamespace>
     <VSToolRoot>$(ProjectDir)..\..\MSBuild</VSToolRoot>
     <PlatformToolset>
