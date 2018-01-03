@@ -44,8 +44,14 @@ install:
   - 7z x android-tools.zip -o"%ANDROID_HOME%" > nul
 
   - 'if not exist C:\Users\appveyor\.android mkdir C:\Users\appveyor\.android'
-  - ps: 'New-Item C:\Users\appveyor\.android\repositories.cfg -type file | out-null'
-  - ps: for($i=0;$i -lt 30;$i++) { $response += "y`n"}; $response | & $Env:ANDROID_HOME\tools\bin\sdkmanager --licenses | out-null
+  - ps: >-
+      if(![System.IO.File]::Exists(C:\Users\appveyor\.android\repositories.cfg)) {
+        New-Item C:\Users\appveyor\.android\repositories.cfg -type file | out-null
+      }
+      for ( $i=0; $i -lt 30; $i++) {
+        $response += "y`n"};
+        $response | & $Env:ANDROID_HOME\tools\bin\sdkmanager --licenses | out-null
+      }
   - 'move %ANDROID_HOME%\tools %ANDROID_HOME%\old_tools >nul 2>&1'
   - '%ANDROID_HOME%\old_tools\bin\sdkmanager.bat tools >nul 2>&1'
   - 'rmdir /s /q %ANDROID_HOME%\old_tools'
