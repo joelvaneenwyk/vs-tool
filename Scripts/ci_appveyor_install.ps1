@@ -21,5 +21,5 @@ If ($env:PLATFORM -Match "Android" -And $env:CI -Match "True") {
 
 If ($env:PLATFORM -Match 'Emscripten' -And $env:CI -Match "True") {
   Start-FileDownload 'https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable-64bit.zip'
-  & 7z x emsdk-portable-64bit.zip -o$env:EMSDK | out-null
+  & 7z x emsdk-portable-64bit.zip -o"$env:EMSDK" | out-null
 }
