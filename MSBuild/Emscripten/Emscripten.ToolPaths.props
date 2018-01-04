@@ -3,7 +3,7 @@
     <!-- Present in ALL Emscripten builds, and use the '-Xclang -isystem' prefix. -->
     <ClangPath Condition="!exists('$(ClangPath)\clang.exe')">$(CLANG_BIN)</ClangPath>
     <MinGWPath Condition="'$(MinGWPath)' == ''">$(MINGW_BIN)</MinGWPath>
-    <EmccPath Condition="!exists('$(EmccPath)\emsdk')">$(EMSCRIPTEN)</EmccPath>
+    <EmccPath Condition="!exists('$(EmccPath)\emcc')">$(EMSCRIPTEN)</EmccPath>
     <NaclPath Condition="'$(NaclPath)' == ''">$(NACL_BIN)</NaclPath>
     <EmscriptenIncludeDir>$(EmccPath)\system\local\include;$(EmccPath)\system\include\compat;$(EmccPath)\system\include\libcxx;$(EmccPath)\system\include;$(EmccPath)\system\include\emscripten;$(EmccPath)\system\include\bsd;$(EmccPath)\system\include\libc;$(EmccPath)\system\include\gfx;$(EmccPath)\system\include\net;$(EmccPath)\system\include\SDL</EmscriptenIncludeDir>
     <ExecutablePath Condition="'$(ExecutablePath)' == '' and '$(PlatformToolset)' == 'emcc' ">$(ClangPath);$(EmccPath);$(PATH)</ExecutablePath>
@@ -12,7 +12,7 @@
     <ExecutablePath Condition="'$(ExecutablePath)' == '' and '$(PlatformToolset)' == 'nacl'">$(NaclPath);$(PATH)</ExecutablePath>
     <IncludePath Condition="'$(IncludePath)' == '' and '$(PlatformToolset)' == 'emcc'">$(EmscriptenIncludeDir)</IncludePath>
   </PropertyGroup>
-  
+
   <PropertyGroup Condition="$(VisualStudioVersion) == '12.0'">
     <VSInstallDir>$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\12.0\Setup\VS@ProductDir)</VSInstallDir>
     <VSInstallDir Condition="'$(VSInstallDir)' == ''">$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\VisualStudio\12.0\Setup\VS@ProductDir)</VSInstallDir>
@@ -34,7 +34,7 @@
     <FrameworkSdkDir Condition="'$(FrameworkSdkDir)' == ''">$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Microsoft SDKs\Windows\v8.1A@InstallationFolder)</FrameworkSdkDir>
   </PropertyGroup>
 
-  <PropertyGroup Condition="$(VisualStudioVersion) != '12.0'">
+  <PropertyGroup Condition="$(VisualStudioVersion) == '10.0'">
     <VCInstallDir>$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\10.0\Setup\VC@ProductDir)</VCInstallDir>
     <VCInstallDir Condition="'$(VCInstallDir)' == ''">$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\VisualStudio\10.0\Setup\VC@ProductDir)</VCInstallDir>
     <VCInstallDir Condition="'$(VCInstallDir)' == ''">$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VCExpress\10.0\Setup\VC@ProductDir)</VCInstallDir>
