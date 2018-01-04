@@ -5,7 +5,6 @@ environment:
   ANDROID_HOME: "C:\\android-sdk-windows"
   ANDROID_NDK_HOME: "C:\\android-sdk-windows\\ndk-bundle"
   JAVA_HOME: "C:\\Program Files\\Java\\jdk1.8.0"
-  ANDROID_TOOLS_URL: "https://dl.google.com/android/repository/sdk-tools-windows-3859397.zip"
   EMSCRIPTEN_VERSION: 1.37.26
   EMSCRIPTEN: c:\emsdk\emscripten\1.37.26
   LLVM_ROOT: c:\emsdk\clang\e1.37.26_64bit
@@ -16,22 +15,63 @@ environment:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
       VERSION: vs2010
       DEFINES: VS2010DLL
+      PLATFORM: Any CPU
+      PROJECT: Source\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.vs2010.csproj
     # Visual Studio 2012
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
       VERSION: vs2012
       DEFINES: VS2012DLL
+      PLATFORM: Any CPU
+      PROJECT: Source\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.vs2012.csproj
     # Visual Studio 2013
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
       VERSION: vs2013
       DEFINES: VS2013DLL
+      PLATFORM: Any CPU
+      PROJECT: Source\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.vs2013.csproj
     # Visual Studio 2015
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
       VERSION: vs2015
       DEFINES: VS2015DLL
+      PLATFORM: Any CPU
+      PROJECT: Source\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.vs2015.csproj
     # Visual Studio 2017
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       VERSION: vs2017
       DEFINES: VS2017DLL
+      PLATFORM: Any CPU
+      PROJECT: Source\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.vs2017.csproj
+
+    # Visual Studio 2010
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+      VERSION: vs2010
+      DEFINES: VS2010DLL
+      PLATFORM: Emscripten
+      PROJECT: Samples\simple\simple.vs2010.vcxproj
+    # Visual Studio 2012
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+      VERSION: vs2012
+      DEFINES: VS2012DLL
+      PLATFORM: Emscripten
+      PROJECT: Samples\simple\simple.vs202.vcxproj
+    # Visual Studio 2013
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
+      VERSION: vs2013
+      DEFINES: VS2013DLL
+      PLATFORM: Emscripten
+      PROJECT: Samples\simple\simple.vs2013.vcxproj
+    # Visual Studio 2015
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      VERSION: vs2015
+      DEFINES: VS2015DLL
+      PLATFORM: Emscripten
+      PROJECT: Samples\simple\simple.vs2015.vcxproj
+    # Visual Studio 2017
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      VERSION: vs2017
+      DEFINES: VS2017DLL
+      PLATFORM: Emscripten
+      PROJECT: Samples\simple\simple.vs2017.vcxproj
 
 clone_folder: c:\projects\vs-tool
 
@@ -39,62 +79,15 @@ configuration:
   - Release
 
 install:
-  # Download the Android SDK
-  - appveyor DownloadFile %ANDROID_TOOLS_URL% -FileName android-tools.zip
-  - 7z x android-tools.zip -o"%ANDROID_HOME%" > nul
-
-  - ps: >-
-      if (Test-Path "C:\Users\appveyor\") {
-        if (-not (Test-Path "C:\Users\appveyor\.android")) {
-          New-Item -ItemType directory -Path "C:\Users\appveyor\.android"
-        }
-        Set-Variable -name RepositoryConfig -value "C:\Users\appveyor\.android\repositories.cfg"
-        if (-not (Test-Path $RepositoryConfig)) {
-          New-Item $RepositoryConfig -type file | out-null
-        }
-        for ( $i=0; $i -lt 30; $i++) {
-          $response += "y`n"
-        };
-        $response | & $Env:ANDROID_HOME\tools\bin\sdkmanager --licenses | out-null
-      }
-  - 'move %ANDROID_HOME%\tools %ANDROID_HOME%\old_tools >nul 2>&1'
-  - '%ANDROID_HOME%\old_tools\bin\sdkmanager.bat tools >nul 2>&1'
-  - 'rmdir /s /q %ANDROID_HOME%\old_tools'
-  - '%ANDROID_HOME%\tools\bin\sdkmanager.bat platform-tools'
-  - '%ANDROID_HOME%\tools\bin\sdkmanager.bat build-tools;25.0.0'
-  - '%ANDROID_HOME%\tools\bin\sdkmanager.bat platforms;android-25'
-  - '%ANDROID_HOME%\tools\bin\sdkmanager.bat extras;android;m2repository'
-  - '%ANDROID_HOME%\tools\bin\sdkmanager.bat --channel=1 ndk-bundle'
-  - '%ANDROID_HOME%\tools\bin\sdkmanager.bat cmake;3.6.4111459'
-
-  # Download the Emscripten SDK
-  - ps: Start-FileDownload 'https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable-64bit.zip'
-  - cmd: 7z x emsdk-portable-64bit.zip -o%EMSDK%
-  - cmd: '%EMSDK%\emsdk update'
-
-  # We install latest to get node, java, etc but we intentionally
-  # also install the version we know about so we can specify it
-  # manually and pass it in correctly.
-  - cmd: '%EMSDK%\emsdk install latest'
-  - cmd: '%EMSDK%\emsdk install clang-e%EMSCRIPTEN_VERSION%-64bit'
-  - cmd: '%EMSDK%\emsdk install emscripten-%EMSCRIPTEN_VERSION%'
-  
-  # Set environment up for Emscripten by first setting up everything and then
-  # setting specific versions.
-  - cmd: '%EMSDK%\emsdk activate latest'
-  - cmd: '%EMSDK%\emsdk activate clang-e%EMSCRIPTEN_VERSION%-64bit'
-  - cmd: '%EMSDK%\emsdk activate emscripten-%EMSCRIPTEN_VERSION%'
+  - ps: .\Scripts\ci_appveyor_install.ps1
+  - cmd: .\Scripts\ci_appveyor_install.cmd
 
 before_build:
   # Not necessary at the moment but adding for good measure
   - nuget restore Workspace\vs-tool.%VERSION%.sln
 
 build_script:
-  # Build the vs-tool task
-  - msbuild Source\vs-tool.Build.CPPTasks\vs-tool.Build.CPPTasks.%VERSION%.csproj /property:Configuration=Release /p:Platform="Any CPU" /p:DefineConstants="%DEFINES%" /t:Clean,Build
-
-  # Build release version of Emscripten
-  - msbuild Samples\simple\simple.%VERSION%.vcxproj /property:Configuration=Release /p:Platform="Emscripten" /t:Clean,Build
+  - msbuild %PROJECT /property:Configuration=Release /p:Platform="%PLATFORM%" /p:DefineConstants="%DEFINES%" /t:Clean,Build
 
 after_test:
    -
