@@ -1,3 +1,6 @@
+@echo off
+echo Installing and setting up for [%PLATFORM%]...
+
 if "%PLATFORM%" == "Emscripten" (
   %EMSDK%\emsdk update
 

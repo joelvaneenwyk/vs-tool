@@ -1,4 +1,6 @@
-If ($env:Platform -Match "Android") {
+Write-Host "Installing and setting up for [$env:PLATFORM]..."
+
+If ($env:PLATFORM -Match "Android") {
   Start-FileDownload 'https://dl.google.com/android/repository/sdk-tools-windows-3859397.zip'
   & 7z x android-tools.zip -o"%ANDROID_HOME%" | out-null
 
@@ -17,7 +19,7 @@ If ($env:Platform -Match "Android") {
   }
 }
 
-If ($env:Platform -Match "Emscripten") {
+If ($env:PLATFORM -Match 'Emscripten') {
   Start-FileDownload 'https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable-64bit.zip'
   & 7z x emsdk-portable-64bit.zip -o%EMSDK% | out-null
 }
