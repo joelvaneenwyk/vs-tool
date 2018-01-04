@@ -6,7 +6,7 @@ if "%PLATFORM%" == "Emscripten" (
 
   REM We install latest to get node, java, etc
   %EMSDK%\emsdk install latest
-  %EMSDK%\emsdk activate latest
+  %EMSDK%\emsdk activate latest --global
 )
 
 if "%PLATFORM%" == "Android" (
