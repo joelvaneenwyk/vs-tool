@@ -83,6 +83,7 @@ before_build:
   - nuget restore Workspace\vs-tool.%VERSION%.sln
 
 build_script:
+  - cmd: .\Scripts\ci_appveyor_setup_env.cmd
   - msbuild %PROJECT% /property:Configuration=Release /p:Platform="%PLATFORM%" /p:DefineConstants="%DEFINES%" /t:Clean,Build
 
 after_test:
