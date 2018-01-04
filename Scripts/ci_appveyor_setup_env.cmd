@@ -6,4 +6,5 @@ if "%PLATFORM%" == "Emscripten" (
 )
 
 echo Platform: [%PLATFORM%]
+echo Project: [%PROJECT%]
 echo Emscripten: [%EMSCRIPTEN%]

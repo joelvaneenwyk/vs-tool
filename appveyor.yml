@@ -49,7 +49,7 @@ environment:
       VERSION: vs2012
       DEFINES: VS2012DLL
       PLATFORM: Emscripten
-      PROJECT: Samples\simple\simple.vs202.vcxproj
+      PROJECT: Samples\simple\simple.vs2012.vcxproj
     # Visual Studio 2013
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
       VERSION: vs2013
