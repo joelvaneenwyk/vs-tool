@@ -14,7 +14,10 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Import Condition=" '$(ForceImportBeforeCppTargets)' != '' and exists('$(ForceImportBeforeCppTargets)')" Project="$(ForceImportBeforeCppTargets)"/>
+  <Import
+    Condition="'$(ForceImportBeforeCppTargets)' != '' and
+               exists('$(ForceImportBeforeCppTargets)')"
+    Project="$(ForceImportBeforeCppTargets)"/>
 
   <PropertyGroup>
     <SolutionExt>.sln</SolutionExt>
@@ -26,17 +29,32 @@ Copyright (C) Microsoft Corporation. All rights reserved.
         Set Build Default Environment Variables
        ******************************************************************************************* -->
 
-  <UsingTask TaskName="SetEnv"      AssemblyName="Microsoft.Build.CppTasks.Common, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"/>
-
   <PropertyGroup>
-    <_IsNativeEnvironment Condition="'$(PROCESSOR_ARCHITECTURE)' == 'AMD64' and '$(Platform)' == 'X64'">true</_IsNativeEnvironment>
-    <_IsNativeEnvironment Condition="'$(PROCESSOR_ARCHITECTURE)' == 'IA64' and '$(Platform)' == 'Itanium'">true</_IsNativeEnvironment>
+    <_IsBeforeVisualStudio2015
+        Condition="$(VisualStudioVersion) == '10.0' or
+                   $(VisualStudioVersion) == '11.0' or
+                   $(VisualStudioVersion) == '12.0'">
+      true
+    </_IsBeforeVisualStudio2015>
+    <_IsNativeEnvironment
+        Condition="'$(PROCESSOR_ARCHITECTURE)' == 'AMD64' and '$(Platform)' == 'X64'">
+      true
+    </_IsNativeEnvironment>
+    <_IsNativeEnvironment
+        Condition="'$(PROCESSOR_ARCHITECTURE)' == 'IA64' and '$(Platform)' == 'Itanium'">
+      true
+    </_IsNativeEnvironment>
     <DefaultToolArchitecture Condition="'$(DefaultToolArchitecture)' == '' and '$(_IsNativeEnvironment)' != 'true'">Native32Bit</DefaultToolArchitecture>
     <DefaultToolArchitecture Condition="'$(DefaultToolArchitecture)' == '' and '$(_IsNativeEnvironment)' == 'true'">Native64Bit</DefaultToolArchitecture>
   </PropertyGroup>
 
+  <UsingTask
+    Condition="'$(_IsBeforeVisualStudio2015)' == 'true'"
+    TaskName="SetEnv"
+    AssemblyName="Microsoft.Build.CppTasks.Common, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"/>
+
   <Target Name="SetBuildDefaultEnvironmentVariables"
-          Condition="'$(UseEnv)' != 'true'">
+          Condition="'$(_IsBeforeVisualStudio2015)' == 'true' and '$(UseEnv)' != 'true'">
     <SetEnv Condition="'$(_IsNativeEnvironment)' != 'true'"
             Name   ="PATH"
             Value  ="$(ExecutablePath)"
@@ -73,26 +91,42 @@ Copyright (C) Microsoft Corporation. All rights reserved.
   <!-- *******************************************************************************************
         Set User Macro Environment Variables
        ******************************************************************************************* -->
-  <Target Name="SetUserMacroEnvironmentVariables" Condition="'@(BuildMacro)' != ''">
 
+  <Target
+      Name="SetUserMacroEnvironmentVariables"
+      Condition="'$(_IsBeforeVisualStudio2015)' == 'true' and '@(BuildMacro)' != ''">
     <SetEnv Condition="'%(BuildMacro.EnvironmentVariable)' == 'true'"
             Name   ="@(BuildMacro)"
             Value  ="%(BuildMacro.Value)"
             Prefix ="false">
       <Output TaskParameter="OutputEnvironmentVariable" PropertyName="%(BuildMacro.Identity)"/>
     </SetEnv>
-
   </Target>
 
-  <Import Condition="'$(ConfigurationType)' == 'Makefile'" Project="$(VCTargetsPath)\Microsoft.MakeFile.Targets"/>
-  <Import Condition="'$(ConfigurationType)' != 'Makefile' and Exists('$(MSBuildThisFileDirectory)\$(Platform)\Microsoft.Cpp.$(Platform).Targets')" Project="$(MSBuildThisFileDirectory)\$(Platform)\Microsoft.Cpp.$(Platform).Targets"/>
-  <Import Condition="'$(ConfigurationType)' != 'Makefile' and !Exists('$(MSBuildThisFileDirectory)\$(Platform)\Microsoft.Cpp.$(Platform).Targets')" Project="$(VCTargetsPath)\Microsoft.Cpp.Targets"/>
+  <Import
+      Condition="'$(ConfigurationType)' == 'Makefile'"
+      Project="$(VCTargetsPath)\Microsoft.MakeFile.Targets"/>
+  <Import
+      Condition="'$(ConfigurationType)' != 'Makefile' and
+                 Exists('$(MSBuildThisFileDirectory)\$(Platform)\Microsoft.Cpp.$(Platform).Targets')"
+      Project="$(MSBuildThisFileDirectory)\$(Platform)\Microsoft.Cpp.$(Platform).Targets"/>
+  <Import
+      Condition="'$(ConfigurationType)' != 'Makefile' and
+                 !Exists('$(MSBuildThisFileDirectory)\$(Platform)\Microsoft.Cpp.$(Platform).Targets') and
+                 Exists('$(VCTargetsPath)\Microsoft.Cpp.Targets')"
+      Project="$(VCTargetsPath)\Microsoft.Cpp.Targets"/>
 
   <!-- *******************************************************************************************
         Cleaning targets
        ******************************************************************************************* -->
-  <Import Project="$(VCTargetsPath)\Microsoft.CppClean.targets" />
 
-  <Import Condition=" '$(ForceImportAfterCppTargets)' != '' and exists('$(ForceImportAfterCppTargets)')" Project="$(ForceImportAfterCppTargets)"/>
+  <Import
+      Condition="Exists('$(VCTargetsPath)\Microsoft.CppClean.targets')"
+      Project="$(VCTargetsPath)\Microsoft.CppClean.targets" />
+
+  <Import
+      Condition="'$(ForceImportAfterCppTargets)' != '' and
+                 exists('$(ForceImportAfterCppTargets)')"
+      Project="$(ForceImportAfterCppTargets)"/>
 
 </Project>
