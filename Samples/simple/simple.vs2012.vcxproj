@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <TargetPath>$(SolutionDir)$(Platform)\vs2012\$(Configuration)\</TargetPath>
-    <OutDir>$(SolutionDir)$(Platform)\vs2012\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(VisualStudioVersion)\$(Configuration)\</OutDir>
+    <TargetPath>$(SolutionDir)$(Platform)\$(VisualStudioVersion)\$(Configuration)</TargetPath>
     <IntDir>$(OutDir)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Emscripten'">
