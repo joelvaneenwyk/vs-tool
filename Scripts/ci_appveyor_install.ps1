@@ -1,8 +1,8 @@
 Write-Host "Installing and setting up for [$env:PLATFORM]..."
 
-If ($env:PLATFORM -Match "Android") {
+If ($env:PLATFORM -Match "Android" -And $env:CI -Match "True") {
   Start-FileDownload 'https://dl.google.com/android/repository/sdk-tools-windows-3859397.zip'
-  & 7z x android-tools.zip -o"%ANDROID_HOME%" | out-null
+  & 7z x android-tools.zip -o"$env:ANDROID_HOME" | out-null
 
   if (Test-Path "C:\Users\appveyor\") {
     if (-not (Test-Path "C:\Users\appveyor\.android")) {
@@ -19,7 +19,7 @@ If ($env:PLATFORM -Match "Android") {
   }
 }
 
-If ($env:PLATFORM -Match 'Emscripten') {
+If ($env:PLATFORM -Match 'Emscripten' -And $env:CI -Match "True") {
   Start-FileDownload 'https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable-64bit.zip'
-  & 7z x emsdk-portable-64bit.zip -o%EMSDK% | out-null
+  & 7z x emsdk-portable-64bit.zip -o$env:EMSDK | out-null
 }

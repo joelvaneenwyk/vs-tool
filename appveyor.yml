@@ -87,7 +87,7 @@ before_build:
   - nuget restore Workspace\vs-tool.%VERSION%.sln
 
 build_script:
-  - msbuild %PROJECT /property:Configuration=Release /p:Platform="%PLATFORM%" /p:DefineConstants="%DEFINES%" /t:Clean,Build
+  - msbuild %PROJECT% /property:Configuration=Release /p:Platform="%PLATFORM%" /p:DefineConstants="%DEFINES%" /t:Clean,Build
 
 after_test:
    -
