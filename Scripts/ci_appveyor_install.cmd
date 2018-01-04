@@ -4,18 +4,11 @@ echo Installing and setting up for [%PLATFORM%]...
 if "%PLATFORM%" == "Emscripten" (
   %EMSDK%\emsdk update
 
-  REM We install latest to get node, java, etc but we intentionally
-  REM also install the version we know about so we can specify it
-  REM manually and pass it in correctly.
+  REM We install latest to get node, java, etc
   %EMSDK%\emsdk install latest
-  %EMSDK%\emsdk install clang-e%EMSCRIPTEN_VERSION%-64bit
-  %EMSDK%\emsdk install emscripten-%EMSCRIPTEN_VERSION%
-
-  REM Set environment up for Emscripten by first setting up everything and then
-  REM setting specific versions.
   %EMSDK%\emsdk activate latest
-  %EMSDK%\emsdk activate clang-e%EMSCRIPTEN_VERSION%-64bit
-  %EMSDK%\emsdk activate emscripten-%EMSCRIPTEN_VERSION%
+
+  set EMSCRIPTEN=%EMSCRIPTEN_ROOT%
 )
 
 if "%PLATFORM%" == "Android" (
