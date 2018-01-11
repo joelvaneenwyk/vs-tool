@@ -27,38 +27,41 @@ namespace vs.tool.Build.CPPTasks
 
         public PropXmlParse(string path)
         {
-            XmlTextReader reader = new XmlTextReader(path);
-
             this.m_switchPrefix = null;
 
-            while (reader.Read())
+            if (!string.IsNullOrEmpty(path))
             {
-                switch (reader.NodeType)
-                {
-                    case XmlNodeType.Element: // The node is an element.
-                        {
-                            switch (reader.Name)
-                            {
-                                case "Rule":
-                                    this.m_switchPrefix = reader.GetAttribute("SwitchPrefix");
-                                    break;
+                XmlTextReader reader = new XmlTextReader(path);
 
-                                case "StringListProperty":
-                                    this.NewProperty(reader, new StringListProperty());
-                                    break;
-                                case "StringProperty":
-                                case "IntProperty":
-                                    this.NewProperty(reader, new StringProperty());
-                                    break;
-                                case "BoolProperty":
-                                    this.NewProperty(reader, new BoolProperty());
-                                    break;
-                                case "EnumProperty":
-                                    this.NewProperty(reader, new EnumProperty());
-                                    break;
+                while (reader.Read())
+                {
+                    switch (reader.NodeType)
+                    {
+                        case XmlNodeType.Element: // The node is an element.
+                            {
+                                switch (reader.Name)
+                                {
+                                    case "Rule":
+                                        this.m_switchPrefix = reader.GetAttribute("SwitchPrefix");
+                                        break;
+
+                                    case "StringListProperty":
+                                        this.NewProperty(reader, new StringListProperty());
+                                        break;
+                                    case "StringProperty":
+                                    case "IntProperty":
+                                        this.NewProperty(reader, new StringProperty());
+                                        break;
+                                    case "BoolProperty":
+                                        this.NewProperty(reader, new BoolProperty());
+                                        break;
+                                    case "EnumProperty":
+                                        this.NewProperty(reader, new EnumProperty());
+                                        break;
+                                }
                             }
-                        }
-                        break;
+                            break;
+                    }
                 }
             }
         }
@@ -72,7 +75,7 @@ namespace vs.tool.Build.CPPTasks
                 string propValue = taskItem.GetMetadata(metaName);
                 string processed = this.ProcessProperty(metaName, propValue).Trim();
 
-                if ((processed != null) && (processed.Length > 0))
+                if (processed.Length > 0)
                 {
                     returnStr.Append(processed);
                     returnStr.Append(" ");

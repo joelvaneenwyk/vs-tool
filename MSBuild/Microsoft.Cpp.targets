@@ -103,16 +103,20 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     </SetEnv>
   </Target>
 
+  <PropertyGroup Condition="!Exists('$(MSBuildThisFileDirectory)\$(Platform)\Microsoft.Cpp.$(Platform).Targets')">
+    <ImportDefaults>true</ImportDefaults>
+  </PropertyGroup>
+
   <Import
       Condition="'$(ConfigurationType)' == 'Makefile'"
       Project="$(VCTargetsPath)\Microsoft.MakeFile.Targets"/>
   <Import
       Condition="'$(ConfigurationType)' != 'Makefile' and
-                 Exists('$(MSBuildThisFileDirectory)\$(Platform)\Microsoft.Cpp.$(Platform).Targets')"
+                 '$(ImportDefaults)' == ''"
       Project="$(MSBuildThisFileDirectory)\$(Platform)\Microsoft.Cpp.$(Platform).Targets"/>
   <Import
       Condition="'$(ConfigurationType)' != 'Makefile' and
-                 !Exists('$(MSBuildThisFileDirectory)\$(Platform)\Microsoft.Cpp.$(Platform).Targets') and
+                 '$(ImportDefaults)' == 'true' and
                  Exists('$(VCTargetsPath)\Microsoft.Cpp.Targets')"
       Project="$(VCTargetsPath)\Microsoft.Cpp.Targets"/>
 
@@ -121,7 +125,8 @@ Copyright (C) Microsoft Corporation. All rights reserved.
        ******************************************************************************************* -->
 
   <Import
-      Condition="Exists('$(VCTargetsPath)\Microsoft.CppClean.targets')"
+      Condition="Exists('$(VCTargetsPath)\Microsoft.CppClean.targets') and
+                 '$(ImportDefaults)' == ''"
       Project="$(VCTargetsPath)\Microsoft.CppClean.targets" />
 
   <Import

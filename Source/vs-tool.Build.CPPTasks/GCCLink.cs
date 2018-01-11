@@ -47,9 +47,13 @@ namespace vs.tool.Build.CPPTasks
 
         protected override bool ValidateParameters()
         {
+            if (this.m_propXmlParse != null)
+                return true;
+
             this.m_propXmlParse = new PropXmlParse(this.PropertyXmlFile);
 
-            this.m_toolFileName = Path.GetFileNameWithoutExtension(this.GCCToolPath);
+            if (!string.IsNullOrEmpty(this.GCCToolPath))
+                this.m_toolFileName = Path.GetFileNameWithoutExtension(this.GCCToolPath);
 
             return base.ValidateParameters();
         }
@@ -65,13 +69,20 @@ namespace vs.tool.Build.CPPTasks
         {
             StringBuilder templateStr = new StringBuilder(Utils.EST_MAX_CMDLINE_LEN);
 
-            foreach (ITaskItem sourceFile in this.Sources)
+            if (this.Sources != null && this.Sources.Length > 0)
             {
-                templateStr.Append(Utils.PathSanitize(sourceFile.GetMetadata("Identity")));
-                templateStr.Append(" ");
-            }
+                foreach (ITaskItem sourceFile in this.Sources)
+                {
+                    if (sourceFile != null)
+                    {
+                        templateStr.Append(Utils.PathSanitize(sourceFile.GetMetadata("Identity")));
+                        templateStr.Append(" ");
+                    }
+                }
 
-            templateStr.Append(this.m_propXmlParse.ProcessProperties(this.Sources[0]));
+                ValidateParameters();
+                templateStr.Append(this.m_propXmlParse.ProcessProperties(this.Sources[0]));
+            }
 
             return templateStr.ToString();
         }
@@ -80,34 +91,31 @@ namespace vs.tool.Build.CPPTasks
         {
             // These tlog files are seemingly unused dep-wise, but cause problems when I add them to the proper TLog list
             // Incremental builds keep appending to them, so this keeps them from just growing and growing.
-            string ignoreReadLogPath = Path.GetFullPath(this.TrackerLogDirectory + "\\" + this.m_toolFileName + ".read.1.tlog");
-            string ignoreWriteLogPath = Path.GetFullPath(this.TrackerLogDirectory + "\\" + this.m_toolFileName + ".write.1.tlog");
+            if (!string.IsNullOrEmpty(this.TrackerLogDirectory) && !string.IsNullOrEmpty(this.m_toolFileName) &&
+                Directory.Exists(this.TrackerLogDirectory))
+            {
+                string ignoreReadLogPath = Path.GetFullPath(this.TrackerLogDirectory + "\\" + this.m_toolFileName + ".read.1.tlog");
+                string ignoreWriteLogPath = Path.GetFullPath(this.TrackerLogDirectory + "\\" + this.m_toolFileName + ".write.1.tlog");
 
-            try
-            {
-                File.Delete(ignoreReadLogPath);
-                File.Delete(ignoreWriteLogPath);
-            }
-            catch (Exception ex)
-            {
-                this.Log.LogWarningFromException(ex);
+                try
+                {
+                    File.Delete(ignoreReadLogPath);
+                    File.Delete(ignoreWriteLogPath);
+                }
+                catch
+                {
+                    // Safe to ignore this...
+                }
             }
         }
 
         protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)
         {
-            try
-            {
-                this.CleanUnusedTLogFiles();
+            this.CleanUnusedTLogFiles();
 
-                if (this.EchoCommandLines == "true")
-                {
-                    this.Log.LogMessage(MessageImportance.High, pathToTool + " " + responseFileCommands);
-                }
-            }
-            catch (Exception ex)
+            if (this.EchoCommandLines == "true")
             {
-                this.Log.LogWarningFromException(ex);
+                this.Log.LogMessage(MessageImportance.High, pathToTool + " " + responseFileCommands);
             }
 
             int returnValue = 0;
@@ -118,7 +126,8 @@ namespace vs.tool.Build.CPPTasks
             }
             catch (Exception ex)
             {
-                this.Log.LogWarningFromException(ex);
+                this.Log.LogWarning("ExecuteTool returned an exception.");
+                this.Log.LogWarning(ex.ToString());
             }
 
             return returnValue;

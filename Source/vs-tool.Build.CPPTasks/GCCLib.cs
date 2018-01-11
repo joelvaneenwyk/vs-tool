@@ -21,6 +21,7 @@ namespace vs.tool.Build.CPPTasks
     public class GCCLib : TrackedVCToolTask
     {
         private string m_toolFileName;
+        private PropXmlParse m_propXmlParse;
 
         public bool BuildingInIDE { get; set; }
 
@@ -43,12 +44,17 @@ namespace vs.tool.Build.CPPTasks
         public GCCLib()
             : base(new ResourceManager("vs.tool.Build.CPPTasks.Properties.Resources", Assembly.GetExecutingAssembly()))
         {
-
         }
 
         protected override bool ValidateParameters()
         {
-            this.m_toolFileName = Path.GetFileNameWithoutExtension(this.ToolName);
+            if (this.m_propXmlParse != null)
+                return true;
+
+            this.m_propXmlParse = new PropXmlParse(this.PropertyXmlFile);
+
+            if (!string.IsNullOrEmpty(this.ToolName))
+                this.m_toolFileName = Path.GetFileNameWithoutExtension(this.ToolName);
 
             return base.ValidateParameters();
         }
@@ -63,22 +69,62 @@ namespace vs.tool.Build.CPPTasks
         protected override string GenerateResponseFileCommands()
         {
             StringBuilder builder = new StringBuilder(Utils.EST_MAX_CMDLINE_LEN);
-            builder.Append("rcs " + Utils.PathSanitize(this.OutputFile) + " ");
-            foreach (ITaskItem item in this.Sources)
+
+            ValidateParameters();
+            string result = "";
+            if (this.Sources != null && this.Sources.Length > 0)
+                result = this.m_propXmlParse.ProcessProperties(this.Sources[0]);
+            if (string.IsNullOrEmpty(result) && !string.IsNullOrEmpty(this.OutputFile))
             {
-                builder.Append(Utils.PathSanitize(item.ToString()) + " ");
+                builder.Append("rcs " + Utils.PathSanitize(this.OutputFile) + " ");
             }
+
+            if (this.Sources != null)
+            {
+                foreach (ITaskItem item in this.Sources)
+                {
+                    if (item != null)
+                    {
+                        builder.Append(Utils.PathSanitize(item.ToString()) + " ");
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(result))
+            {
+                builder.Append(result);
+            }
+
             return builder.ToString();
         }
 
         protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)
         {
-            if (this.EchoCommandLines == "true")
+            int returnValue = 0;
+
+            try
             {
-                this.Log.LogMessage(MessageImportance.High, pathToTool + " " + responseFileCommands);
+                if (this.EchoCommandLines == "true")
+                {
+                    this.Log.LogMessage(MessageImportance.High, pathToTool + " " + responseFileCommands);
+                }
+
+                returnValue = base.ExecuteTool(pathToTool, responseFileCommands, commandLineCommands);
+            }
+            catch
+            {
+                // We sometimes get the following callstack, but it seems like you can safely ignore this.
+                //
+                //  System.NullReferenceException: Object reference not set to an instance of an object.
+                //  at Microsoft.Build.CPPTasks.VCToolTask.GenerateResponseFileCommandsExceptSwitches(String[] switchesToRemove, CommandLineFormat format, EscapeFormat escapeFormat)
+                //  at Microsoft.Build.CPPTasks.VCToolTask.GenerateResponseFileCommands(CommandLineFormat format, EscapeFormat escapeFormat)
+                //  at Microsoft.Build.CPPTasks.VCToolTask.GenerateCommandLine(CommandLineFormat format, EscapeFormat escapeFormat)
+                //  at Microsoft.Build.CPPTasks.TrackedVCToolTask.PostExecuteTool(Int32 exitCode)
+                //  at Microsoft.Build.CPPTasks.TrackedVCToolTask.ExecuteTool(String pathToTool, String responseFileCommands, String commandLineCommands)
+                //  at vs.tool.Build.CPPTasks.GCCLib.ExecuteTool(String pathToTool, String responseFileCommands, String commandLineCommands) in D:\Perforce\2018_1_HTML5\ThirdParty\sdks\win32\vs - tool\Source\vs - tool.Build.CPPTasks\GCCLib.cs:line 112
             }
 
-            return base.ExecuteTool(pathToTool, responseFileCommands, commandLineCommands);
+            return returnValue;
         }
 
         protected override void RemoveTaskSpecificOutputs(CanonicalTrackedOutputFiles compactOutputs)
@@ -174,6 +220,7 @@ namespace vs.tool.Build.CPPTasks
         {
             get
             {
+                ValidateParameters();
                 return (this.m_toolFileName + ".command.1.tlog");
             }
         }
@@ -182,7 +229,8 @@ namespace vs.tool.Build.CPPTasks
         {
             get
             {
-                return new string[] { (this.m_toolFileName + ".read.*.tlog"), (this.m_toolFileName + ".*.read.*.tlog") };
+                ValidateParameters();
+                return new[] { (this.m_toolFileName + ".read.*.tlog"), (this.m_toolFileName + ".*.read.*.tlog") };
             }
         }
 
@@ -190,7 +238,8 @@ namespace vs.tool.Build.CPPTasks
         {
             get
             {
-                return new string[] { (this.m_toolFileName + ".write.*.tlog"), (this.m_toolFileName + ".*.write.*.tlog") };
+                ValidateParameters();
+                return new[] { (this.m_toolFileName + ".write.*.tlog"), (this.m_toolFileName + ".*.write.*.tlog") };
             }
         }
     }

@@ -87,6 +87,7 @@ Emscripten is a compiler/linker that allows you to compile C/C++ code to JavaScr
 ## Resources
 
 * Useful information on how tasks work in Visual Studio: [https://gist.github.com/retorillo/c55148f1f4cbc68f8572f70a9b949b62](MsBuild exploration for C++)
+* [Debugging MSBuild](https://blogs.msdn.microsoft.com/visualstudio/2010/07/06/debugging-msbuild-script-with-visual-studio/)
 
 ## Version History
 

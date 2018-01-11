@@ -19,6 +19,9 @@ namespace vs.tool.Build.CPPTasks
 
         public static string PathSanitize(string path)
         {
+            if (string.IsNullOrEmpty(path))
+                return path;
+
             path = path.Trim();
 
             // Remove quotes if it already has them. We'll re-add them if necessary.

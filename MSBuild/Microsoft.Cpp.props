@@ -81,15 +81,26 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 
   <PropertyGroup>
     <Language>C++</Language>
-    <DefaultLanguageSourceExtension>.cpp</DefaultLanguageSourceExtension>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="!exists('$(MSBuildThisFileDirectory)\$(Platform)\Microsoft.Cpp.$(Platform).props')">
+    <ImportDefaults>true</ImportDefaults>
   </PropertyGroup>
 
   <!-- Import CL and Link defaults-->
-  <Import Project="$(VCTargetsPath)\Microsoft.Cl.Common.props"/>
-  <Import Project="$(VCTargetsPath)\Microsoft.Link.Common.props"/>
-  <Import Condition="exists('$(VCTargetsPath)\Microsoft.CodeAnalysis.props')" Project="$(VCTargetsPath)\Microsoft.CodeAnalysis.props"/>
+  <Import
+      Condition="'$(ImportDefaults)' == ''"
+      Project="$(VCTargetsPath)\Microsoft.Cl.Common.props"/>
+  <Import
+      Condition="'$(ImportDefaults)' == ''"
+      Project="$(VCTargetsPath)\Microsoft.Link.Common.props"/>
+  <Import
+      Condition="exists('$(VCTargetsPath)\Microsoft.CodeAnalysis.props') and
+                 '$(ImportDefaults)' == ''"
+      Project="$(VCTargetsPath)\Microsoft.CodeAnalysis.props"/>
 
   <!-- Define defaults for all tools for property page-->
+
   <PropertyGroup>
     <TargetName Condition="'$(TargetName)' == ''">$(ProjectName)</TargetName>
     <ExtensionsToDeleteOnClean Condition="'$(ExtensionsToDeleteOnClean)' == ''">*.cdf;*.cache;*.obj;*.ilk;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.metagen;*.bi</ExtensionsToDeleteOnClean>
@@ -221,8 +232,15 @@ Copyright (C) Microsoft Corporation. All rights reserved.
   </ItemGroup>
 
   <!-- Import Platform specific settings -->
-  <Import Condition="'$(Platform)' 	!= '' and exists('$(MSBuildThisFileDirectory)\$(Platform)\Microsoft.Cpp.$(Platform).props')" Project="$(MSBuildThisFileDirectory)\$(Platform)\Microsoft.Cpp.$(Platform).props"/>
+  <Import
+      Condition="'$(Platform)' != '' and
+                 exists('$(MSBuildThisFileDirectory)\$(Platform)\Microsoft.Cpp.$(Platform).props')"
+      Project="$(MSBuildThisFileDirectory)\$(Platform)\Microsoft.Cpp.$(Platform).props"/>
 
-  <Import Condition="'$(Platform)' != '' and !exists('$(MSBuildThisFileDirectory)\$(Platform)\Microsoft.Cpp.$(Platform).props')" Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
+  <Import
+      Condition="'$(Platform)' != '' and
+                 '$(ImportDefaults)' == 'true'"
+      Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
+
 
 </Project>

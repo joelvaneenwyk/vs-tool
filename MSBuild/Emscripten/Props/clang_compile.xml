@@ -43,7 +43,7 @@
     <EnumValue Name="LanguageStandardCxx03" DisplayName="C++03 (ISO C++ 1998 with Amendments)" Switch="std=cxx03" />
     <EnumValue Name="LanguageStandardGnu++98" DisplayName="Gnu++98 (ISO C++ 1998 with Amendments and GNU Extensions" Switch="std=gnucxx98" />
     <EnumValue Name="LanguageStandardC1X" DisplayName="C1X (ISO C 201X)" Switch="std=c1x" />
-    <EnumValue Name="LanguageStandardC++11" DisplayName="C++11 (ISO C++ 2011 with Amendments)" Switch="std=cxx11" />
+    <EnumValue Name="LanguageStandardC++11" DisplayName="C++11 (ISO C++ 2011 with Amendments)" Switch="std=c++11" />
     <EnumValue Name="LanguageStandardGnu++11" DisplayName="Gnu++11 (ISO C++ 2011 with Amendments and GNU Extensions)" Switch="std=gnu++11" />
     <EnumValue Name="LanguageStandardOpenCL" DisplayName="OpenCL 1.0" Switch="opencl" />
     <EnumValue Name="LanguageStandardCUDA" DisplayName="nVidia CUDA" Switch="cuda" />

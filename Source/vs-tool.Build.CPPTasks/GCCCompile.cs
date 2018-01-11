@@ -122,7 +122,7 @@ namespace vs.tool.Build.CPPTasks
             }
             catch (Exception ex)
             {
-                this.Log.LogWarningFromException(ex);
+                this.Log.LogWarning(ex.ToString());
             }
             finally
             {
@@ -135,7 +135,7 @@ namespace vs.tool.Build.CPPTasks
                 }
                 catch (Exception ex)
                 {
-                    this.Log.LogWarningFromException(ex);
+                    this.Log.LogWarning(ex.ToString());
                 }
             }
 
@@ -162,34 +162,38 @@ namespace vs.tool.Build.CPPTasks
             StringBuilder cmdLine = new StringBuilder(Utils.EST_MAX_CMDLINE_LEN);
             foreach (ITaskItem sourceFile in this.Sources)
             {
+                if (sourceFile == null)
+                    continue;
+
+                cmdLine.Length = 0;
+                this.m_currentSourceItem = sourceFile;
+
                 try
                 {
-                    cmdLine.Length = 0;
-                    this.m_currentSourceItem = sourceFile;
-
                     cmdLine.Append(this.GenerateCommandLine());
-                    cmdLine.Append(" ");
+                }
+                catch
+                {
+                    // Not actually clear what causes this but it is safe to ignore
+                }
 
-                    cmdLine.Append(sourceFile.GetMetadata("FullPath").ToUpperInvariant());
+                cmdLine.Append(" ");
+                cmdLine.Append(sourceFile.GetMetadata("FullPath").ToUpperInvariant());
 
-                    string findCmdLine = null;
-                    if (dictionary.TryGetValue(FileTracker.FormatRootingMarker(sourceFile), out findCmdLine))
-                    {
-                        if ((findCmdLine == null) || !cmdLine.ToString().Equals(findCmdLine, StringComparison.Ordinal))
-                        {
-                            list.Add(sourceFile);
-                        }
-                    }
-                    else
+                string findCmdLine = null;
+                if (dictionary.TryGetValue(FileTracker.FormatRootingMarker(sourceFile), out findCmdLine))
+                {
+                    if (findCmdLine == null || !cmdLine.ToString().Equals(findCmdLine, StringComparison.Ordinal))
                     {
                         list.Add(sourceFile);
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    this.Log.LogWarningFromException(ex);
+                    list.Add(sourceFile);
                 }
             }
+
             return list;
         }
 
@@ -249,7 +253,7 @@ namespace vs.tool.Build.CPPTasks
                 }
                 catch (Exception ex)
                 {
-                    this.Log.LogWarningFromException(ex);
+                    this.Log.LogWarning(ex.ToString());
 
                     // Exception caught, bail out here
                     hitError = true;
@@ -277,7 +281,7 @@ namespace vs.tool.Build.CPPTasks
             if (this.m_currentSourceItem != null)
             {
                 string objectFile = Path.GetFullPath(this.m_currentSourceItem.GetMetadata("ObjectFileName"));
-                if (Path.GetFileName(objectFile) == string.Empty)
+                if (string.IsNullOrEmpty(objectFile) || Path.GetFileName(objectFile) == string.Empty)
                 {
                     this.Log.LogError("The ObjectFileName setting in the Visual Studio C/C++ - Output Files sheet is set to a directory:");
                     this.Log.LogError(objectFile);
@@ -298,13 +302,14 @@ namespace vs.tool.Build.CPPTasks
 
                 // -c = Compile the C/C++ file
                 // -MD = Generate dependency .d file
-                templateStr.Append(this.m_propXmlParse.ProcessProperties(this.m_currentSourceItem));
+                if (this.m_propXmlParse != null)
+                    templateStr.Append(this.m_propXmlParse.ProcessProperties(this.m_currentSourceItem));
                 templateStr.Append(" -c -MD ");
                 templateStr.Append(sourcePath);
 
                 // Remove rtti stuff from plain C builds. -Wall generates warnings otherwise.
                 string compileAs = this.m_currentSourceItem.GetMetadata("CompileAs");
-                if ((compileAs != null) && (compileAs == "CompileAsC"))
+                if (compileAs != null && compileAs == "CompileAsC")
                 {
                     templateStr.Replace("-fno-rtti", "");
                     templateStr.Replace("-frtti", "");
@@ -318,8 +323,11 @@ namespace vs.tool.Build.CPPTasks
         {
             // Remove any files we're about to compile from the log
             TaskItem item = new TaskItem(Path.Combine(this.TrackerIntermediateDirectory, this.WriteTLogNames[0]));
-            CanonicalTrackedOutputFiles files = new CanonicalTrackedOutputFiles(new TaskItem[] { item });
-            files.RemoveEntriesForSource(this.Sources);
+            CanonicalTrackedOutputFiles files = new CanonicalTrackedOutputFiles(new ITaskItem[] { item });
+            if (this.Sources != null)
+            {
+                files.RemoveEntriesForSource(this.Sources);
+            }
 
             // Add in the files we're compiling right now. Essentially just updating their output object filenames.
             foreach (ITaskItem sourceItem in upToDateSources)
@@ -342,7 +350,7 @@ namespace vs.tool.Build.CPPTasks
 
             // Rewrite out read log, with the sources we're *not* compiling right now.
             TaskItem readTrackerItem = new TaskItem(readTrackerPath);
-            CanonicalTrackedInputFiles files = new CanonicalTrackedInputFiles(new TaskItem[] { readTrackerItem }, this.Sources, outputs, false, false);
+            CanonicalTrackedInputFiles files = new CanonicalTrackedInputFiles(new ITaskItem[] { readTrackerItem }, this.Sources, outputs, false, false);
             files.RemoveEntriesForSource(this.Sources);
             files.SaveTlog();
 
@@ -402,9 +410,9 @@ namespace vs.tool.Build.CPPTasks
                         {
                             File.Delete(dotDFile);
                         }
-                        catch (Exception ex)
+                        catch
                         {
-                            this.Log.LogWarningFromException(ex);
+                            // Safe to ignore...
                         }
 
                         // Finally write out the file and its dependencies, must ensure success before doing this

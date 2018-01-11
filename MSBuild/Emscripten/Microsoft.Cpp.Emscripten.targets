@@ -1,6 +1,8 @@
 ﻿<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildThisFileDirectory)\ImportBefore\*.targets" Condition="Exists('$(MSBuildThisFileDirectory)\ImportBefore')" />
-  <Import Project="$(VCTargetsPath)\Microsoft.CppCommon.targets" />
+  <Import Project="$(MSBuildThisFileDirectory)\ImportBefore\*.targets"
+          Condition="Exists('$(MSBuildThisFileDirectory)\ImportBefore')" />
+  <Import Project="$(VCTargetsPath)\Microsoft.CppCommon.targets"
+          Condition="Exists('$(VCTargetsPath)\Microsoft.CppCommon.targets') and '$(YieldDuringToolExecution)' == ''" />
 
   <UsingTask TaskName="GCCCompile" AssemblyFile="$(MSBuildThisFileDirectory)..\..\Bin\$(VisualStudioVersion)\vs-tool.Build.CPPTasks.dll" />
   <UsingTask TaskName="GCCLink" AssemblyFile="$(MSBuildThisFileDirectory)..\..\Bin\$(VisualStudioVersion)\vs-tool.Build.CPPTasks.dll" />
@@ -31,7 +33,12 @@
     <!-- Enable MinimalRebuildFromTracking for versions after VS2010 since VS2010 didn't require this for some reason. -->
     <ItemGroup Condition="$(VisualStudioVersion) != '10.0'">
       <ClCompile>
-        <MinimalRebuildFromTracking   Condition="'%(ClCompile.MinimalRebuildFromTracking)' == '' and '$(BuildType)' == 'Build' and '$(ForceRebuild)' != 'true'">true</MinimalRebuildFromTracking>
+        <MinimalRebuildFromTracking
+            Condition="'%(ClCompile.MinimalRebuildFromTracking)' == '' and
+                       '$(BuildType)' == 'Build' and
+                       '$(ForceRebuild)' != 'true'">
+          true
+        </MinimalRebuildFromTracking>
       </ClCompile>
     </ItemGroup>
 
@@ -91,7 +98,6 @@
         AcceptableNonZeroExitCodes     ="%(Lib.AcceptableNonZeroExitCodes)"
 
         EchoCommandLines               ="%(Lib.EchoCommandLines)"
-        UseClangSyntax                 ="true"
         GCCToolPath                    ="$(GccLibrarian)"
         PropertyXmlFile                ="$(MSBuildThisFileDirectory)\Props\mingw_lib.xml"
       >
@@ -150,24 +156,15 @@
   </Target>
 
   <!-- Override the Microsoft.CppBuild.targets stuff -->
-  <Import Project="$(MSBuildThisFileDirectory)\Emscripten.CppBuild.targets" />
+  <Import
+      Project="$(MSBuildThisFileDirectory)\Emscripten.CppBuild.targets" />
 
+  <Import
+      Project="$(MSBuildThisFileDirectory)\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Emscripten.$(PlatformToolset).targets"
+      Condition="(exists('$(MSBuildThisFileDirectory)\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Emscripten.$(PlatformToolset).targets'))" />
 
+  <Import
+      Project="$(MSBuildThisFileDirectory)\ImportAfter\*.targets"
+      Condition="Exists('$(MSBuildThisFileDirectory)\ImportAfter')" />
 
-  <!-- *******************************************************************************************
-        PlatformPrepareForBuild target
-       ******************************************************************************************* -->
-
-  <Target Name="PlatformPrepareForBuild" DependsOnTargets="$(PlatformPrepareForBuildDependsOn)">
-    <!-- For VS2012. $(TargetName) doesn't seem to be defined where TargetPath is setup in the MS scripts. Crude fix for it. -->
-    <PropertyGroup Condition="$(VisualStudioVersion) != '10.0'">
-      <TargetPath>$([System.IO.Path]::Combine($(ProjectDir),$(OutDir)$(TargetName)$(TargetExt)))</TargetPath>
-    </PropertyGroup>
-
-    <Error Condition="$(VisualStudioVersion) != '10.0' and $(VisualStudioVersion) != '11.0' and $(VisualStudioVersion) != '12.0'"
-           Text="Unknown version of Visual Studio: $(VisualStudioVersion)" ></Error>
-  </Target>
-
-  <Import Project="$(MSBuildThisFileDirectory)\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Emscripten.$(PlatformToolset).targets" Condition="(exists('$(MSBuildThisFileDirectory)\PlatformToolsets\$(PlatformToolset)\Microsoft.Cpp.Emscripten.$(PlatformToolset).targets'))" />
-  <Import Project="$(MSBuildThisFileDirectory)\ImportAfter\*.targets" Condition="Exists('$(MSBuildThisFileDirectory)\ImportAfter')" />
 </Project>
